@@ -45,6 +45,8 @@ int main(int argc, char** argv) {
     segmentVol->effectuerMesure(TEMPCELSIUS);
     segmentVol->effectuerMesure(PIXEL);
 
+int testC = 0;
+
     t1.join();
     t2.join();
     t3.join();
