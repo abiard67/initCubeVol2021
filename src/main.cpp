@@ -49,7 +49,7 @@ int testC = 0;
 int testCoco = 0;
 
 
-cout<<"testtt"<<endl
+int tessstt;
     t1.join();
     t2.join();
     t3.join();
