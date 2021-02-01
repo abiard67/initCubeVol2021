@@ -48,9 +48,12 @@ int main(int argc, char** argv) {
 int testC = 0;
 int testCoco = 0;
 
+
+cout<<"testtt"<<endl
     t1.join();
     t2.join();
     t3.join();
-    return 0;
+ 
+   return 0;
 }
 
