@@ -46,6 +46,7 @@ int main(int argc, char** argv) {
     segmentVol->effectuerMesure(PIXEL);
 
 int testC = 0;
+int testCoco = 0;
 
     t1.join();
     t2.join();
