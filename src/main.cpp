@@ -50,7 +50,7 @@ int testCoco = 0;
 int testR =0;
 
 
-int tessstt;
+int tessst;
     t1.join();
     t2.join();
     t3.join();
