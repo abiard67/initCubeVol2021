@@ -47,6 +47,7 @@ int main(int argc, char** argv) {
 
 int testC = 0;
 int testCoco = 0;
+int testR =0;
 
 
 int tessstt;
