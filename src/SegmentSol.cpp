@@ -67,10 +67,11 @@ void SegmentSol::envoyerStatus(){
 	int nbrePaquets = 2;
 	for (int i=0;i<nbrePaquets;i++)
 	{
-		Ret=LS.Open(DEVICE_PORT,9600);
+		//Ret=LS.Open(DEVICE_PORT,9600);
 		tramerStatus(message, nbrePaquets, i+1);
-		Ret=LS.Write(tableau,tableau[2]+6);
-		LS.Close();
+		//Ret=LS.Write(tableau,tableau[2]+6);
+		//LS.Close();
+		cout<<"Envoi status"<< tableau<<endl;
 	}    
 }
 
@@ -88,18 +89,19 @@ void SegmentSol::envoyerMission(){
 	int nbrePaquets = this->calculerNombrePaquets(message);
 	for (int i=0;i<nbrePaquets;i++)
 	{
-		Ret=LS.Open(DEVICE_PORT,9600); 
+		//Ret=LS.Open(DEVICE_PORT,9600); 
 
-		tramerMission(message, nbrePaquets, i+1);
+		//tramerMission(message, nbrePaquets, i+1);
 
 		Ret=LS.Write(tableau,tableau[2]+6); 
 
-		//auto start = std::chrono::high_resolution_clock::now();
-		//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-		//auto end = std::chrono::high_resolution_clock::now();
-		// std::chrono::duration<double, std::milli> elapsed = end-start;
-		//std::cout << "Waited " << elapsed.count() << " ms\n";
-		LS.Close();
+						//auto start = std::chrono::high_resolution_clock::now();
+						//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+						//auto end = std::chrono::high_resolution_clock::now();
+						// std::chrono::duration<double, std::milli> elapsed = end-start;
+						//std::cout << "Waited " << elapsed.count() << " ms\n";
+		//LS.Close();
+				cout<<"Envoi status"<< tableau<<endl;
 	}
 	camera->clearMesures();
 	mesures=camera->getMesures();
@@ -109,6 +111,7 @@ void SegmentSol::envoyerMission(){
 void SegmentSol::envoyerMesure(string type){
     serialib LS;
 	int Ret;
+	CameraIR* camera=leSegment->getCameraIR();
     unsigned char idSegment=leSegment->getIdentifiant();
 
     message->setIdSegment(idSegment);
@@ -119,6 +122,17 @@ void SegmentSol::envoyerMesure(string type){
 
 		list<Mesure*> mesures=leSegment->getCameraIR()->getMesures();
 		message->setMesures(mesures);
+		int nbrePaquets = 1;
+		for (int i=0;i<nbrePaquets;i++)
+		{
+			//Ret=LS.Open(DEVICE_PORT,9600); 
+			tramerMesure(message, nbrePaquets, 1);
+			//Ret=LS.Write(tableau,tableau[2]+6);
+			//LS.Close();
+					cout<<"Envoi mesure TC"<< tableau<<endl;
+		} 
+		message->clearMesures();
+		camera->clearLastMesures();
 	}
 	else if (type.find(Protocole::PIXEL)!= string::npos) {
 
@@ -126,19 +140,22 @@ void SegmentSol::envoyerMesure(string type){
 		for (int i =0;i<64;i++)
 		{
 			message->addPixel(*(mesures+i));
+			cout<<"prel  PIXELS"<< *(mesures+i)<<endl;
 
 		}
+		int nbrePaquets = 8;
+		for (int i=0;i<nbrePaquets;i++)
+		{
+			//Ret=LS.Open(DEVICE_PORT,9600); 
+			tramerMesure(message, nbrePaquets, i+1);
+			//Ret=LS.Write(tableau,tableau[2]+6);
+			//LS.Close();
+					cout<<"Envoi mesure PIXELS"<< tableau<<endl;
+		} 
+		message->clearPixels();
 	}
 
-	int nbrePaquets = 8;
-	for (int i=0;i<nbrePaquets;i++)
-	{
-		Ret=LS.Open(DEVICE_PORT,9600); 
-		tramerMesure(message, nbrePaquets, i+1);
-		Ret=LS.Write(tableau,tableau[2]+6);
-		LS.Close();
-	} 
-	message->clearPixels();
+
 }
 
 

@@ -34,20 +34,20 @@ void Temperature::recupTempSys(){
     setAddrEsclave(adressecapteuri2c);
     setAddrRegistre(pointeurderegistre);
     ecrire();
-    char* valeurLue = lire();
-    temperatureHigh = valeurLue[0] & bithuitadouze;
-    temperatureLow = valeurLue[1];
-    if((valeurLue[0] & bitdesigne) == bitdesigne){
-			
-        //TEMPERATURE NÉGATIVE
-        temperaturesys = (float) ( 256.0 - ( ( temperatureHigh * 16.0 ) + (temperatureLow / 16.0 ) ) );
-	temperaturesys = -1 * temperaturesys;	
-    }else{
+    //char* valeurLue = lire();
+    temperatureHigh = 12 ; //valeurLue[0] & bithuitadouze;
+    temperatureLow = 86; //valeurLue[1];
+ //   if((valeurLue[0] & bitdesigne) == bitdesigne){
+	//		
+ //       //TEMPERATURE NÉGATIVE
+ //       temperaturesys = (float) ( 256.0 - ( ( temperatureHigh * 16.0 ) + (temperatureLow / 16.0 ) ) );
+	//temperaturesys = -1 * temperaturesys;	
+ //   }else{
 			
         //TEMPERATURE POSITIVE
         temperaturesys = (float) ( temperatureHigh * 16.0  + temperatureLow/ 16.0  );
 			
-    }
+    //}
 }
 
 float Temperature::getTemperature(){

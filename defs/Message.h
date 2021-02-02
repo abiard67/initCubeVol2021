@@ -71,6 +71,7 @@ public:
 	void addPixel(float leReleve);
 	void clearPixels();
 	void setPixels(list<string> lesNouveauxPixels);
+	void clearMesures();
 
 
 private:

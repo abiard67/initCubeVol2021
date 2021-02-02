@@ -30,19 +30,17 @@ int CameraIR::obtenirPixels() {
     
     char* recup;
     char adresse = 0x80;
-  //   for (int i = 0; i < 64; i++) {
-		// float t = 5+0.5*i;
-  //     pixels[i] = t;
-	 //}
+	float t;
     //recuperation des pixels
     for (int i = 0; i < 64; i++) {
         setAddrRegistre(adresse);
         ecrire();
-        recup = lire(); 
-		if (i==0) 
-			if ((recup[0]==0) && (recup[1]==128)) return -1;
-        float t = calculerTemperature(recup[0], recup[1]);
+        //recup = lire(); 
+		//if (i==0) 
+		//	if ((recup[0]==0) && (recup[1]==128)) return -1;
+        t = 31.7 + i; //calculerTemperature(recup[0], recup[1]);
         pixels[i] = t;
+
 		if ((i==7) ||(i==15) ||(i==23) ||(i==31) ||(i==39) ||(i==47) ||(i==55) );
         adresse += 2;
     }  
@@ -128,10 +126,10 @@ int CameraIR::lireTemperature(int rayon) {
 				{
 					setAddrRegistre(addr[i]);
 					ecrire();
-					recup = lire();
-					if (i==0)
-						if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
-					moy = moy + calculerTemperature(recup[0], recup[1]);
+					//recup = lire();
+					//if (i==0)
+					//	if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
+					moy = 120; //moy + calculerTemperature(recup[0], recup[1]);
 				}
 				this->moyenne = moy/4;
 				break;
@@ -159,10 +157,10 @@ int CameraIR::lireTemperature(int rayon) {
 				{
 					setAddrRegistre(addr[i]);
 					ecrire();
-					recup = lire();
-					if (i==0)
-						if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
-					moy = moy + calculerTemperature(recup[0], recup[1]);
+					//recup = lire();
+					//if (i==0)
+					//	if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
+					moy = 512 ; //moy + calculerTemperature(recup[0], recup[1]);
 				}
 				this->moyenne = moy/16;
 				break;
@@ -216,10 +214,10 @@ int CameraIR::lireTemperature(int rayon) {
 				{
 					setAddrRegistre(addr[i]);
 					ecrire();
-					recup = lire();
-					if (i==0)
-						if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
-					moy = moy + calculerTemperature(recup[0], recup[1]);
+					//recup = lire();
+					//if (i==0)
+					//	if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
+					moy = 972; //moy + calculerTemperature(recup[0], recup[1]);
 				}
 				this->moyenne = moy/36;
 				break;
@@ -242,8 +240,7 @@ int CameraIR::lireTemperature(int rayon) {
 		Mesure* uneMesure = new Mesure(moyenne);
 		addMesure(uneMesure);
 		return 1;
-	//}
-	//else return -1;
+
 }
 
 float* CameraIR::getPixels() {
@@ -282,24 +279,24 @@ void CameraIR::obtenirMode() {
     //Récolte de l'état de fonctionnement
     setAddrRegistre(POWERCTLREG);
     ecrire();
-    recup =lire();
+    recup[0] = NORMALFONCT; //recup =lire();
 	/*Attention! La situation recup[0]==SLEEPFONCT ne se produit jamais car le registre 
 		POWERCTLREG est inaccessible si la camera est dans le mode SLEEP.*/
 	if (recup[0]==NORMALFONCT)
 	{
 		setAddrRegistre(FIRSTPIXREG );
 		ecrire();
-		recup =lire();
-		if ((recup[0]==0) && (recup[1]==128))
-		{
+		//recup =lire();
+		//if ((recup[0]==0) && (recup[1]==128))
+		//{
 			Mode leMode=SLEEP;
 			this->status->setMode(leMode);
-		}
-		else
-		{
-			Mode leMode=NORMAL;
-			this->status->setMode(leMode);
-		}
+		//}
+		//else
+		//{
+		//	Mode leMode=NORMAL;
+		//	this->status->setMode(leMode);
+		//}
 	}	
 	else 
 	{
@@ -318,17 +315,17 @@ void CameraIR::obtenirTempInst() {
 	{
 		setAddrRegistre(THERMREG);
 		ecrire();
-		buf = lire();
+		//buf = lire();
 	}
 	else 
 	{
-		this->activer();
+		//this->activer();
 		setAddrRegistre(THERMREG);
-		ecrire();
-		buf = lire();
-		this->desactiver();
+		//ecrire();
+		//buf = lire();
+		//this->desactiver();
 	}
-    tempInstrument = calculerTempInst(buf[0],buf[1]);
+    tempInstrument = 27; // calculerTempInst(buf[0],buf[1]);
     status->setTemp(tempInstrument);
     
 }

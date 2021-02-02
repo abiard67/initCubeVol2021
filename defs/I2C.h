@@ -19,7 +19,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <termios.h>
-#include <linux/i2c-dev.h>
+//#include <linux/i2c-dev.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string>
@@ -40,6 +40,7 @@ public:
     void setAddrRegistre(unsigned char reg);
     int ecrire();
     char* lire();
+	char lire1();
 	int ecrire(char avaleur);
 protected:
     int ouvrirAcces();

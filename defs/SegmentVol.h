@@ -32,6 +32,9 @@
 #include "Etat.h"
 #include "TypeMisEtat.h"
 #include "TypeAppareil.h"
+#include "Reboot.h"
+#include "Surveillance.h"
+#include "Sauvegarde.h"
 
 using namespace std;
 
@@ -55,6 +58,7 @@ public:
     thread recupEtat();
     thread tLancerMission();
     thread tArretMission();
+    thread tSurveillerConstantes();
     Horloge* getHorloge();
     Temperature* getTemperature();
     CameraIR* getCameraIR();
@@ -65,6 +69,8 @@ public:
     Etat* getEtat();
     unsigned char getIdentifiant();
     void setIdentifiant(unsigned char id);
+    void surveillerConstantes();
+    void demandeManuelleReboot();
 private:
     unsigned char identifiant;
     Horloge* horloge;
@@ -75,6 +81,9 @@ private:
     Mission* mission;
     Ordinateur* ordinateur;
     SegmentSol* segmentSol;
+    Reboot* reboot;
+    Surveillance* surveillance;
+    Sauvegarde* sauvegarde;
     Etat* etat;
     bool etatThread;
 };

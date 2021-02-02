@@ -16,13 +16,16 @@
 SegmentVol::SegmentVol() {
     horloge = new Horloge();
     temperature = new Temperature();
-    cameraIR = new CameraIR();
+    cameraIR = new CameraIR(); //A corriger - cela devrait être un instrument...
     batterie = new Batterie();
     emetteurRecepteur = new EmetteurRecepteur();
     mission = new Mission();
     ordinateur = new Ordinateur();
     etat = new Etat();
     segmentSol = new SegmentSol(this);
+    reboot = new Reboot();
+    surveillance = new Surveillance();
+    sauvegarde = new Sauvegarde();
 }
 
 SegmentVol::~SegmentVol() {
@@ -38,6 +41,24 @@ thread SegmentVol::tArretMission() {
     return thread([this] {
         arretMission();
     });
+}
+
+thread SegmentVol::tSurveillerConstantes() {
+    return thread([this] {
+        surveillerConstantes();
+    });
+}
+
+void SegmentVol::surveillerConstantes() {
+    surveillance->surveillerConstantes();
+}
+
+void SegmentVol::demandeManuelleReboot() {
+    sauvegarde->enregistrerMesure();
+    reboot->setNumber(reboot->getNumber()+1);
+    reboot->setDateHour(horloge->getDateHeure());
+    reboot->systemeReboot();
+	// Codage d'envoi vers Segment Sol à faire?
 }
 
 void SegmentVol::lancerMission() {

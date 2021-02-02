@@ -20,14 +20,15 @@ I2C::~I2C() {
 }
 
 int I2C::ouvrirAcces() {
-    int fd = open("/dev/i2c-1", O_RDWR);
-    if (fd < 0) {
-        openlog("I2C : ", LOG_PID, LOG_LOCAL0);
-        syslog(LOG_ERR, "open");
-        closelog();
-    } else {
+	int fd = 1;
+    //fd = open("/dev/i2c-1", O_RDWR);
+    //if (fd < 0) {
+    //    openlog("I2C : ", LOG_PID, LOG_LOCAL0);
+    //    syslog(LOG_ERR, "open");
+    //    closelog();
+    //} else {
         return fd;
-    }
+    //}
     return -1;
 }
 
@@ -36,11 +37,11 @@ void I2C::setAddrEsclave(unsigned char addr) {
 }
 
 void I2C::configurerAddrEsclave(int chemin) {
-    if (ioctl(chemin, I2C_SLAVE, address) < 0) {
-        openlog("I2C : ", LOG_PID, LOG_LOCAL0);
-        syslog(LOG_ERR, "ioctl");
-        closelog();
-    }
+    //if (ioctl(chemin, I2C_SLAVE, address) < 0) {
+    //    openlog("I2C : ", LOG_PID, LOG_LOCAL0);
+    //    syslog(LOG_ERR, "ioctl");
+    //    closelog();
+    //}
 }
 
 void I2C::setAddrRegistre(unsigned char reg) {
@@ -51,51 +52,72 @@ int I2C::ecrire() {
     int cheminAcces = ouvrirAcces();
 	int ret;
     configurerAddrEsclave(cheminAcces);
-    ret = write(cheminAcces, &addrRegistre, 1);
-    if ( ret<= 0) {
-        openlog("I2C : ", LOG_PID, LOG_LOCAL0);
-        syslog(LOG_ERR, "write");
-        closelog();
-    } else {
-        return ret;
-    }
-    fermerAcces(cheminAcces);
+  //  ret = write(cheminAcces, &addrRegistre, 1);
+  //  if ( ret<= 0) {
+  //      openlog("I2C : ", LOG_PID, LOG_LOCAL0);
+  //      syslog(LOG_ERR, "write");
+  //      closelog();
+  //  } else {
+		//fermerAcces(cheminAcces);
+  //      return ret;
+  //  }
+  //  fermerAcces(cheminAcces);
 	return -1;
 }
 
 char* I2C::lire() {
     int cheminAcces = ouvrirAcces();
     configurerAddrEsclave(cheminAcces);
-	int ret=read(cheminAcces, valeur, 2);
-    if ( ret <= 0) {
-        openlog("I2C : ", LOG_PID, LOG_LOCAL0);
-        syslog(LOG_ERR, "%d read",ret);
-        closelog();
-    } else {
+	//int ret=read(cheminAcces, valeur, 2);
+ //   if ( ret <= 0) {
+ //       openlog("I2C : ", LOG_PID, LOG_LOCAL0);
+ //       syslog(LOG_ERR, "%d read",ret);
+ //       closelog();
+	//	fermerAcces(cheminAcces);
+ //   } else {
+		fermerAcces(cheminAcces);
         return valeur;
-    }
-    fermerAcces(cheminAcces);
+    //}
+
     return NULL;
 }
 
+char I2C::lire1() {
+    int cheminAcces = ouvrirAcces();
+    configurerAddrEsclave(cheminAcces);
+	//int ret=read(cheminAcces, valeur, 1);
+ //   if ( ret <= 0) {
+ //       openlog("I2C : ", LOG_PID, LOG_LOCAL0);
+ //       syslog(LOG_ERR, "%d read",ret);
+ //       closelog();
+	//	fermerAcces(cheminAcces);
+ //   } else {
+	//	fermerAcces(cheminAcces);
+        return valeur[0];
+    //}
+
+    return 0;
+}
+
 void I2C::fermerAcces(int chemin) {
-    close(chemin);
+    //close(chemin);
 }
 
 
 int I2C::ecrire(char avaleur) {
     int cheminAcces = ouvrirAcces();
 	char configuration[2]={addrRegistre,avaleur};
-	int ret;
+	int ret = 1;
     configurerAddrEsclave(cheminAcces);
-	ret = write(cheminAcces, configuration, 2);
-    if ( ret<= 0) {
-        openlog("I2C : ", LOG_PID, LOG_LOCAL0);
-        syslog(LOG_ERR, "write");
-        closelog();
-    } else {
+	//ret = write(cheminAcces, configuration, 2);
+ //   if ( ret<= 0) {
+ //       openlog("I2C : ", LOG_PID, LOG_LOCAL0);
+ //       syslog(LOG_ERR, "write");
+ //       closelog();
+ //   } else {
+		fermerAcces(cheminAcces);
         return ret;
-    }
+    //}
     fermerAcces(cheminAcces);
 	return -1;
 }

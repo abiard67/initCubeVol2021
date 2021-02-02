@@ -24,16 +24,16 @@ void Batterie::obtenirNiveau() {
     setAddrRegistre(CHARGE_LEVEL_CMD);
     do{
     ecrire();
-    char* niveau = lire();
-    chargingLevel = niveau[0];
+    //char* niveau = lire();
+    chargingLevel = 90; //niveau[0];
     }while(chargingLevel < VALEUR_CHARGE_MIN);
 }
 
 void Batterie::obtenirCourant() {
     setAddrRegistre(IO_CURRENT_CMD);
     ecrire();
-    char* courant = lire();
-    amperage = (courant[1] << 8) | courant[0];
+    ////char* courant = lire();
+    amperage = 981; //(courant[1] << 8) | courant[0];
     if (amperage & 0x8000) {
         amperage = amperage - 1;
         amperage = ~amperage;
@@ -44,15 +44,15 @@ void Batterie::obtenirCourant() {
 void Batterie::obtenirTemperature() {
     setAddrRegistre(BATTERY_TEMPERATURE_CMD);
     ecrire();
-    char* temp = lire();
-    temperature = (temp[1] << 8) | temp[0];
+    //char* temp = lire();
+    temperature = 43; //(temp[1] << 8) | temp[0];
 }
 
 void Batterie::obtenirCharge() {
     setAddrRegistre(STATUS_CMD);
     ecrire();
-    char* stat = lire();
-    short statu = (stat[0] >> 2) & 0x03;
+    //char* stat = lire();
+    short statu = 1; //(stat[0] >> 2) & 0x03;
     if ((statu == 1) || (statu == 2)) {
         inCharge = true;
     }
@@ -64,8 +64,8 @@ void Batterie::obtenirCharge() {
 void Batterie::obtenirTension() {
     setAddrRegistre(BATTERY_VOLTAGE_CMD);
     ecrire();
-    char* tension = lire();
-    voltage = ((tension[1] << 8) | tension[0]) / 1000.0;
+    //char* tension = lire();
+    voltage = 4000; //((tension[1] << 8) | tension[0]) / 1000.0;
 }
 
 void Batterie::obtenirStatus() {

@@ -576,7 +576,6 @@ void Protocole::tramerStatus(Message* message, int nbrePaquets, int numPaquet){
 
 }
 void Protocole::tramerMesure(Message* message, int nbrePaquets, int numPaquet){
-	list<string> lesPixels= message->getPixels();
 
 	list<string>::iterator lIndice;
 	char tab[20]={};
@@ -609,24 +608,48 @@ void Protocole::tramerMesure(Message* message, int nbrePaquets, int numPaquet){
 	}
 	if (message->getTypeMesure()==TypeMisEtat::PIXEL)
 	{
+		list<string> lesPixels= message->getPixels();
 
 		for (lIndice=lesPixels.begin();lIndice!=lesPixels.end();lIndice++)
 		{
 			tableau[j]=' ';
 			j++;
-			cout<< (*lIndice) << " ";
+			//cout<< (*lIndice) << " ";
 			strcpy(tab, (*lIndice).c_str());
 			for(unsigned int k = 0 ; k< (*lIndice).size() ;k++)
 			{
 				tableau[j]= tab[k];
+
 				j++;
 			}
-			lesPixels.erase(lIndice);
-			--lIndice;
+			//lesPixels.erase(lIndice);
+                       
+			//--lIndice;
+
 			nbrePixels=nbrePixels+1;
+                            
 			if (nbrePixels==8) break; // sortie tous les 8 pixels.
+  
 		}
+        lesPixels.erase(lesPixels.begin(),lIndice);
 		message->setPixels(lesPixels);
+	}
+	else if (message->getTypeMesure()==TypeMisEtat::TEMPCELSIUS)
+	{
+		list<Mesure*> mesures=message->getMesures();
+		
+		float releve = mesures.back()->getMesure();
+		stringstream stream;
+		stream << fixed << setprecision(1) << releve;
+		
+		strcpy(tab, (stream.str()).c_str());
+		tableau[j]=' ';
+		j++;
+		for(unsigned int k = 0 ; k< (stream.str()).size() ;k++)
+		{
+			tableau[j]= tab[k];
+			j++;
+		}
 	}
 	tableau[j]=' ';
 

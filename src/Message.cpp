@@ -51,6 +51,10 @@ void Message::setMesures(list<Mesure*> mesures){
     this->mesures=mesures;
 }
 
+void Message::clearMesures(){
+	this->mesures.clear();
+}
+
 void Message::setTypeMission(string typeMission) {
 	this->typeMission=typeMission;
 }
@@ -186,8 +190,9 @@ void Message::setTypeMesure(string type){
 }
 
 void Message::addPixel(float leReleve){
+
 	stringstream stream;
-	stream << leReleve;
+	stream << fixed << setprecision(1) << leReleve;
 	this->pixels.push_back(stream.str());	
 
 }
@@ -202,3 +207,4 @@ void Message::setPixels(list<string> lesNouveauxPixels)
 {
 	this->pixels=lesNouveauxPixels;
 }
+

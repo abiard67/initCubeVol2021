@@ -6,14 +6,14 @@
 
 /* 
  * File:   Sauvegarde.h
- * Author: snir2g2
+ * Author: Romain
  *
- * Created on 25 mars 2019, 09:01
+ * Created on 23 juin 2020, 17:42
  */
 
 #ifndef SAUVEGARDE_H
 #define SAUVEGARDE_H
-
+//#include "../lib/pugixml-1.9/src/pugixml.hpp"
 #include "Mesure.h"
 
 class Sauvegarde {
@@ -21,10 +21,12 @@ public:
     Sauvegarde();
     Sauvegarde(const Sauvegarde& orig);
     virtual ~Sauvegarde();
-    bool enregitrerMesure(Mesure mesure);
-private:
-
+    bool enregistrerMesure(); // initialement prévu : bool enregistrerMesure(Mesure mesure);
+    bool ajouterAMission(); // initialement prévu : bool ajouterAMission(Mesure mesure);
+    unsigned char lireID();
+    Mesure mesure;
 };
 
 #endif /* SAUVEGARDE_H */
+
 

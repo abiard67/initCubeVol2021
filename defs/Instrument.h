@@ -42,6 +42,11 @@ public:
 	void clearMesures();
 
 	/// <summary>
+	/// Cette méthode permet de supprimer la dernière mesure de la liste de mesures après la transmission par l'unité de communication.
+	/// </summary>
+	void clearLastMesures();
+
+	/// <summary>
 	/// Cette méthode permet d'ajouter une mesure à la liste de mesures de l'instrument.
 	/// </summary>
 	void addMesure(Mesure *auneMesure);
