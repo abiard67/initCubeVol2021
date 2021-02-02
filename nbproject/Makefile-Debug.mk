@@ -43,6 +43,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/Horloge.o \
 	${OBJECTDIR}/src/I2C.o \
 	${OBJECTDIR}/src/Instrument.o \
+	${OBJECTDIR}/src/Magnetometre.o \
 	${OBJECTDIR}/src/Message.o \
 	${OBJECTDIR}/src/Mesure.o \
 	${OBJECTDIR}/src/Mission.o \
@@ -54,6 +55,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/SegmentVol.o \
 	${OBJECTDIR}/src/Status.o \
 	${OBJECTDIR}/src/Stockage.o \
+	${OBJECTDIR}/src/Surveillance.o \
 	${OBJECTDIR}/src/Temperature.o \
 	${OBJECTDIR}/src/TypeAck.o \
 	${OBJECTDIR}/src/TypeAppareil.o \
@@ -77,7 +79,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=
+LDLIBSOPTIONS=-lpthread
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -126,6 +128,11 @@ ${OBJECTDIR}/src/Instrument.o: src/Instrument.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Instrument.o src/Instrument.cpp
+
+${OBJECTDIR}/src/Magnetometre.o: src/Magnetometre.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Magnetometre.o src/Magnetometre.cpp
 
 ${OBJECTDIR}/src/Message.o: src/Message.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
@@ -181,6 +188,11 @@ ${OBJECTDIR}/src/Stockage.o: src/Stockage.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Stockage.o src/Stockage.cpp
+
+${OBJECTDIR}/src/Surveillance.o: src/Surveillance.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Surveillance.o src/Surveillance.cpp
 
 ${OBJECTDIR}/src/Temperature.o: src/Temperature.cpp
 	${MKDIR} -p ${OBJECTDIR}/src

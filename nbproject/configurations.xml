@@ -10,6 +10,7 @@
       <itemPath>defs/Horloge.h</itemPath>
       <itemPath>defs/I2C.h</itemPath>
       <itemPath>defs/Instrument.h</itemPath>
+      <itemPath>defs/Magnetometre.h</itemPath>
       <itemPath>defs/Message.h</itemPath>
       <itemPath>defs/Mesure.h</itemPath>
       <itemPath>defs/Mission.h</itemPath>
@@ -22,6 +23,7 @@
       <itemPath>defs/SegmentVol.h</itemPath>
       <itemPath>defs/Status.h</itemPath>
       <itemPath>defs/Stockage.h</itemPath>
+      <itemPath>defs/Surveillance.h</itemPath>
       <itemPath>defs/Temperature.h</itemPath>
       <itemPath>defs/TypeAck.h</itemPath>
       <itemPath>defs/TypeAppareil.h</itemPath>
@@ -38,6 +40,7 @@
       <itemPath>src/Horloge.cpp</itemPath>
       <itemPath>src/I2C.cpp</itemPath>
       <itemPath>src/Instrument.cpp</itemPath>
+      <itemPath>src/Magnetometre.cpp</itemPath>
       <itemPath>src/Message.cpp</itemPath>
       <itemPath>src/Mesure.cpp</itemPath>
       <itemPath>src/Mission.cpp</itemPath>
@@ -49,6 +52,7 @@
       <itemPath>src/SegmentVol.cpp</itemPath>
       <itemPath>src/Status.cpp</itemPath>
       <itemPath>src/Stockage.cpp</itemPath>
+      <itemPath>src/Surveillance.cpp</itemPath>
       <itemPath>src/Temperature.cpp</itemPath>
       <itemPath>src/TypeAck.cpp</itemPath>
       <itemPath>src/TypeAppareil.cpp</itemPath>
@@ -78,6 +82,11 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
       <item path="defs/Batterie.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -94,6 +103,8 @@
       <item path="defs/I2C.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/Instrument.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="defs/Magnetometre.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/Message.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -118,6 +129,8 @@
       <item path="defs/Status.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/Stockage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="defs/Surveillance.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/Temperature.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -147,6 +160,8 @@
       </item>
       <item path="src/Instrument.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="src/Magnetometre.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/Message.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Mesure.cpp" ex="false" tool="1" flavor2="0">
@@ -168,6 +183,8 @@
       <item path="src/Status.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Stockage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Surveillance.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Temperature.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -220,6 +237,8 @@
       </item>
       <item path="defs/Instrument.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="defs/Magnetometre.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="defs/Message.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/Mesure.h" ex="false" tool="3" flavor2="0">
@@ -243,6 +262,8 @@
       <item path="defs/Status.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/Stockage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="defs/Surveillance.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/Temperature.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -272,6 +293,8 @@
       </item>
       <item path="src/Instrument.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="src/Magnetometre.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/Message.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Mesure.cpp" ex="false" tool="1" flavor2="0">
@@ -293,6 +316,8 @@
       <item path="src/Status.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Stockage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Surveillance.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Temperature.cpp" ex="false" tool="1" flavor2="0">
       </item>
