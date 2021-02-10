@@ -72,7 +72,7 @@ void Protocole::calculerChecksum(char & PF, char & pf) {
 void Protocole::extraireCommande(char reception[]) {
 
     vector <char> trame(0);
-    for (int i = 0; i <= 128; i++) {
+    for (int i = 0; i <= 104; i++) {
 
         trame.push_back(reception[i]);
 

@@ -16,7 +16,7 @@
 SegmentVol::SegmentVol() {
     horloge = new Horloge();
     temperature = new Temperature();
-    cameraIR = new CameraIR(); //A corriger - cela devrait être un instrument...
+    cameraIR = new CameraIR(); //A corriger - cela devrait ï¿½tre un instrument...
     batterie = new Batterie();
     emetteurRecepteur = new EmetteurRecepteur();
     mission = new Mission();
@@ -26,6 +26,9 @@ SegmentVol::SegmentVol() {
     reboot = new Reboot();
     surveillance = new Surveillance();
     sauvegarde = new Sauvegarde();
+    
+    
+    
 }
 
 SegmentVol::~SegmentVol() {
@@ -58,7 +61,7 @@ void SegmentVol::demandeManuelleReboot() {
     reboot->setNumber(reboot->getNumber()+1);
     reboot->setDateHour(horloge->getDateHeure());
     reboot->systemeReboot();
-	// Codage d'envoi vers Segment Sol à faire?
+	// Codage d'envoi vers Segment Sol ï¿½ faire?
 }
 
 void SegmentVol::lancerMission() {
