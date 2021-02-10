@@ -19,5 +19,13 @@ Commande::Commande() {
 Commande::~Commande() {
 }
 
+TypeCommande Commande::getCode(){
+    
+    return code;
+}
 
+void Commande::setCode(string cmd){
+    
+    this->code = cmd;
+}
 

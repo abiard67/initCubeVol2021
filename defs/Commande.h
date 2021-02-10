@@ -21,8 +21,10 @@ class Commande {
 public:
     Commande();
     virtual ~Commande();
+    void setCode(string cmd);
+    string getCode();
 private:
-    TypeCommande code;
+    string code;
     list<string> parametres;
 };
 
