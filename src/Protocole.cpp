@@ -81,7 +81,7 @@ void Protocole::extraireCommande(char reception[]) {
     vector<char>::iterator it = trame.begin();
     string cmdReception;
 
-    advance(it, 4);
+    advance(it, 3);
 
     for (int i = 0; *it != '-'; i++) {
 
