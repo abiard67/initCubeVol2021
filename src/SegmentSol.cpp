@@ -108,6 +108,9 @@ void SegmentSol::envoyerMission(){
 
 }
 
+void SegmentSol::traiterCommande(){
+    
+}
 void SegmentSol::envoyerMesure(string type){
     serialib LS;
 	int Ret;

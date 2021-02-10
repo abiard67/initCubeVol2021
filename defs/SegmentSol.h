@@ -31,6 +31,7 @@ public:
     void envoyerMission();
     void envoyerMesure(string type);
     void activerReception();
+    void traiterCommande();
     
 private:
     SegmentVol* leSegment;
