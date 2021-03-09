@@ -110,13 +110,9 @@ void Protocole::extraireParametres(char reception[]) {
      char elem ='-';
      
     
-     it=find(trame.begin(),trame.end(),elem);     
+    
      if(it!=trame.end()){
     
-        cout<< "L'élément: "<<elem<<" est trouvé donc il y'a un ou plusieurs arguments"<< endl;
-        cout<<"le 1er argument est à la "<<it - trame.begin()<<" ème case"<<endl;
-        cout<<"voici le(s) argument(s) : "<<endl;
-        
         for(it = trame.begin();it!=trame.end();++it){
           
         if (*it==elem){
@@ -135,8 +131,7 @@ void Protocole::extraireParametres(char reception[]) {
         }     
        }   
      }
-        else
-        cout<<"Aucun argument trouvé"<<endl;
+       
      
      return arguments;
 
