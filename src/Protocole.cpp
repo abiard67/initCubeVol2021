@@ -93,7 +93,52 @@ void Protocole::extraireCommande(char reception[]) {
     commande->setCode(cmdReception);
 }
 
-void Protocole::extraireParametres() {
+void Protocole::extraireParametres(char reception[]) {
+
+    vector <char>trame(0)
+   
+    
+    for (int i = 0; i <= trame[2]+2; i++) {       
+                trame.push_back(reception[i]);
+                   
+    } 
+    
+    vector<string> arguments;   
+     vector<char>::iterator it = trame.begin();
+     
+     string arg="";
+     char elem ='-';
+     
+    
+     it=find(trame.begin(),trame.end(),elem);     
+     if(it!=trame.end()){
+    
+        cout<< "L'élément: "<<elem<<" est trouvé donc il y'a un ou plusieurs arguments"<< endl;
+        cout<<"le 1er argument est à la "<<it - trame.begin()<<" ème case"<<endl;
+        cout<<"voici le(s) argument(s) : "<<endl;
+        
+        for(it = trame.begin();it!=trame.end();++it){
+          
+        if (*it==elem){
+            
+        do
+        {
+                it++;
+            arg=arg+*(it);
+          }
+        while((*(it+1)!=elem) &&(it!=trame.end()-1)) ;      
+          
+          arguments.push_back(arg);
+          cout<< arg<<endl;
+                     
+         
+        }     
+       }   
+     }
+        else
+        cout<<"Aucun argument trouvé"<<endl;
+     
+     return arguments;
 
 }
 

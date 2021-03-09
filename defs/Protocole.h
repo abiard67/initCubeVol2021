@@ -135,7 +135,7 @@ class Protocole : public TypeCommande, public TypeMisEtat, public TypeAppareil, 
 		void tramerMesure(Message* message, int nbrePaquets, int numPaquet);
 		unsigned char calculerNombrePaquets(Message * message);
 		void extraireCommande(char reception[]);
-		void extraireParametres();
+		void extraireParametres(char reception[]);
 		/// Cette m�thode permet d'ajouter les donn�es de l'ordinateur de bord � la trame.
 		/// </summary>
 		/// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>
