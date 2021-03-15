@@ -23,6 +23,8 @@ public:
     virtual ~Commande();
     void setCode(string cmd);
     string getCode();
+    list<string>getParametres();
+    void setParametres(list<string>parametres);
 private:
     string code;
     list<string> parametres;

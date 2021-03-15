@@ -12,7 +12,7 @@
  */
 
 #include "../defs/Commande.h"
-
+#include<list>
 Commande::Commande() {
 }
 
@@ -29,3 +29,11 @@ void Commande::setCode(string cmd){
     this->code = cmd;
 }
 
+void Commande::setParametres(list<string> parametres){
+    this->parametres = parametres;
+}
+
+std::list<string> Commande::getCode(){
+
+    return parametres;
+}

@@ -103,14 +103,13 @@ void Protocole::extraireParametres(char reception[]) {
                    
     } 
     
-    vector<string> arguments;   
+    list<string> parametres;   
      vector<char>::iterator it = trame.begin();
      
      string arg="";
      char elem ='-';
      
-    
-    
+      
      if(it!=trame.end()){
     
         for(it = trame.begin();it!=trame.end();++it){
@@ -124,16 +123,16 @@ void Protocole::extraireParametres(char reception[]) {
           }
         while((*(it+1)!=elem) &&(it!=trame.end()-1)) ;      
           
-          arguments.push_back(arg);
+          parametres.push_back(arg);
           cout<< arg<<endl;
-                     
+           arg="";             
          
         }     
        }   
      }
        
      
-     return arguments;
+     return parametres;
 
 }
 
