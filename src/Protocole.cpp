@@ -95,7 +95,7 @@ void Protocole::extraireCommande(char reception[]) {
 
 void Protocole::extraireParametres(char reception[]) {
 
-    vector <char>trame(0)
+    vector <char>trame(0);
    
     
     for (int i = 0; i <= trame[2]+2; i++) {       
@@ -131,8 +131,8 @@ void Protocole::extraireParametres(char reception[]) {
        }   
      }
        
+     commande->setParametres(parametres);
      
-     return parametres;
 
 }
 

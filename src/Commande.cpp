@@ -19,7 +19,7 @@ Commande::Commande() {
 Commande::~Commande() {
 }
 
-TypeCommande Commande::getCode(){
+string Commande::getCode(){
     
     return code;
 }

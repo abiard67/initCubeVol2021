@@ -28,6 +28,7 @@
 #include "../defs/TypeAppareil.h"
 #include "../defs/TypeCommande.h"
 #include "../defs/TypeAck.h"
+#include "Commande.h"
 
 class Protocole : public TypeCommande, public TypeMisEtat, public TypeAppareil, public TypeAck {
 	public:
@@ -161,7 +162,8 @@ class Protocole : public TypeCommande, public TypeMisEtat, public TypeAppareil, 
 		void ajouterStatusCube(Message* amessage, unsigned int &aposition);
 
                 
-        Commande* commande;   
+        
+        Commande*commande= new Commande;
 };
 
 #endif /* PROTOCOLE_H */
