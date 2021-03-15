@@ -33,7 +33,7 @@ void Commande::setParametres(list<string> parametres){
     this->parametres = parametres;
 }
 
-std::list<string> Commande::getCode(){
+std::list<string> Commande::getParametres(){
 
     return parametres;
 }
