@@ -13,6 +13,10 @@
 
 #include <iomanip>
 #include <sstream>
+#include <cstdlib>
+#include <vector>
+#include <iostream>
+#include <thread>
 #include "../defs/Protocole.h"
 #include "../defs/serialib.h"
 #include "../defs/Status.h"
@@ -783,3 +787,98 @@ void Protocole::supprimerPaquet() {
 }
 
 
+void Protocole::envoieACK(string ACK){
+
+
+    vector<char> trameACK(0);
+
+    //Ecrire mon ACK ACK
+    if (ACK == "ACK") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'A';
+        this->tableau[3] = 'C';
+        this->tableau[4] = 'K';
+        this->calculerChecksum(this->tableau[5], this->tableau[6]);
+        this->tableau[7] = '\n';
+        
+    }
+    
+        //Ecrire mon NACK ACK
+    if (ACK == "NACK") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'N';
+        this->tableau[3] = 'A';
+        this->tableau[4] = 'C';
+        this->tableau[5] = 'K';
+        this->calculerChecksum(this->tableau[6], this->tableau[7]);
+        this->tableau[8] = '\n';
+        
+    }
+
+    
+    //Ecrire mon ACK OK
+    if (ACK == "OK") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'O';
+        this->tableau[3] = 'K';
+        this->calculerChecksum(this->tableau[4], this->tableau[5]);
+        this->tableau[6] = '\n';
+        
+    }
+
+    //Ecrire mon ACK FAIL
+    if (ACK == "FAIL") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'F';
+        this->tableau[3] = 'A';
+        this->tableau[4] = 'I';
+        this->tableau[5] = 'L';
+        this->calculerChecksum(this->tableau[6], this->tableau[7]);
+        this->tableau[8] = '\n';
+    }
+
+    //Ecrire mon ACK BUSY
+    if (ACK == "BUSY") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'B';
+        this->tableau[3] = 'U';
+        this->tableau[4] = 'S';
+        this->tableau[5] = 'Y';
+        this->calculerChecksum(this->tableau[6], this->tableau[7]);
+        this->tableau[8] = '\n';
+    }
+
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->calculerChecksum(this->tableau[7], this->tableau[8]);
+        this->tableau[9] = '\n';
+    }
+
+    //Envoie ACK vers port serial
+    serialib * monObjSerialACK = new serialib;
+    monObjSerialACK->Open("/dev/serial0", 9600);
+
+    //Afficher l'ACK
+    cout << "ACK renvoyé :" << endl;
+    for (int i(0); i < 100; i++) {
+        monObjSerialACK->WriteChar(this->tableau[i]);
+        cout << this->tableau[i];   
+    }
+    cout << endl;
+    
+    //Fermer l'accès à la ressource
+    monObjSerialACK->Close();
+
+}
