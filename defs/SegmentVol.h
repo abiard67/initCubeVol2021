@@ -45,7 +45,7 @@ public:
     virtual ~SegmentVol();
     void lancerMission();
     void arretMission();
-    void obtenirStatus(list<string>* appareil);
+    void obtenirStatus(list<string> appareil);
     void obtenirStatus();
     void effectuerMesure(string mesure);
     void creerMission(short, short, string, string);

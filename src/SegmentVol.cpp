@@ -86,10 +86,17 @@ void SegmentVol::arretMission() {
     etatThread = false;
 }
 
-void SegmentVol::obtenirStatus(list<string>* appareil) {
+void SegmentVol::obtenirStatus(list<string> appareil) {
     list<string>::iterator it;
     horloge->lire();
-    for (it = appareil->begin(); it != appareil->end(); it++) {
+    for (it = appareil.begin(); it != appareil.end(); it++) {
+        if (appareil.begin() == appareil.end()) {
+            ordinateur->obtenirStatus();
+            cameraIR->obtenirStatus();
+            batterie->obtenirStatus();
+            horloge->lire();
+            temperature->recupTempSys();
+        }
         if (*it == TypeAppareil::ORDIBORD) {
             ordinateur->obtenirStatus();
         }
@@ -104,7 +111,7 @@ void SegmentVol::obtenirStatus(list<string>* appareil) {
         }
     }
     activerModuleEmission();
-    segmentSol->envoyerStatus();
+    segmentSol->envoyerStatus(appareil);
 }
 
 void SegmentVol::obtenirStatus() {
@@ -117,7 +124,7 @@ void SegmentVol::obtenirStatus() {
         horloge->lire();
         temperature->recupTempSys();
         activerModuleEmission();
-        segmentSol->envoyerStatus();
+       // segmentSol->envoyerStatus();
     }
 }
 

@@ -28,7 +28,7 @@ class SegmentSol: public Protocole{
 public:
     SegmentSol(SegmentVol *leSegment);
     virtual ~SegmentSol();
-    void envoyerStatus();
+    void envoyerStatus(list<string> status);
     void envoyerMission();
     void envoyerMesure(string type);
     void activerReception();
