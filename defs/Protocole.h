@@ -163,63 +163,6 @@ protected:
     void ajouterStatusCube(Message* amessage, unsigned int &aposition);
 
 
-    protected:
-	/**
-	 * d�claration des constantes d'erreur
-	 */
-		static string ERR_CHECKSUM;
-		static string ERR_FORMAT;
-	/**
-	 * d�claration de constantes protocole
-	*/
-		static int pause;
-
-	/**
-	 * nombre de paquets constituant l'information
-	 */
-		int nbrePaquets;
-	/**
-	 * num�ro du paquet v�hiculant l'information
-	 */
-		int numPaquet;
-	/**
-	 * tableau de 100 octets � transmettre (compl�t� par des 0)
-	 */
-		char tableau[100]; 
-		list<vector<char>> received;
-
-		void calculerChecksum(char & PF, char & pf);
-		bool verifierChecksum();
-		void tramerMission(Message* message, int nbrePaquets, int numPaquet);
-		void tramerStatus(Message* message, int nbrePaquets, int numPaquet);
-		void tramerMesure(Message* message, int nbrePaquets, int numPaquet);
-		unsigned char calculerNombrePaquets(Message * message);
-		void extraireCommande(char reception[]);
-		void extraireParametres(char reception[]);
-		/// Cette m�thode permet d'ajouter les donn�es de l'ordinateur de bord � la trame.
-		/// </summary>
-		/// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>
-		void ajouterDataOrdiBord(Message* amessage, unsigned int &aposition);
-
-		/// <summary>
-		/// Cette m�thode permet d'ajouter les donn�es de la batterie � la trame.
-		/// </summary>
-		/// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>
-		void ajouterDataBattery(Message* amessage, unsigned int &aposition);
-
-		/// <summary>
-		/// Cette m�thode permet d'ajouter les donn�es d'�tat de l'instrument � la trame.
-		/// </summary>
-		/// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>
-		void ajouterStatusInst(Message* amessage, unsigned int &aposition);
-
-		/// <summary>
-		/// Cette m�thode permet d'ajouter les donn�es de temp�rature du cube et de reboot (nombre et date du dernier) � la trame.
-		/// </summary>
-		/// <param name="amessage">Contenant des informations.</param>
-		/// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>
-		void ajouterStatusCube(Message* amessage, unsigned int &aposition);
-
                 
         
         Commande*commande= new Commande;

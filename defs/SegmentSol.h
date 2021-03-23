@@ -32,8 +32,9 @@ public:
     void envoyerMission();
     void envoyerMesure(string type);
     void activerReception();
-    void traiterCommande();
     thread tActiverReception();
+    void traiterCommande();
+    thread tTraiterCommande();
     void testEnvoie();
     thread tTestEnvoie();
     

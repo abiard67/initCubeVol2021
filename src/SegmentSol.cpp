@@ -221,6 +221,13 @@ void SegmentSol::envoyerMission(){
 void SegmentSol::traiterCommande(){
     
 }
+
+thread SegmentSol::tTraiterCommande() {
+    return thread([this] {
+        traiterCommande();
+    });
+}
+
 void SegmentSol::envoyerMesure(string type){
     serialib LS;
 	int Ret;
