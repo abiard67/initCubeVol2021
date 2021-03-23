@@ -16,6 +16,7 @@
 
 #include <chrono>
 #include <thread>
+#include <mutex>
 #include "Protocole.h"
 #include "SegmentVol.h"
 #include "Message.h"
@@ -32,10 +33,14 @@ public:
     void envoyerMesure(string type);
     void activerReception();
     void traiterCommande();
+    thread tActiverReception();
+    void testEnvoie();
+    thread tTestEnvoie();
     
 private:
     SegmentVol* leSegment;
     Message* message;
+    mutex mutex_serial;
     
 
 };

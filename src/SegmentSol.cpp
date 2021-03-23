@@ -32,8 +32,118 @@ SegmentSol::~SegmentSol() {
 
 void SegmentSol::activerReception(){
     
-   //int  Ret=LS.Open(DEVICE_PORT,9600);
+  
+    while (true) {
+
+        mutex_serial.lock();
+
+        serialib * monObjSerial = new serialib; //Déclaration de l'instance
+        Protocole* ObjRetourAck = new Protocole();
+        monObjSerial->Open("/dev/serial0", 9600); //Ouverture 
+
+
+
+        char trame[104];
+        char varID = leSegment->getIdentifiant();
+
+
+
+        int typeRetourTrame = monObjSerial->ReadString(trame, '\n', 128, 3000);
+        cout << "Valeur de Retour : " << typeRetourTrame << endl;
+
+        if (typeRetourTrame == 0) {
+            cout << "Pas de commande reçu." << endl;
+            monObjSerial->Close();
+            mutex_serial.unlock();
+        } else if (typeRetourTrame == -1) {
+            cout << "Erreur TimeOut mal définie" << endl;
+            ObjRetourAck->envoieACK("ERROR");
+            monObjSerial->Close();
+            mutex_serial.unlock();
+        } else if (typeRetourTrame == -2) {
+            cout << "Erreur impossible d'accéder à la ressource." << endl;
+            ObjRetourAck->envoieACK("ERROR");
+            monObjSerial->Close();
+            mutex_serial.unlock();
+        } else if (typeRetourTrame == -3) {
+            cout << "Erreur, trop d'octects lus." << endl;
+            ObjRetourAck->envoieACK("BUSY");
+            monObjSerial->Close();
+            mutex_serial.unlock();
+        } else if (typeRetourTrame > 1) {
+            cout << "Reception de la Commande OK " << endl;
+
+            cout << "Trame Lue : ";
+            for (int i(0); i < typeRetourTrame; i++) {
+                cout << trame[i];
+            }
+            if (trame[1] == varID) {
+                cout << "La commande est pour notre Cube" << endl;
+                //ObjRetourAck->envoieACK("OK");
+                
+                bool boolChecksum = this->verifierChecksum();
+                if (boolChecksum == true) {
+                    ObjRetourAck->envoieACK("ACK");
+                }
+                if (boolChecksum == false) {
+                    ObjRetourAck->envoieACK("NACK");
+                }
+
+
+            } else {
+                cout << "La commande n'est pas pour notre Cube" << endl;
+            }
+            monObjSerial->Close();
+            mutex_serial.unlock();
+        } else {
+            monObjSerial->Close();
+            mutex_serial.unlock();
+        }
+    }
 }
+
+thread SegmentSol::tActiverReception() {
+    return thread([this] {
+        activerReception();
+    });
+}
+
+
+void SegmentSol::testEnvoie() {
+
+    mutex_serial.lock();
+    char monChar = '7';
+
+    //Ouverture de l'accès à la ressource
+    serialib * monObjSerialTest = new serialib;
+    int typeRetourAccesRessource = monObjSerialTest->Open("/dev/serial0", 9600);
+
+    if (typeRetourAccesRessource == 1) {
+        cout << "Accès à la ressource pour un test d'envoie : réussi" << endl;
+    } else {
+        cout << "Accès à la ressource pour un test d'envoie : échoué" << endl;
+    }
+
+    //Ecriture du Test d'envoie vers le port serial
+    int typeRetourTestEnvoie = monObjSerialTest->WriteChar(monChar);
+
+    if (typeRetourTestEnvoie >= 1) {
+        cout << "Ecriture vers la ressource pour un test d'envoie : réussi" << endl;
+    } else {
+        cout << "Ecriture vers la ressource pour un test d'envoie : échoué" << endl;
+    }
+
+    monObjSerialTest->Close();
+    mutex_serial.unlock();
+
+}
+
+thread SegmentSol::tTestEnvoie() {
+    return thread([this] {
+        testEnvoie();
+    });
+}
+
 
 void SegmentSol::envoyerStatus(){
 
