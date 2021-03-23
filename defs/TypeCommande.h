@@ -14,7 +14,7 @@
 #ifndef TYPECOMMANDE_H
 #define TYPECOMMANDE_H
 #include "string"
-#include "Commande.h"
+
 using namespace std;
 class TypeCommande {
 public:

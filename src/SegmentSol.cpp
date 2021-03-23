@@ -145,7 +145,7 @@ thread SegmentSol::tTestEnvoie() {
 }
 
 
-void SegmentSol::envoyerStatus(){
+void SegmentSol::envoyerStatus(list<string> status){
 
     serialib LS;
 	int Ret;
