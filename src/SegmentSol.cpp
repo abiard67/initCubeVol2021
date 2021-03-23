@@ -192,10 +192,10 @@ void SegmentSol::envoyerStatus(list<string> status){
 	int nbrePaquets = 2;
 	for (int i=0;i<nbrePaquets;i++)
 	{
-		//Ret=LS.Open(DEVICE_PORT,9600);
+		Ret=LS.Open(DEVICE_PORT,9600);
 		tramerStatus(message, nbrePaquets, i+1);
-		//Ret=LS.Write(tableau,tableau[2]+6);
-		//LS.Close();
+		Ret=LS.Write(tableau,tableau[2]+6);
+		LS.Close();
 		cout<<"Envoi status"<< tableau<<endl;
 	}    
 }
