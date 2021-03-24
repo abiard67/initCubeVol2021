@@ -109,6 +109,8 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
         if (*it == TypeAppareil::CUBE) {
             temperature->recupTempSys();
         }
+        else
+            segmentSol->envoieACK("ERROR-E12");
     }
     activerModuleEmission();
     segmentSol->envoyerStatus(appareil);
