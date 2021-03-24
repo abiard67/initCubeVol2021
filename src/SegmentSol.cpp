@@ -188,14 +188,16 @@ void SegmentSol::envoyerStatus(list<string> status){
         else if (*it == TypeAppareil::CUBE){
 	message->setTemperatureCube(leSegment->getTemperature()->getTemperature());
         }
+        else 
+            this->envoieACK("ERROR-E13");
         }
 	int nbrePaquets = 2;
 	for (int i=0;i<nbrePaquets;i++)
 	{
-		//Ret=LS.Open(DEVICE_PORT,9600);
+		Ret=LS.Open(DEVICE_PORT,9600);
 		tramerStatus(message, nbrePaquets, i+1);
-		//Ret=LS.Write(tableau,tableau[2]+6);
-		//LS.Close();
+		Ret=LS.Write(tableau,tableau[2]+6);
+		LS.Close();
 		cout<<"Envoi status"<< tableau<<endl;
 	}    
 }
@@ -264,6 +266,8 @@ void SegmentSol::traiterCommande(){
         else if (mesure.front() == TypeMisEtat::PIXEL){
             leSegment->effectuerMesure(PIXEL);
         }
+        else 
+            this->envoieACK("ERROR-E11");
     }
    else if (commande->getCode() == TypeCommande::MEETING){
         //à Voir
@@ -278,6 +282,8 @@ void SegmentSol::traiterCommande(){
    else if (commande->getCode() == TypeCommande::SURVIVAL){
        //à Voir
     }
+   else 
+      this->envoieACK("ERROR-E10");
 }
 
 thread SegmentSol::tTraiterCommande() {
@@ -310,7 +316,7 @@ void SegmentSol::envoyerMesure(string type){
 					cout<<"Envoi mesure TC"<< tableau<<endl;
 		} 
 		message->clearMesures();
-		camera->clearLastMesures();
+		camera->clearLastMesures();  
 	}
 	else if (type.find(Protocole::PIXEL)!= string::npos) {
 
@@ -324,10 +330,10 @@ void SegmentSol::envoyerMesure(string type){
 		int nbrePaquets = 8;
 		for (int i=0;i<nbrePaquets;i++)
 		{
-			//Ret=LS.Open(DEVICE_PORT,9600); 
+			Ret=LS.Open(DEVICE_PORT,9600); 
 			tramerMesure(message, nbrePaquets, i+1);
-			//Ret=LS.Write(tableau,tableau[2]+6);
-			//LS.Close();
+			Ret=LS.Write(tableau,tableau[2]+6);
+			LS.Close();
 					cout<<"Envoi mesure PIXELS"<< tableau<<endl;
 		} 
 		message->clearPixels();
