@@ -865,6 +865,160 @@ void Protocole::envoieACK(string ACK){
         this->calculerChecksum(this->tableau[7], this->tableau[8]);
         this->tableau[9] = '\n';
     }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E01") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '0';
+        this->tableau[10] = '1';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E02") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '0';
+        this->tableau[10] = '2';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E10") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '1';
+        this->tableau[10] = '0';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E11") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '1';
+        this->tableau[10] = '1';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E12") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '1';
+        this->tableau[10] = '2';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E13") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '1';
+        this->tableau[10] = '3';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E14") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '1';
+        this->tableau[10] = '4';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E15") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '1';
+        this->tableau[10] = '5';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E16") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '1';
+        this->tableau[10] = '6';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
 
     //Envoie ACK vers port serial
     serialib * monObjSerialACK = new serialib;
