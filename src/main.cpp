@@ -13,12 +13,12 @@ int main(int argc, char** argv) {
     SegmentSol* monSeg = new SegmentSol(segmentVol);
 
     thread t1 = monSeg->tActiverReception();
-    thread t2 = monSeg->tTestEnvoie();
-    thread t3 = monSeg->tTraiterCommande();
+    //thread t2 = monSeg->tTestEnvoie();
+    //thread t3 = monSeg->tTraiterCommande();
 
     t1.join();
-    t2.join();
-    t3.join();
+    //t2.join();
+    //t3.join();
 
     return 0;
 

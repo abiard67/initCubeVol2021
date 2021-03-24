@@ -29,27 +29,27 @@ Temperature::Temperature(const Temperature& orig) {
 Temperature::~Temperature() {
 }
 
-void Temperature::recupTempSys(){
+void Temperature::recupTempSys() {
     float temperatureHigh, temperatureLow;
     setAddrEsclave(adressecapteuri2c);
     setAddrRegistre(pointeurderegistre);
     ecrire();
-    //char* valeurLue = lire();
-    temperatureHigh = 12 ; //valeurLue[0] & bithuitadouze;
+    char* valeurLue = lire();
+    temperatureHigh = 12; //valeurLue[0] & bithuitadouze;
     temperatureLow = 86; //valeurLue[1];
- //   if((valeurLue[0] & bitdesigne) == bitdesigne){
-	//		
- //       //TEMPERATURE NÉGATIVE
- //       temperaturesys = (float) ( 256.0 - ( ( temperatureHigh * 16.0 ) + (temperatureLow / 16.0 ) ) );
-	//temperaturesys = -1 * temperaturesys;	
- //   }else{
-			
+    if ((valeurLue[0] & bitdesigne) == bitdesigne) {
+
+        //TEMPERATURE Nï¿½GATIVE
+        temperaturesys = (float) (256.0 - ((temperatureHigh * 16.0) + (temperatureLow / 16.0)));
+        temperaturesys = -1 * temperaturesys;
+    } else {
+
         //TEMPERATURE POSITIVE
-        temperaturesys = (float) ( temperatureHigh * 16.0  + temperatureLow/ 16.0  );
-			
-    //}
+        temperaturesys = (float) (temperatureHigh * 16.0 + temperatureLow / 16.0);
+
+    }
 }
 
-float Temperature::getTemperature(){
+float Temperature::getTemperature() {
     return this->temperaturesys;
 }
