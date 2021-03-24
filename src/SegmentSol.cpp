@@ -309,10 +309,10 @@ void SegmentSol::envoyerMesure(string type){
 		int nbrePaquets = 1;
 		for (int i=0;i<nbrePaquets;i++)
 		{
-			//Ret=LS.Open(DEVICE_PORT,9600); 
+			Ret=LS.Open(DEVICE_PORT,9600); 
 			tramerMesure(message, nbrePaquets, 1);
-			//Ret=LS.Write(tableau,tableau[2]+6);
-			//LS.Close();
+			Ret=LS.Write(tableau,tableau[2]+6);
+			LS.Close();
 					cout<<"Envoi mesure TC"<< tableau<<endl;
 		} 
 		message->clearMesures();
@@ -338,7 +338,8 @@ void SegmentSol::envoyerMesure(string type){
 		} 
 		message->clearPixels();
 	}
-
+        else 
+            this->envoieACK("ERROR-E14");
 
 }
 
