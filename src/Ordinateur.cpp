@@ -29,9 +29,10 @@ void Ordinateur::calculerStockage(){
     leStockage->calculMemoireRAM();
 }
 
-void Ordinateur::obtenirStatus(){
+int Ordinateur::obtenirStatus(){
     calculerStockage();
     obtenirTemperature();
+    return -1;
 }
 
 float Ordinateur::getTemperatureProcessor(){
@@ -46,15 +47,17 @@ Reboot* Ordinateur::getReboot() {
 	return leReboot;
 }
 
-void Ordinateur::obtenirTemperature(){
+int Ordinateur::obtenirTemperature(){
     FILE *temperatureFile;
     double temp;
     temperatureFile = fopen ("/sys/class/thermal/thermal_zone0/temp", "r");
     if (temperatureFile == NULL){
-        perror("temp");
+       // perror("temp");
+        return -1 ;
     } else {
         fscanf (temperatureFile, "%lf", &temp);
         temperatureProcessor=temp / 1000;
         fclose (temperatureFile);
+        return 0;
     }
 }

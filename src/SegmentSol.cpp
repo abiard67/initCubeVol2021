@@ -244,7 +244,7 @@ void SegmentSol::traiterCommande(){
     //Traitement des commandes
     if (commande->getCode() == TypeCommande::MISSION){
        leSegment->creerMission(10,60,0,0); //(short periode, short duree, string debut, string type)
-       leSegment->lancerMission(); // voir le creeMission avec JOJO
+       leSegment->lancerMission(); // voir le creeMission avec JOJO 
        leSegment->arretMission();
                 
     }

@@ -99,6 +99,9 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
         }
         if (*it == TypeAppareil::ORDIBORD) {
             ordinateur->obtenirStatus();
+            if (ordinateur->obtenirStatus() == -1){
+                segmentSol->envoieACK("ERROR-20");
+            }
         }
         if (*it == TypeAppareil::INSTRUMENT) {
             cameraIR->obtenirStatus();
