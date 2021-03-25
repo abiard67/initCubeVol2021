@@ -866,39 +866,6 @@ void Protocole::envoieACK(string ACK){
         this->tableau[9] = '\n';
     }
     
-    //Ecrire mon ACK ERROR
-    if (ACK == "ERROR-E01") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '0';
-        this->tableau[10] = '1';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
-    }
-    
-    //Ecrire mon ACK ERROR
-    if (ACK == "ERROR-E02") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '0';
-        this->tableau[10] = '2';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
-    }
     
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E10") {
@@ -1015,6 +982,74 @@ void Protocole::envoieACK(string ACK){
         this->tableau[8] = 'E';
         this->tableau[9] = '1';
         this->tableau[10] = '6';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E20") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '2';
+        this->tableau[10] = '0';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E21") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '2';
+        this->tableau[10] = '1';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E22") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '2';
+        this->tableau[10] = '2';
+        this->calculerChecksum(this->tableau[11], this->tableau[12]);
+        this->tableau[13] = '\n';
+    }
+    
+    //Ecrire mon ACK ERROR
+    if (ACK == "ERROR-E23") {
+        this->tableau[0] = '~';
+        this->tableau[1] = '1';
+        this->tableau[2] = 'E';
+        this->tableau[3] = 'R';
+        this->tableau[4] = 'R';
+        this->tableau[5] = 'O';
+        this->tableau[6] = 'R';
+        this->tableau[7] = '-';
+        this->tableau[8] = 'E';
+        this->tableau[9] = '2';
+        this->tableau[10] = '3';
         this->calculerChecksum(this->tableau[11], this->tableau[12]);
         this->tableau[13] = '\n';
     }

@@ -241,23 +241,7 @@ void SegmentSol::traiterCommande() {
     this->extraireParametres(tableau);
 
     //Traitement des commandes
-<<<<<<< HEAD
-    if (commande->getCode() == TypeCommande::MISSION) {
-        leSegment->creerMission(10, 60, 0, 0); //(short periode, short duree, string debut, string type)
-        leSegment->lancerMission(); // voir le creeMission avec JOJO
-        leSegment->arretMission();
 
-    } else if (commande->getCode() == TypeCommande::DATE) {
-        leSegment->getHorloge();
-    } else if (commande->getCode() == TypeCommande::DEPLOY) {
-        //à Voir
-    } else if (commande->getCode() == TypeCommande::EMPTY) {
-        monReboot->systemeReboot();
-    } else if (commande->getCode() == TypeCommande::MEASURE) {
-        list<string> mesure = commande->getParametres();
-
-        if (mesure.front() == TypeMisEtat::TEMPCELSIUS) {
-=======
     if (commande->getCode() == TypeCommande::MISSION){
        leSegment->creerMission(10,60,0,0); //(short periode, short duree, string debut, string type)
        leSegment->lancerMission(); // voir le creeMission avec JOJO 
@@ -277,7 +261,6 @@ void SegmentSol::traiterCommande() {
         list<string> mesure = commande->getParametres() ;
       
         if (mesure.front() == TypeMisEtat::TEMPCELSIUS){
->>>>>>> 634a1833df734ef82c3eec3caa908f59de993e1e
             leSegment->effectuerMesure(TEMPCELSIUS);
         } else if (mesure.front() == TypeMisEtat::PIXEL) {
             leSegment->effectuerMesure(PIXEL);
@@ -376,7 +359,8 @@ void SegmentSol::envoyerMesure(string type) {
             }
 
             LS.Close();
-            cout << "Mesure du PIXEL envoyée. << tableau << endl;
+            cout << "Mesure du PIXEL envoyée." << endl;
+            cout << tableau << endl;
             mutex_serial.unlock();
         }
         message->clearPixels();
