@@ -34,7 +34,7 @@ class Ordinateur {
 public:
     Ordinateur();
     virtual ~Ordinateur();
-    void obtenirStatus();
+    int obtenirStatus();
         
     Stockage * getStockage();
     float getTemperatureProcessor();
@@ -48,7 +48,7 @@ private:
 	Reboot* leReboot;
     float temperatureProcessor;
     void calculerStockage();
-    void obtenirTemperature();
+    int obtenirTemperature();
 };
 
 #endif /* ORDINATEUR_H */
