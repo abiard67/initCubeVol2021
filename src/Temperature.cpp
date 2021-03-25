@@ -29,7 +29,7 @@ Temperature::Temperature(const Temperature& orig) {
 Temperature::~Temperature() {
 }
 
-void Temperature::recupTempSys() {
+int Temperature::recupTempSys() {
     float temperatureHigh, temperatureLow;
     setAddrEsclave(adressecapteuri2c);
     setAddrRegistre(pointeurderegistre);

@@ -35,7 +35,7 @@ public:
     Temperature();
     Temperature(const Temperature& orig);
     virtual ~Temperature();
-    void recupTempSys();
+    int recupTempSys();
     float getTemperature();
     void sePlacer();
     

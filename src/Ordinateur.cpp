@@ -32,7 +32,7 @@ void Ordinateur::calculerStockage(){
 int Ordinateur::obtenirStatus(){
     calculerStockage();
     obtenirTemperature();
-    return -1;
+    return 0;
 }
 
 float Ordinateur::getTemperatureProcessor(){

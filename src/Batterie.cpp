@@ -20,16 +20,19 @@ Batterie::Batterie() {
 Batterie::~Batterie() {
 }
 
-void Batterie::obtenirNiveau() {
+int Batterie::obtenirNiveau() {
     setAddrRegistre(CHARGE_LEVEL_CMD);
     do {
         ecrire();
         char* niveau = lire();
         chargingLevel = niveau[0];
+         if (niveau == NULL) {
+        return -1;
+    }
     } while (chargingLevel < VALEUR_CHARGE_MIN);
 }
 
-void Batterie::obtenirCourant() {
+int Batterie::obtenirCourant() {
     setAddrRegistre(IO_CURRENT_CMD);
     ecrire();
     char* courant = lire();
@@ -39,16 +42,21 @@ void Batterie::obtenirCourant() {
         amperage = ~amperage;
         amperage = -1 * amperage;
     }
+    else 
+        return -1 ;
 }
 
-void Batterie::obtenirTemperature() {
+int Batterie::obtenirTemperature() {
     setAddrRegistre(BATTERY_TEMPERATURE_CMD);
     ecrire();
     char* temp = lire();
     temperature = (temp[1] << 8) | temp[0];
+    if (temp == NULL) {
+        return -1;
+    }
 }
 
-void Batterie::obtenirCharge() {
+int Batterie::obtenirCharge() {
     setAddrRegistre(STATUS_CMD);
     ecrire();
     char* stat = lire();
@@ -57,17 +65,21 @@ void Batterie::obtenirCharge() {
         inCharge = true;
     } else {
         inCharge = false;
+        return -1 ;
     }
 }
 
-void Batterie::obtenirTension() {
+int Batterie::obtenirTension() {
     setAddrRegistre(BATTERY_VOLTAGE_CMD);
     ecrire();
     char* tension = lire();
     voltage = ((tension[1] << 8) | tension[0]) / 1000.0;
+    if (tension == NULL) {
+        return -1;
+    }
 }
 
-void Batterie::obtenirStatus() {
+int Batterie::obtenirStatus() {
     setAddrEsclave(0x14);
 
     obtenirNiveau();
@@ -75,6 +87,7 @@ void Batterie::obtenirStatus() {
     obtenirTemperature();
     obtenirCharge();
     obtenirTension();
+    return 0;
 }
 
 unsigned char Batterie::getChargingLevel() {

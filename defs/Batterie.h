@@ -29,7 +29,7 @@ class Batterie : public I2C {
 public:
     Batterie();
     virtual ~Batterie();
-    void obtenirStatus();
+    int obtenirStatus();
     unsigned char getChargingLevel();
     float getVoltage();
     short getAmperage();
@@ -43,11 +43,11 @@ private:
     bool inCharge;
     float temperature;
     short capacity;
-    void obtenirNiveau();
-    void obtenirCourant();
-    void obtenirTemperature();
-    void obtenirCharge();
-    void obtenirTension();
+    int obtenirNiveau();
+    int obtenirCourant();
+    int obtenirTemperature();
+    int obtenirCharge();
+    int obtenirTension();
 };
 
 #endif /* BATTERIE_H */

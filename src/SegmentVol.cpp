@@ -105,12 +105,21 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
         }
         if (*it == TypeAppareil::INSTRUMENT) {
             cameraIR->obtenirStatus();
+            if (cameraIR->obtenirStatus() == -1){
+                segmentSol->envoieACK("ERROR-21");
+            }
         }
         if (*it == TypeAppareil::BATTERIE) {
             batterie->obtenirStatus();
+            if (batterie->obtenirStatus() == -1){
+                segmentSol->envoieACK("ERROR-22");
+            }
         }
         if (*it == TypeAppareil::CUBE) {
             temperature->recupTempSys();
+            if (temperature->recupTempSys() == -1){
+                segmentSol->envoieACK("ERROR-23");
+            }
         }
         else
             segmentSol->envoieACK("ERROR-E12");
