@@ -132,7 +132,31 @@ void Protocole::extraireParametres(char reception[]) {
            arg="";             
          
         }     
-       }   
+       }
+        if(commande->getCode()== MISSION)
+         string arg2= arg.substr(0,1); 
+         cout<<arg2<<endl;
+    
+    string arg3=arg.substr(1,2);
+    cout<<arg3<<endl;
+    
+    string arg4=arg.substr(3,1);
+    cout<<arg4<<endl;
+    
+    string arg5=arg.substr(4,3);
+    cout<<arg5<<endl;
+    
+    string arg6=arg.substr(7,2);
+    cout<<arg6<<endl;
+    
+    string arg7=arg.substr(9,19);
+    cout<<arg7<<endl;
+    
+    string arg8=arg.substr(28,2);
+    cout<<arg8<<endl;
+    
+    string arg9=arg.substr(30,4);
+    cout<<arg9<<endl;
      }
        
      commande->setParametres(parametres);
