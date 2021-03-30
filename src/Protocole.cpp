@@ -132,8 +132,8 @@ void Protocole::extraireParametres(char reception[]) {
          
         }     
        }
-           cout<< arg<<endl;
-        if(commande->getCode()== MISSION)
+           
+         if(commande->getCode()== MISSION){
          string arg2= arg.substr(0,1); //1er argument: P
          cout<<arg2<<endl;
     
@@ -157,11 +157,12 @@ void Protocole::extraireParametres(char reception[]) {
     
          string arg9=arg.substr(30,4);//5ème argument:SAVE
          cout<<arg9<<endl;
-     }
-       
+        }
+         else 
+             cout<<arg<<endl;
+        }  
      commande->setParametres(parametres);
-     
-
+ 
 }
 
 bool Protocole::verifierChecksum() {
