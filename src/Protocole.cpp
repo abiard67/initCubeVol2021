@@ -107,7 +107,7 @@ void Protocole::extraireParametres(char reception[]) {
                    
     } 
     
-    list<string> parametres;   
+     list<string> parametres;   
      vector<char>::iterator it = trame.begin();
      
      string arg="";
@@ -128,35 +128,35 @@ void Protocole::extraireParametres(char reception[]) {
         while((*(it+1)!=elem) &&(it!=trame.end()-1)) ;      
           
           parametres.push_back(arg);
-          cout<< arg<<endl;
-           arg="";             
+              
          
         }     
        }
+           cout<< arg<<endl;
         if(commande->getCode()== MISSION)
-         string arg2= arg.substr(0,1); 
+         string arg2= arg.substr(0,1); //1er argument: P
          cout<<arg2<<endl;
     
-    string arg3=arg.substr(1,2);
-    cout<<arg3<<endl;
+         string arg3=arg.substr(1,2);//resultat du 1er argument
+         cout<<arg3<<endl;
     
-    string arg4=arg.substr(3,1);
-    cout<<arg4<<endl;
+         string arg4=arg.substr(3,1);//2eme argument:D 
+         cout<<arg4<<endl;
     
-    string arg5=arg.substr(4,3);
-    cout<<arg5<<endl;
+         string arg5=arg.substr(4,3);//donnée du 2eme argument
+         cout<<arg5<<endl;
     
-    string arg6=arg.substr(7,2);
-    cout<<arg6<<endl;
+         string arg6=arg.substr(7,2);//3eme argument:DT
+         cout<<arg6<<endl;
     
-    string arg7=arg.substr(9,19);
-    cout<<arg7<<endl;
+         string arg7=arg.substr(9,19);//données du 3eme argument
+         cout<<arg7<<endl;
     
-    string arg8=arg.substr(28,2);
-    cout<<arg8<<endl;
+         string arg8=arg.substr(28,2);//4ème argument:TC
+         cout<<arg8<<endl;
     
-    string arg9=arg.substr(30,4);
-    cout<<arg9<<endl;
+         string arg9=arg.substr(30,4);//5ème argument:SAVE
+         cout<<arg9<<endl;
      }
        
      commande->setParametres(parametres);
