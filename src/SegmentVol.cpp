@@ -212,7 +212,7 @@ Temperature* SegmentVol::getTemperature() {
     return temperature;
 }
 
-CameraIR* SegmentVol::getCameraIR() {
+Instrument* SegmentVol::getInstrument() {
     return instrument;
 }
 

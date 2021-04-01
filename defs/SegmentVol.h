@@ -70,7 +70,7 @@ public:
     thread tSurveillerConstantes();
     Horloge* getHorloge();
     Temperature* getTemperature();
-    CameraIR* getCameraIR();
+    Instrument* getInstrument();
     Batterie* getBatterie();
     EmetteurRecepteur* getEmetteurRecepteur();
     Mission* getMission();

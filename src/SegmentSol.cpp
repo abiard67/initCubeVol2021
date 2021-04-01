@@ -169,7 +169,7 @@ void SegmentSol::envoyerStatus(list<string> status) {
         message->setTemperatureBat(leSegment->getBatterie()->getTemperature());
         message->setVoltageBat(leSegment->getBatterie()->getVoltage());
         //INSTRUMENT
-        message->setStatInstrument(leSegment->getCameraIR()->getStatus());
+        message->setStatInstrument(leSegment->getInstrument()->getStatus());
         //CUBE
         message->setTemperatureCube(leSegment->getTemperature()->getTemperature());
     } else for (it = status.begin(); it != status.end(); it++) {
@@ -200,7 +200,7 @@ void SegmentSol::envoyerStatus(list<string> status) {
                 message->setVoltageBat(leSegment->getBatterie()->getVoltage());
             }//Instrument
             else if (*it == TypeAppareil::INSTRUMENT) {
-                message->setStatInstrument(leSegment->getCameraIR()->getStatus());
+                message->setStatInstrument(leSegment->getInstrument()->getStatus());
             }//Cube
             else if (*it == TypeAppareil::CUBE) {
                 message->setTemperatureCube(leSegment->getTemperature()->getTemperature());
@@ -243,7 +243,7 @@ void SegmentSol::envoyerMission() {
     char Ret;
     unsigned char idSegment = leSegment->getIdentifiant();
     message->setIdSegment(idSegment);
-    CameraIR* camera = leSegment->getCameraIR();
+    CameraIR* camera = leSegment->getInstrument();
     list<Mesure*> mesures = camera->getMesures();
     message->setMesures(mesures);
     Mission * laMission = leSegment->getMission();
@@ -323,7 +323,7 @@ void SegmentSol::envoyerMesure(string type) {
 
     serialib LS;
     int Ret;
-    CameraIR* camera = leSegment->getCameraIR();
+    CameraIR* camera = leSegment->getInstrument();
     unsigned char idSegment = leSegment->getIdentifiant();
 
     message->setIdSegment(idSegment);
@@ -332,7 +332,7 @@ void SegmentSol::envoyerMesure(string type) {
 
     if (type.find(Protocole::TEMPCELSIUS) != string::npos) {
 
-        list<Mesure*> mesures = leSegment->getCameraIR()->getMesures();
+        list<Mesure*> mesures = leSegment->getInstrument()->getMesures();
         message->setMesures(mesures);
         int nbrePaquets = 1;
         for (int i = 0; i < nbrePaquets; i++) {
@@ -364,7 +364,7 @@ void SegmentSol::envoyerMesure(string type) {
         camera->clearLastMesures();
     } else if (type.find(Protocole::PIXEL) != string::npos) {
 
-        float * mesures = leSegment->getCameraIR()->getPixels();
+        float * mesures = leSegment->getInstrument()->getPixels();
         for (int i = 0; i < 64; i++) {
             message->addPixel(*(mesures + i));
             cout << "prel  PIXELS" << *(mesures + i) << endl;
