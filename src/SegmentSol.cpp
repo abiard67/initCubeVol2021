@@ -43,7 +43,7 @@ void SegmentSol::activerReception() {
 
         char varID = leSegment->getIdentifiant();
 
-        int typeRetourTrame = monObjSerial->ReadString(tableau, '\n', 128, 3000);
+        int typeRetourTrame = monObjSerial->ReadString(tableau, 255, 128, 3000);
         cout << "Valeur de Retour : " << typeRetourTrame << endl;
 
         if (typeRetourTrame == 0) {
@@ -70,22 +70,24 @@ void SegmentSol::activerReception() {
             for (int i(0); i < typeRetourTrame; i++) {
                 cout << tableau[i];
             }
-            if (tableau[1] == varID) {
-                cout << "La commande est pour notre Cube" << endl;
 
-                bool boolChecksum = this->verifierChecksum();
-                if (boolChecksum == true) {
-                    this->envoieACK("ACK");
-                    this->traiterCommande(); //Mettre à Traiter la commande
-                }
-                if (boolChecksum == false) {
-                    this->envoieACK("NACK");
-                }
+                if (tableau[1] == varID) {
+                    cout << "La commande est pour notre Cube" << endl;
 
-            } else {
-                cout << "La commande n'est pas pour notre Cube" << endl;
-            }
-            monObjSerial->Close();
+                    bool boolChecksum = this->verifierChecksum();
+                    if (boolChecksum == true) {
+                        this->envoieACK("ACK");
+                        thread tCOM = this->tTraiterCommande(); //Mettre à Traiter la commande
+                        tCOM.join();
+                    }
+                    if (boolChecksum == false) {
+                        this->envoieACK("NACK");
+                    }
+
+                } else {
+                    cout << "La commande n'est pas pour notre Cube" << endl;
+                }
+                monObjSerial->Close();
             mutex_serial.unlock();
         } else {
             monObjSerial->Close();
@@ -137,48 +139,81 @@ thread SegmentSol::tTestEnvoie() {
 
 void SegmentSol::envoyerStatus(list<string> status) {
 
+    cout << "Appel de envoyerStatus" << endl;
+
     serialib LS;
     int Ret;
     list<string>::iterator it;
     unsigned char idSegment = leSegment->getIdentifiant();
     message->setIdSegment(idSegment);
-    Stockage * leStockage = leSegment->getOrdinateur()->getStockage();
-    std::size_t found = leStockage->getUnit().find('k');
-    if (found != std::string::npos) {
-        string USDenKilo = leStockage->getMemoireUSD();
-        int FUSDenKilo = std::stoi(USDenKilo);
-        int FUSDenMo = FUSDenKilo / 1024;
-        message->setMicroSDenMo(to_string(FUSDenMo));
-    } else message->setMicroSDenMo(leStockage->getMemoireUSD());
-    message->setRAMenPourcent(leStockage->getOccupationRAM());
-    message->setDateOrdinateur(leSegment->getHorloge()->getDateHeure());
+    if (status.begin() == status.end()) {
+        //ORDIBORD
+        Stockage * leStockage = leSegment->getOrdinateur()->getStockage();
+        std::size_t found = leStockage->getUnit().find('k');
+        if (found != std::string::npos) {
+            string USDenKilo = leStockage->getMemoireUSD();
+            int FUSDenKilo = std::stoi(USDenKilo);
+            int FUSDenMo = FUSDenKilo / 1024;
+            message->setMicroSDenMo(to_string(FUSDenMo));
+        }
+        message->setTemperatureProc(leSegment->getOrdinateur()->getTemperatureProcessor());
+        message->setReboot(leSegment->getOrdinateur()->getReboot());
+        message->setMicroSDenMo(leStockage->getMemoireUSD());
+        message->setRAMenPourcent(leStockage->getOccupationRAM());
+        message->setDateOrdinateur(leSegment->getHorloge()->getDateHeure());
+        //BATTERIE
+        message->setAmperageBat(leSegment->getBatterie()->getAmperage());
+        message->setCapacityBat(leSegment->getBatterie()->getCapacity());
+        message->setChargeBat(leSegment->getBatterie()->getChargingLevel());
+        message->setChargeStatus(leSegment->getBatterie()->getInCharge());
+        message->setTemperatureBat(leSegment->getBatterie()->getTemperature());
+        message->setVoltageBat(leSegment->getBatterie()->getVoltage());
+        //INSTRUMENT
+        message->setStatInstrument(leSegment->getCameraIR()->getStatus());
+        //CUBE
+        message->setTemperatureCube(leSegment->getTemperature()->getTemperature());
+    } else for (it = status.begin(); it != status.end(); it++) {
 
-    for (it = status.begin(); it != status.end(); it++) {
-        //ordinateur 
-        if (*it == TypeAppareil::ORDIBORD) {
-            message->setTemperatureProc(leSegment->getOrdinateur()->getTemperatureProcessor());
-            message->setReboot(leSegment->getOrdinateur()->getReboot());
-        }//BATT
-        else if (*it == TypeAppareil::BATTERIE) {
-            message->setAmperageBat(leSegment->getBatterie()->getAmperage());
-            message->setCapacityBat(leSegment->getBatterie()->getCapacity());
-            message->setChargeBat(leSegment->getBatterie()->getChargingLevel());
-            message->setChargeStatus(leSegment->getBatterie()->getInCharge());
-            message->setTemperatureBat(leSegment->getBatterie()->getTemperature());
-            message->setVoltageBat(leSegment->getBatterie()->getVoltage());
-        }//Instrument
-        else if (*it == TypeAppareil::INSTRUMENT) {
-            message->setStatInstrument(leSegment->getCameraIR()->getStatus());
-        }//Cube
-        else if (*it == TypeAppareil::CUBE) {
-            message->setTemperatureCube(leSegment->getTemperature()->getTemperature());
-        } else
-            this->envoieACK("ERROR-E13");
-    }
+            //ordinateur 
+            if (*it == TypeAppareil::ORDIBORD) {
+                Stockage * leStockage = leSegment->getOrdinateur()->getStockage();
+                std::size_t found = leStockage->getUnit().find('k');
+                if (found != std::string::npos) {
+                    string USDenKilo = leStockage->getMemoireUSD();
+                    int FUSDenKilo = std::stoi(USDenKilo);
+                    int FUSDenMo = FUSDenKilo / 1024;
+                    message->setMicroSDenMo(to_string(FUSDenMo));
+                }
+                message->setTemperatureProc(leSegment->getOrdinateur()->getTemperatureProcessor());
+                message->setReboot(leSegment->getOrdinateur()->getReboot());
+                message->setMicroSDenMo(leStockage->getMemoireUSD());
+                message->setRAMenPourcent(leStockage->getOccupationRAM());
+                message->setDateOrdinateur(leSegment->getHorloge()->getDateHeure());
+
+            }//BATT
+            else if (*it == TypeAppareil::BATTERIE) {
+                message->setAmperageBat(leSegment->getBatterie()->getAmperage());
+                message->setCapacityBat(leSegment->getBatterie()->getCapacity());
+                message->setChargeBat(leSegment->getBatterie()->getChargingLevel());
+                message->setChargeStatus(leSegment->getBatterie()->getInCharge());
+                message->setTemperatureBat(leSegment->getBatterie()->getTemperature());
+                message->setVoltageBat(leSegment->getBatterie()->getVoltage());
+            }//Instrument
+            else if (*it == TypeAppareil::INSTRUMENT) {
+                message->setStatInstrument(leSegment->getCameraIR()->getStatus());
+            }//Cube
+            else if (*it == TypeAppareil::CUBE) {
+                message->setTemperatureCube(leSegment->getTemperature()->getTemperature());
+            } else
+                this->envoieACK("ERROR-E13");
+        }
     int nbrePaquets = 2;
+    mutex_serial.lock();
     for (int i = 0; i < nbrePaquets; i++) {
 
-        mutex_serial.lock();
+
+
+
         Ret = LS.Open(DEVICE_PORT, 9600);
         if (Ret == 1) {
             cout << "Accès à la ressource pour l'envoie du status : réussi" << endl;
@@ -198,8 +233,9 @@ void SegmentSol::envoyerStatus(list<string> status) {
         LS.Close();
         cout << "Le status a été envoyé." << endl;
         cout << tableau << endl;
-        mutex_serial.unlock();
+
     }
+    mutex_serial.unlock();
 }
 
 void SegmentSol::envoyerMission() {
@@ -239,28 +275,25 @@ void SegmentSol::traiterCommande() {
     Reboot* monReboot = new Reboot();
     this->extraireCommande(tableau);
     this->extraireParametres(tableau);
+    cout << "Mon tableau" << endl;
+    cout << tableau << endl;
 
     //Traitement des commandes
 
-    if (commande->getCode() == TypeCommande::MISSION){
-       leSegment->creerMission(10,60,0,0); //(short periode, short duree, string debut, string type)
-       leSegment->lancerMission(); // voir le creeMission avec JOJO 
-       leSegment->arretMission();
-                
-    }
-   else if (commande->getCode() == TypeCommande::DATE){
-       leSegment->getHorloge();
-    }
-   else if (commande->getCode() == TypeCommande::DEPLOY){
-       //à Voir
-    }
-   else if (commande->getCode() == TypeCommande::EMPTY){
-       monReboot->systemeReboot();
-    }
-   else if (commande->getCode() == TypeCommande::MEASURE){
-        list<string> mesure = commande->getParametres() ;
-      
-        if (mesure.front() == TypeMisEtat::TEMPCELSIUS){
+    if (commande->getCode() == TypeCommande::MISSION) {
+        leSegment->creerMission(10, 60, 0, 0); //(short periode, short duree, string debut, string type)
+        leSegment->lancerMission(); // voir le creeMission avec JOJO 
+        leSegment->arretMission();
+
+    } else if (commande->getCode() == TypeCommande::DATE) {
+        leSegment->getHorloge();
+    } else if (commande->getCode() == TypeCommande::DEPLOY) {
+        //à Voir
+    } else if (commande->getCode() == TypeCommande::EMPTY) {
+        monReboot->systemeReboot();
+    } else if (commande->getCode() == TypeCommande::MEASURE) {
+        list<string> mesure = commande->getParametres();
+        if (mesure.front() == TypeMisEtat::TEMPCELSIUS) {
             leSegment->effectuerMesure(TEMPCELSIUS);
         } else if (mesure.front() == TypeMisEtat::PIXEL) {
             leSegment->effectuerMesure(PIXEL);
@@ -271,7 +304,7 @@ void SegmentSol::traiterCommande() {
     } else if (commande->getCode() == TypeCommande::SAVE) {
         //à Voir
     } else if (commande->getCode() == TypeCommande::STATUS) {
-        list<string> status = commande->getParametres();
+        list<string> status; // = commande->getParametres();
         leSegment->obtenirStatus(status);
     } else if (commande->getCode() == TypeCommande::SURVIVAL) {
         //à Voir

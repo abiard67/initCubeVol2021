@@ -10,8 +10,11 @@
  * 
  * Created on 21 mars 2019, 16:25
  */
+#include <iostream>
 
 #include "../defs/SegmentVol.h"
+
+using namespace std;
 
 SegmentVol::SegmentVol() {
     horloge = new Horloge();
@@ -89,14 +92,19 @@ void SegmentVol::arretMission() {
 void SegmentVol::obtenirStatus(list<string> appareil) {
     list<string>::iterator it;
     horloge->lire();
-    for (it = appareil.begin(); it != appareil.end(); it++) {
-        if (appareil.begin() == appareil.end()) {
+	cout << "ici" << endl;
+	        if (appareil.begin() == appareil.end()) {
+            cout << "Là" << endl;
             ordinateur->obtenirStatus();
             cameraIR->obtenirStatus();
             batterie->obtenirStatus();
             horloge->lire();
             temperature->recupTempSys();
         }
+        else
+    for (it = appareil.begin(); it != appareil.end(); it++) {
+        
+
         if (*it == TypeAppareil::ORDIBORD) {
             ordinateur->obtenirStatus();
             if (ordinateur->obtenirStatus() == -1){

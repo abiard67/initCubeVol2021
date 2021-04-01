@@ -19,7 +19,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <termios.h>
-//#include <linux/i2c-dev.h>
+#include <linux/i2c-dev.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string>

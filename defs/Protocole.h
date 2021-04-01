@@ -104,6 +104,7 @@ public:
     void supprimerPaquet();
 
     void envoieACK(string ACK);
+    //thread tEnvoieACK(string ACK);
 
 protected:
     /**

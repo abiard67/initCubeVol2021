@@ -1,16 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   Protocole.cpp
- * Author: snir2g2
- * 
- * Created on 18 mars 2019, 08:36
- */
-
 #include <iomanip>
 #include <sstream>
 #include <cstdlib>
@@ -84,10 +71,11 @@ void Protocole::extraireCommande(char reception[]) {
 
     vector<char>::iterator it = trame.begin();
     string cmdReception;
+    advance(it, 2);
+    int nbOctects = *it;
+    advance(it, 1);
 
-    advance(it, 3);
-
-    for (int i = 0; *it != '-'; i++) {
+    for (int i = 0; i != nbOctects && *it != '-'; i++) {
 
         cmdReception.push_back(*it);
         advance(it, 1);
@@ -100,43 +88,67 @@ void Protocole::extraireCommande(char reception[]) {
 void Protocole::extraireParametres(char reception[]) {
 
     vector <char>trame(0);
-   
+
+
+    for (int i = 0; i <= reception[2] + 3; i++) {
+        trame.push_back(reception[i]);
+
+    }
+
+    list<string> parametres;
+    vector<char>::iterator it = trame.begin();
+
+    string arg = "";
+    char elem = '-';
+
+
+    if (it != trame.end()) {
+
+        for (it = trame.begin(); it != trame.end(); ++it) {
+
+            if (*it == elem) {
+                arg = elem;
+                do {
+                    it++;
+                    arg = arg + *(it);
+                } while ((*(it + 1) != elem) &&(it != trame.end() - 2));
+
+                parametres.push_back(arg);
+                cout << arg << endl;
+                arg = "";
+
+            }
+        }
+
+        /* if(commande->getCode()== MISSION){
+         string arg2= arg.substr(0,1); //1er argument: P
+         cout<<arg2<<endl;
     
-    for (int i = 0; i <= trame[2]+2; i++) {       
-                trame.push_back(reception[i]);
-                   
-    } 
+         string arg3=arg.substr(1,2);//resultat du 1er argument
+         cout<<arg3<<endl;
     
-    list<string> parametres;   
-     vector<char>::iterator it = trame.begin();
-     
-     string arg="";
-     char elem ='-';
-     
-      
-     if(it!=trame.end()){
+         string arg4=arg.substr(3,1);//2eme argument:D 
+         cout<<arg4<<endl;
     
-        for(it = trame.begin();it!=trame.end();++it){
-          
-        if (*it==elem){
-            
-        do
-        {
-                it++;
-            arg=arg+*(it);
-          }
-        while((*(it+1)!=elem) &&(it!=trame.end()-1)) ;      
-          
-          parametres.push_back(arg);
-          cout<< arg<<endl;
-           arg="";             
-         
-        }     
-       }   
-     }
-       
-     commande->setParametres(parametres);
-     
+         string arg5=arg.substr(4,3);//donnée du 2eme argument
+         cout<<arg5<<endl;
+    
+         string arg6=arg.substr(7,2);//3eme argument:DT
+         cout<<arg6<<endl;
+    
+         string arg7=arg.substr(9,19);//données du 3eme argument
+         cout<<arg7<<endl;
+    
+         string arg8=arg.substr(28,2);//4ème argument:TC
+         cout<<arg8<<endl;
+    
+         string arg9=arg.substr(30,4);//5ème argument:SAVE
+         cout<<arg9<<endl;
+        }
+         else 
+             cout<<arg<<endl;*/
+    }
+    commande->setParametres(parametres);
 
 }
 
@@ -283,7 +295,7 @@ void Protocole::tramerMission(Message* message, int nbrePaquets, int numPaquet) 
     j++;
     tableau[j] = pf;
     j++;
-    tableau[j] = '\n';
+    tableau[j] = 255;
     j++;
     for (j = j; j < 100; j++)
         tableau[j] = 0;
@@ -529,9 +541,9 @@ void Protocole::ajouterStatusCube(Message* amessage, unsigned int &aposition) {
 }
 
 /**
- *  /~/id/nbre octets/"STATUS"/nbrepaquets/numPaquet/................../CheksumPF/cheksumpf/'\n'
- *  /~/id/nbre octets/"STATUS"/2	1	/-BORD/-SMo/-S6553/ -T47/ -DT2019/02/13 12:12:36/-BATT/-C85/-V4,1/-A950/-LOAD/ -T25,0 /CheksumPF/cheksumpf/'\n'
- *  /~/id/nbre octets/"STATUS"/2	2	/-INST/-ON/-STBY60/ -T25,8/ -CUBE/ -T26,4 /-REBOOT/-DT2019/02/13 12:12:36/-N1/CheksumPF/cheksumpf/'\n'
+ *  /~/id/nbre octets/"STATUS"/nbrepaquets/numPaquet/................../CheksumPF/cheksumpf/255
+ *  /~/id/nbre octets/"STATUS"/2	1	/-BORD/-SMo/-S6553/ -T47/ -DT2019/02/13 12:12:36/-BATT/-C85/-V4,1/-A950/-LOAD/ -T25,0 /CheksumPF/cheksumpf/255
+ *  /~/id/nbre octets/"STATUS"/2	2	/-INST/-ON/-STBY60/ -T25,8/ -CUBE/ -T26,4 /-REBOOT/-DT2019/02/13 12:12:36/-N1/CheksumPF/cheksumpf/255
  *
  */
 void Protocole::tramerStatus(Message* message, int nbrePaquets, int numPaquet) {
@@ -571,7 +583,7 @@ void Protocole::tramerStatus(Message* message, int nbrePaquets, int numPaquet) {
     j++;
     tableau[j] = pf;
     j++;
-    tableau[j] = '\n';
+    tableau[j] = 255;
     j++;
     for (j = j; j < 100; j++)
         tableau[j] = 0;
@@ -659,7 +671,7 @@ void Protocole::tramerMesure(Message* message, int nbrePaquets, int numPaquet) {
     tableau[j] = pf;
 
     j++;
-    tableau[j] = '\n';
+    tableau[j] = 255;
     j++;
     for (j = j; j < 100; j++)
         tableau[j] = 0;
@@ -786,274 +798,290 @@ void Protocole::supprimerPaquet() {
     this->received.pop_front();
 }
 
-
-void Protocole::envoieACK(string ACK){
+void Protocole::envoieACK(string ACK) {
 
 
     vector<char> trameACK(0);
-
+    int tabACKsize;
+    char tableauACK[100];
     //Ecrire mon ACK ACK
     if (ACK == "ACK") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'A';
-        this->tableau[3] = 'C';
-        this->tableau[4] = 'K';
-        this->calculerChecksum(this->tableau[5], this->tableau[6]);
-        this->tableau[7] = '\n';
-        
-    }
-    
-        //Ecrire mon NACK ACK
-    if (ACK == "NACK") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'N';
-        this->tableau[3] = 'A';
-        this->tableau[4] = 'C';
-        this->tableau[5] = 'K';
-        this->calculerChecksum(this->tableau[6], this->tableau[7]);
-        this->tableau[8] = '\n';
-        
+        tabACKsize = 8;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'A';
+        tableauACK[3] = 'C';
+        tableauACK[4] = 'K';
+        calculerChecksum(tableauACK[5], tableauACK[6]);
+        tableauACK[7] = 255;
     }
 
-    
+    //Ecrire mon NACK ACK
+    if (ACK == "NACK") {
+        tabACKsize = 9;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'N';
+        tableauACK[3] = 'A';
+        tableauACK[4] = 'C';
+        tableauACK[5] = 'K';
+        calculerChecksum(tableauACK[6], tableauACK[7]);
+        tableauACK[8] = 255;
+
+    }
+
+
     //Ecrire mon ACK OK
     if (ACK == "OK") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'O';
-        this->tableau[3] = 'K';
-        this->calculerChecksum(this->tableau[4], this->tableau[5]);
-        this->tableau[6] = '\n';
-        
+        tabACKsize = 7;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'O';
+        tableauACK[3] = 'K';
+        calculerChecksum(tableauACK[4], tableauACK[5]);
+        tableauACK[6] = 255;
+
     }
 
     //Ecrire mon ACK FAIL
     if (ACK == "FAIL") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'F';
-        this->tableau[3] = 'A';
-        this->tableau[4] = 'I';
-        this->tableau[5] = 'L';
-        this->calculerChecksum(this->tableau[6], this->tableau[7]);
-        this->tableau[8] = '\n';
+        tabACKsize = 9;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'F';
+        tableauACK[3] = 'A';
+        tableauACK[4] = 'I';
+        tableauACK[5] = 'L';
+        calculerChecksum(tableauACK[6], tableauACK[7]);
+        tableauACK[8] = 255;
     }
 
     //Ecrire mon ACK BUSY
     if (ACK == "BUSY") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'B';
-        this->tableau[3] = 'U';
-        this->tableau[4] = 'S';
-        this->tableau[5] = 'Y';
-        this->calculerChecksum(this->tableau[6], this->tableau[7]);
-        this->tableau[8] = '\n';
+        tabACKsize = 9;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'B';
+        tableauACK[3] = 'U';
+        tableauACK[4] = 'S';
+        tableauACK[5] = 'Y';
+        calculerChecksum(tableauACK[6], tableauACK[7]);
+        tableauACK[8] = 255;
     }
 
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->calculerChecksum(this->tableau[7], this->tableau[8]);
-        this->tableau[9] = '\n';
+        tabACKsize = 10;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        calculerChecksum(tableauACK[7], tableauACK[8]);
+        tableauACK[9] = 255;
     }
-    
-    
+
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E10") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '1';
-        this->tableau[10] = '0';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '1';
+        tableauACK[10] = '0';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E11") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '1';
-        this->tableau[10] = '1';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '1';
+        tableauACK[10] = '1';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E12") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '1';
-        this->tableau[10] = '2';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '1';
+        tableauACK[10] = '2';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E13") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '1';
-        this->tableau[10] = '3';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '1';
+        tableauACK[10] = '3';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E14") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '1';
-        this->tableau[10] = '4';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '1';
+        tableauACK[10] = '4';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E15") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '1';
-        this->tableau[10] = '5';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '1';
+        tableauACK[10] = '5';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E16") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '1';
-        this->tableau[10] = '6';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '1';
+        tableauACK[10] = '6';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E20") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '2';
-        this->tableau[10] = '0';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '2';
+        tableauACK[10] = '0';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E21") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '2';
-        this->tableau[10] = '1';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '2';
+        tableauACK[10] = '1';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E22") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '2';
-        this->tableau[10] = '2';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '2';
+        tableauACK[10] = '2';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
     //Ecrire mon ACK ERROR
     if (ACK == "ERROR-E23") {
-        this->tableau[0] = '~';
-        this->tableau[1] = '1';
-        this->tableau[2] = 'E';
-        this->tableau[3] = 'R';
-        this->tableau[4] = 'R';
-        this->tableau[5] = 'O';
-        this->tableau[6] = 'R';
-        this->tableau[7] = '-';
-        this->tableau[8] = 'E';
-        this->tableau[9] = '2';
-        this->tableau[10] = '3';
-        this->calculerChecksum(this->tableau[11], this->tableau[12]);
-        this->tableau[13] = '\n';
+        tabACKsize = 14;
+        tableauACK[0] = '~';
+        tableauACK[1] = '1';
+        tableauACK[2] = 'E';
+        tableauACK[3] = 'R';
+        tableauACK[4] = 'R';
+        tableauACK[5] = 'O';
+        tableauACK[6] = 'R';
+        tableauACK[7] = '-';
+        tableauACK[8] = 'E';
+        tableauACK[9] = '2';
+        tableauACK[10] = '3';
+        calculerChecksum(tableauACK[11], tableauACK[12]);
+        tableauACK[13] = 255;
     }
-    
+
 
     //Envoie ACK vers port serial
     serialib * monObjSerialACK = new serialib;
@@ -1061,13 +1089,19 @@ void Protocole::envoieACK(string ACK){
 
     //Afficher l'ACK
     cout << "ACK renvoyé :" << endl;
-    for (int i(0); i < 100; i++) {
-        monObjSerialACK->WriteChar(this->tableau[i]);
-        cout << this->tableau[i];   
+    for (int i(0); i < tabACKsize; i++) {
+        monObjSerialACK->WriteChar(tableauACK[i]);
+        cout << tableauACK[i];
     }
     cout << endl;
-    
+
     //Fermer l'accès à la ressource
     monObjSerialACK->Close();
 
 }
+
+/*thread SegmentSol::tEnvoieACK(string ACK) {
+    return thread([this] {
+        envoieACK(string ACK);
+    });
+}*/
