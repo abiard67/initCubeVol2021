@@ -4,6 +4,7 @@
     <logicalFolder name="defs" displayName="defs" projectFiles="true">
       <itemPath>defs/Batterie.h</itemPath>
       <itemPath>defs/CameraIR.h</itemPath>
+      <itemPath>defs/CameraPhoto.h</itemPath>
       <itemPath>defs/Commande.h</itemPath>
       <itemPath>defs/EmetteurRecepteur.h</itemPath>
       <itemPath>defs/Etat.h</itemPath>
@@ -18,6 +19,7 @@
       <itemPath>defs/Ordinateur.h</itemPath>
       <itemPath>defs/Protocole.h</itemPath>
       <itemPath>defs/Reboot.h</itemPath>
+      <itemPath>defs/SPI.h</itemPath>
       <itemPath>defs/Sauvegarde.h</itemPath>
       <itemPath>defs/SegmentSol.h</itemPath>
       <itemPath>defs/SegmentVol.h</itemPath>
@@ -29,11 +31,14 @@
       <itemPath>defs/TypeAppareil.h</itemPath>
       <itemPath>defs/TypeCommande.h</itemPath>
       <itemPath>defs/TypeMisEtat.h</itemPath>
+      <itemPath>defs/ov2640_regs.h</itemPath>
       <itemPath>defs/serialib.h</itemPath>
+      <itemPath>defs/tinyxml2.h</itemPath>
     </logicalFolder>
     <logicalFolder name="src" displayName="src" projectFiles="true">
       <itemPath>src/Batterie.cpp</itemPath>
       <itemPath>src/CameraIR.cpp</itemPath>
+      <itemPath>src/CameraPhoto.cpp</itemPath>
       <itemPath>src/Commande.cpp</itemPath>
       <itemPath>src/EmetteurRecepteur.cpp</itemPath>
       <itemPath>src/Etat.cpp</itemPath>
@@ -47,6 +52,7 @@
       <itemPath>src/Ordinateur.cpp</itemPath>
       <itemPath>src/Protocole.cpp</itemPath>
       <itemPath>src/Reboot.cpp</itemPath>
+      <itemPath>src/SPI.cpp</itemPath>
       <itemPath>src/Sauvegarde.cpp</itemPath>
       <itemPath>src/SegmentSol.cpp</itemPath>
       <itemPath>src/SegmentVol.cpp</itemPath>
@@ -60,6 +66,7 @@
       <itemPath>src/TypeMisEtat.cpp</itemPath>
       <itemPath>src/main.cpp</itemPath>
       <itemPath>src/serialib.cpp</itemPath>
+      <itemPath>src/tinyxml2.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -92,6 +99,8 @@
       </item>
       <item path="defs/CameraIR.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="defs/CameraPhoto.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="defs/Commande.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/EmetteurRecepteur.h" ex="false" tool="3" flavor2="0">
@@ -120,6 +129,8 @@
       </item>
       <item path="defs/Reboot.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="defs/SPI.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="defs/Sauvegarde.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/SegmentSol.h" ex="false" tool="3" flavor2="0">
@@ -142,11 +153,17 @@
       </item>
       <item path="defs/TypeMisEtat.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="defs/ov2640_regs.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="defs/serialib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="defs/tinyxml2.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Batterie.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/CameraIR.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/CameraPhoto.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Commande.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -174,6 +191,8 @@
       </item>
       <item path="src/Reboot.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="src/SPI.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/Sauvegarde.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/SegmentSol.cpp" ex="false" tool="1" flavor2="0">
@@ -199,6 +218,8 @@
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/serialib.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/tinyxml2.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -225,6 +246,8 @@
       </item>
       <item path="defs/CameraIR.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="defs/CameraPhoto.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="defs/Commande.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/EmetteurRecepteur.h" ex="false" tool="3" flavor2="0">
@@ -253,6 +276,8 @@
       </item>
       <item path="defs/Reboot.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="defs/SPI.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="defs/Sauvegarde.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs/SegmentSol.h" ex="false" tool="3" flavor2="0">
@@ -275,11 +300,17 @@
       </item>
       <item path="defs/TypeMisEtat.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="defs/ov2640_regs.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="defs/serialib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="defs/tinyxml2.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Batterie.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/CameraIR.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/CameraPhoto.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Commande.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -307,6 +338,8 @@
       </item>
       <item path="src/Reboot.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="src/SPI.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/Sauvegarde.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/SegmentSol.cpp" ex="false" tool="1" flavor2="0">
@@ -332,6 +365,8 @@
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/serialib.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/tinyxml2.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

@@ -61,30 +61,30 @@ float resultat;
 void Magnetometre::PassThrough() {
       
 // Ouverture du chemin //
-//int N = open("/dev/i2c-1",O_RDWR);
+int N = open("/dev/i2c-1",O_RDWR);
 //
-//int addr = 0x69;
-//int state = ioctl (N, I2C_SLAVE, addr);
+int addr = 0x69;
+int state = ioctl (N, I2C_SLAVE, addr);
 //
 //// Pointeur vers le registre INT_PIN_CFG et le bit BYPASS_EN //
-//char commande[]={0x37,0x2};
+char commande[]={0x37,0x2};
 //
-//char reponse[1];
-//
+char reponse[1];
+
 //// Positionnement du curseur sur le registre INT_PIN_CFG //
-//write(N,commande,1);
-//
+write(N,commande,1);
+
 //// Lecture du contenu du registre //
-//read(N,reponse,1); 
+read(N,reponse,1); 
 
 // Positionnement du curseur sur le bit BYPASS_EN //
-//commande[1]=reponse[0] | 0x2;
-//
+commande[1]=reponse[0] | 0x2;
+
 //// Modification du registre INT_PIN_CFG //
-//write(N,commande,2);
-//
-//int magneto = 0x0C;
-//
+write(N,commande,2);
+
+int magneto = 0x0C;
+
 //int state1 = ioctl (N, I2C_SLAVE, magneto);
    }  
 bool Magnetometre::LireDonnee(){

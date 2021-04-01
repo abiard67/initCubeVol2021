@@ -15,8 +15,8 @@ NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
 CC=gcc
-CCC=g++
-CXX=g++
+CCC=c++
+CXX=c++
 FC=gfortran
 AS=as
 
@@ -37,6 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/src/Batterie.o \
 	${OBJECTDIR}/src/CameraIR.o \
+	${OBJECTDIR}/src/CameraPhoto.o \
 	${OBJECTDIR}/src/Commande.o \
 	${OBJECTDIR}/src/EmetteurRecepteur.o \
 	${OBJECTDIR}/src/Etat.o \
@@ -50,6 +51,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/Ordinateur.o \
 	${OBJECTDIR}/src/Protocole.o \
 	${OBJECTDIR}/src/Reboot.o \
+	${OBJECTDIR}/src/SPI.o \
 	${OBJECTDIR}/src/Sauvegarde.o \
 	${OBJECTDIR}/src/SegmentSol.o \
 	${OBJECTDIR}/src/SegmentVol.o \
@@ -62,7 +64,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/TypeCommande.o \
 	${OBJECTDIR}/src/TypeMisEtat.o \
 	${OBJECTDIR}/src/main.o \
-	${OBJECTDIR}/src/serialib.o
+	${OBJECTDIR}/src/serialib.o \
+	${OBJECTDIR}/src/tinyxml2.o
 
 
 # C Compiler Flags
@@ -89,145 +92,160 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/initcubevol2021: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/initcubevol2021 ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/src/Batterie.o: src/Batterie.cpp 
+${OBJECTDIR}/src/Batterie.o: src/Batterie.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Batterie.o src/Batterie.cpp
 
-${OBJECTDIR}/src/CameraIR.o: src/CameraIR.cpp 
+${OBJECTDIR}/src/CameraIR.o: src/CameraIR.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/CameraIR.o src/CameraIR.cpp
 
-${OBJECTDIR}/src/Commande.o: src/Commande.cpp 
+${OBJECTDIR}/src/CameraPhoto.o: src/CameraPhoto.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/CameraPhoto.o src/CameraPhoto.cpp
+
+${OBJECTDIR}/src/Commande.o: src/Commande.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Commande.o src/Commande.cpp
 
-${OBJECTDIR}/src/EmetteurRecepteur.o: src/EmetteurRecepteur.cpp 
+${OBJECTDIR}/src/EmetteurRecepteur.o: src/EmetteurRecepteur.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/EmetteurRecepteur.o src/EmetteurRecepteur.cpp
 
-${OBJECTDIR}/src/Etat.o: src/Etat.cpp 
+${OBJECTDIR}/src/Etat.o: src/Etat.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Etat.o src/Etat.cpp
 
-${OBJECTDIR}/src/Horloge.o: src/Horloge.cpp 
+${OBJECTDIR}/src/Horloge.o: src/Horloge.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Horloge.o src/Horloge.cpp
 
-${OBJECTDIR}/src/I2C.o: src/I2C.cpp 
+${OBJECTDIR}/src/I2C.o: src/I2C.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/I2C.o src/I2C.cpp
 
-${OBJECTDIR}/src/Instrument.o: src/Instrument.cpp 
+${OBJECTDIR}/src/Instrument.o: src/Instrument.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Instrument.o src/Instrument.cpp
 
-${OBJECTDIR}/src/Magnetometre.o: src/Magnetometre.cpp 
+${OBJECTDIR}/src/Magnetometre.o: src/Magnetometre.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Magnetometre.o src/Magnetometre.cpp
 
-${OBJECTDIR}/src/Message.o: src/Message.cpp 
+${OBJECTDIR}/src/Message.o: src/Message.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Message.o src/Message.cpp
 
-${OBJECTDIR}/src/Mesure.o: src/Mesure.cpp 
+${OBJECTDIR}/src/Mesure.o: src/Mesure.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Mesure.o src/Mesure.cpp
 
-${OBJECTDIR}/src/Mission.o: src/Mission.cpp 
+${OBJECTDIR}/src/Mission.o: src/Mission.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Mission.o src/Mission.cpp
 
-${OBJECTDIR}/src/Ordinateur.o: src/Ordinateur.cpp 
+${OBJECTDIR}/src/Ordinateur.o: src/Ordinateur.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Ordinateur.o src/Ordinateur.cpp
 
-${OBJECTDIR}/src/Protocole.o: src/Protocole.cpp 
+${OBJECTDIR}/src/Protocole.o: src/Protocole.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Protocole.o src/Protocole.cpp
 
-${OBJECTDIR}/src/Reboot.o: src/Reboot.cpp 
+${OBJECTDIR}/src/Reboot.o: src/Reboot.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Reboot.o src/Reboot.cpp
 
-${OBJECTDIR}/src/Sauvegarde.o: src/Sauvegarde.cpp 
+${OBJECTDIR}/src/SPI.o: src/SPI.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/SPI.o src/SPI.cpp
+
+${OBJECTDIR}/src/Sauvegarde.o: src/Sauvegarde.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Sauvegarde.o src/Sauvegarde.cpp
 
-${OBJECTDIR}/src/SegmentSol.o: src/SegmentSol.cpp 
+${OBJECTDIR}/src/SegmentSol.o: src/SegmentSol.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/SegmentSol.o src/SegmentSol.cpp
 
-${OBJECTDIR}/src/SegmentVol.o: src/SegmentVol.cpp 
+${OBJECTDIR}/src/SegmentVol.o: src/SegmentVol.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/SegmentVol.o src/SegmentVol.cpp
 
-${OBJECTDIR}/src/Status.o: src/Status.cpp 
+${OBJECTDIR}/src/Status.o: src/Status.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Status.o src/Status.cpp
 
-${OBJECTDIR}/src/Stockage.o: src/Stockage.cpp 
+${OBJECTDIR}/src/Stockage.o: src/Stockage.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Stockage.o src/Stockage.cpp
 
-${OBJECTDIR}/src/Surveillance.o: src/Surveillance.cpp 
+${OBJECTDIR}/src/Surveillance.o: src/Surveillance.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Surveillance.o src/Surveillance.cpp
 
-${OBJECTDIR}/src/Temperature.o: src/Temperature.cpp 
+${OBJECTDIR}/src/Temperature.o: src/Temperature.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Temperature.o src/Temperature.cpp
 
-${OBJECTDIR}/src/TypeAck.o: src/TypeAck.cpp 
+${OBJECTDIR}/src/TypeAck.o: src/TypeAck.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/TypeAck.o src/TypeAck.cpp
 
-${OBJECTDIR}/src/TypeAppareil.o: src/TypeAppareil.cpp 
+${OBJECTDIR}/src/TypeAppareil.o: src/TypeAppareil.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/TypeAppareil.o src/TypeAppareil.cpp
 
-${OBJECTDIR}/src/TypeCommande.o: src/TypeCommande.cpp 
+${OBJECTDIR}/src/TypeCommande.o: src/TypeCommande.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/TypeCommande.o src/TypeCommande.cpp
 
-${OBJECTDIR}/src/TypeMisEtat.o: src/TypeMisEtat.cpp 
+${OBJECTDIR}/src/TypeMisEtat.o: src/TypeMisEtat.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/TypeMisEtat.o src/TypeMisEtat.cpp
 
-${OBJECTDIR}/src/main.o: src/main.cpp 
+${OBJECTDIR}/src/main.o: src/main.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/main.o src/main.cpp
 
-${OBJECTDIR}/src/serialib.o: src/serialib.cpp 
+${OBJECTDIR}/src/serialib.o: src/serialib.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/serialib.o src/serialib.cpp
+
+${OBJECTDIR}/src/tinyxml2.o: src/tinyxml2.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/tinyxml2.o src/tinyxml2.cpp
 
 # Subprojects
 .build-subprojects:
@@ -235,7 +253,6 @@ ${OBJECTDIR}/src/serialib.o: src/serialib.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/initcubevol2021
 
 # Subprojects
 .clean-subprojects:

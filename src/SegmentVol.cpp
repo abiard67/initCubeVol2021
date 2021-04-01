@@ -19,7 +19,6 @@ using namespace std;
 SegmentVol::SegmentVol() {
     horloge = new Horloge();
     temperature = new Temperature();
-    cameraIR = new CameraIR(); //A corriger - cela devrait �tre un instrument...
     batterie = new Batterie();
     emetteurRecepteur = new EmetteurRecepteur();
     mission = new Mission();
@@ -29,9 +28,10 @@ SegmentVol::SegmentVol() {
     reboot = new Reboot();
     surveillance = new Surveillance();
     sauvegarde = new Sauvegarde();
-    
-    
-    
+    intialisationInstrument();
+
+
+
 }
 
 SegmentVol::~SegmentVol() {
@@ -61,10 +61,10 @@ void SegmentVol::surveillerConstantes() {
 
 void SegmentVol::demandeManuelleReboot() {
     sauvegarde->enregistrerMesure();
-    reboot->setNumber(reboot->getNumber()+1);
+    reboot->setNumber(reboot->getNumber() + 1);
     reboot->setDateHour(horloge->getDateHeure());
     reboot->systemeReboot();
-	// Codage d'envoi vers Segment Sol � faire?
+    // Codage d'envoi vers Segment Sol � faire?
 }
 
 void SegmentVol::lancerMission() {
@@ -74,9 +74,9 @@ void SegmentVol::lancerMission() {
     while (etatThread) {
         this_thread::sleep_for(chrono::minutes(interval));
         activerInstrument();
-        cameraIR->lireTemperature(2);
+        instrument->obtenirMeusure(2);
         horloge->lire();
-        cameraIR->setDateMesure(horloge->getDateHeure());
+        instrument->setDateMesure(horloge->getDateHeure());
         desactiverInstrument();
     }
     activerModuleEmission();
@@ -96,7 +96,7 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
 	        if (appareil.begin() == appareil.end()) {
             cout << "Là" << endl;
             ordinateur->obtenirStatus();
-            cameraIR->obtenirStatus();
+            instrument->obtenirStatus();
             batterie->obtenirStatus();
             horloge->lire();
             temperature->recupTempSys();
@@ -107,29 +107,28 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
 
         if (*it == TypeAppareil::ORDIBORD) {
             ordinateur->obtenirStatus();
-            if (ordinateur->obtenirStatus() == -1){
+            if (ordinateur->obtenirStatus() == -1) {
                 segmentSol->envoieACK("ERROR-20");
             }
         }
         if (*it == TypeAppareil::INSTRUMENT) {
-            cameraIR->obtenirStatus();
-            if (cameraIR->obtenirStatus() == -1){
+            instrument->obtenirStatus();
+            if (instrument->obtenirStatus() == -1) {
                 segmentSol->envoieACK("ERROR-21");
             }
         }
         if (*it == TypeAppareil::BATTERIE) {
             batterie->obtenirStatus();
-            if (batterie->obtenirStatus() == -1){
+            if (batterie->obtenirStatus() == -1) {
                 segmentSol->envoieACK("ERROR-22");
             }
         }
         if (*it == TypeAppareil::CUBE) {
             temperature->recupTempSys();
-            if (temperature->recupTempSys() == -1){
+            if (temperature->recupTempSys() == -1) {
                 segmentSol->envoieACK("ERROR-23");
             }
-        }
-        else
+        } else
             segmentSol->envoieACK("ERROR-E12");
     }
     activerModuleEmission();
@@ -141,25 +140,25 @@ void SegmentVol::obtenirStatus() {
     while (true) {
         this_thread::sleep_for(chrono::minutes(intervale));
         ordinateur->obtenirStatus();
-        cameraIR->obtenirStatus();
+        instrument->obtenirStatus();
         batterie->obtenirStatus();
         horloge->lire();
         temperature->recupTempSys();
         activerModuleEmission();
-       // segmentSol->envoyerStatus();
+        // segmentSol->envoyerStatus();
     }
 }
 
 void SegmentVol::effectuerMesure(string mesure) {
     if (mesure == TypeMisEtat::TEMPCELSIUS) {
         activerInstrument();
-        cameraIR->lireTemperature(2);
+        instrument->obtenirMeusure(2);
         horloge->lire();
-        cameraIR->setDateMesure(horloge->getDateHeure());
+        instrument->setDateMesure(horloge->getDateHeure());
         desactiverInstrument();
     } else if (mesure == TypeMisEtat::PIXEL) {
         activerInstrument();
-        cameraIR->obtenirPixels();
+        instrument->obtenirMeusure();
         desactiverInstrument();
     }
     activerModuleEmission();
@@ -181,12 +180,12 @@ void SegmentVol::activerModuleEmission() {
 
 void SegmentVol::activerInstrument() {
 
-    cameraIR->activer();
+    instrument->activer();
 }
 
 void SegmentVol::desactiverInstrument() {
 
-    cameraIR->desactiver();
+    instrument->desactiver();
 }
 
 void SegmentVol::desactiverModuleEmission() {
@@ -214,7 +213,7 @@ Temperature* SegmentVol::getTemperature() {
 }
 
 CameraIR* SegmentVol::getCameraIR() {
-    return cameraIR;
+    return instrument;
 }
 
 Batterie* SegmentVol::getBatterie() {
@@ -243,4 +242,96 @@ unsigned char SegmentVol::getIdentifiant() {
 
 void SegmentVol::setIdentifiant(unsigned char id) {
     identifiant = id;
+}
+
+char SegmentVol::intialisationInstrument() {
+
+    stringstream ss;
+
+    vector<int>adrI2C(0);
+    string adrConfig;
+    string typeConfig;
+    vector<int>::iterator itAdrI2C = adrI2C.begin();
+    int adrInstrument = 0;
+    int iAdrConfig;
+    int iTypeConfig;
+
+
+    //lecture des adresse I2C
+    int N = open("/dev/i2c-1", O_RDWR);
+    for (int i = 0x00; i <= 0x77; i++) {
+        ioctl(N, I2C_SLAVE, i);
+
+        if (write(N, "", 1) == 1) {
+            switch (i) {
+                case 0x18: break;
+                case 0x04: break;
+                case 0x14: break;
+                case 0x68: break;
+                default: adrI2C.push_back(i);
+                    break;
+            }
+        }
+    }
+    close(N);
+
+
+    //Lecture de l'adresse de l'instrument
+    XMLDocument config;
+    config.LoadFile("../config/initcube.xml");
+
+    XMLText* adrNode = config.FirstChildElement("initcube")->FirstChildElement("instrument")->FirstChildElement("description")->FirstChildElement("adresse")->FirstChild()->ToText();
+    adrConfig = adrNode->Value();
+    XMLText* typeNode = config.FirstChildElement("initcube")->FirstChildElement("instrument")->FirstChildElement("description")->FirstChildElement("type")->FirstChild()->ToText();
+    typeConfig = typeNode->Value();
+
+    ss << adrConfig;
+    ss >> hex>>iAdrConfig;
+
+    //Comparaison des adresses
+    while (*itAdrI2C != adrI2C.back()) {
+        if (*itAdrI2C != iAdrConfig) {
+            advance(itAdrI2C, 1);
+        } else {
+            adrInstrument = *itAdrI2C;
+        }
+
+    }
+    switch (adrInstrument) {
+        case 0: return -1;
+        case 0x69:
+            /*       Magnetometre* magneto = new Magnetometre();
+                   magneto->PassThrough();
+                   delete magneto;
+
+                   int I2C = open("/dev/i2c-1", O_RDWR);
+                   ioctl(I2C, I2C_SLAVE, 0x0C);
+                   if (write(I2C, "", 1) == 1) {
+                       adrInstrument = 0x0C;
+                       if (typeConfig != "magnetometre") {
+                           return -1;
+                       }
+                       instrument = new Magnetometre();
+                   }
+                   close(I2C);
+             */ if (typeConfig != "camera infrarouge") {
+                return -1;
+            }
+            instrument = new CameraIR();
+
+            break;
+
+            /*  case 0x30:
+                   if (typeConfig != "camera phto") {
+                       return -1;
+                   }
+                   instrument = new CameraPhoto();
+                   break;
+             */
+    }
+
+
+
+
+    return 0;
 }
