@@ -321,7 +321,7 @@ float CameraIR::getMoyenne() {
     return moyenne;
 }
 
-int CameraIR::obtenirMeusure(char arg){
+int CameraIR::faireMesure(char arg){
     if (arg == -1)
     {
         this->obtenirPixels();   
@@ -333,3 +333,6 @@ int CameraIR::obtenirMeusure(char arg){
     return 0;
 }
 
+float* CameraIR::obtenirMesure(){
+    return getPixels();
+}

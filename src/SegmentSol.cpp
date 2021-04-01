@@ -243,7 +243,7 @@ void SegmentSol::envoyerMission() {
     char Ret;
     unsigned char idSegment = leSegment->getIdentifiant();
     message->setIdSegment(idSegment);
-    CameraIR* camera = leSegment->getInstrument();
+    Instrument* camera = leSegment->getInstrument();
     list<Mesure*> mesures = camera->getMesures();
     message->setMesures(mesures);
     Mission * laMission = leSegment->getMission();
@@ -323,7 +323,7 @@ void SegmentSol::envoyerMesure(string type) {
 
     serialib LS;
     int Ret;
-    CameraIR* camera = leSegment->getInstrument();
+    Instrument* camera = leSegment->getInstrument();
     unsigned char idSegment = leSegment->getIdentifiant();
 
     message->setIdSegment(idSegment);
@@ -364,7 +364,7 @@ void SegmentSol::envoyerMesure(string type) {
         camera->clearLastMesures();
     } else if (type.find(Protocole::PIXEL) != string::npos) {
 
-        float * mesures = leSegment->getInstrument()->getPixels();
+        float * mesures = leSegment->getInstrument()->obtenirMesure();
         for (int i = 0; i < 64; i++) {
             message->addPixel(*(mesures + i));
             cout << "prel  PIXELS" << *(mesures + i) << endl;

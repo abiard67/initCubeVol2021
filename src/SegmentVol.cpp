@@ -28,7 +28,7 @@ SegmentVol::SegmentVol() {
     reboot = new Reboot();
     surveillance = new Surveillance();
     sauvegarde = new Sauvegarde();
-    intialisationInstrument();
+    this->intialisationInstrument();
 
 
 
@@ -74,7 +74,7 @@ void SegmentVol::lancerMission() {
     while (etatThread) {
         this_thread::sleep_for(chrono::minutes(interval));
         activerInstrument();
-        instrument->obtenirMeusure(2);
+        instrument->faireMesure(2);
         horloge->lire();
         instrument->setDateMesure(horloge->getDateHeure());
         desactiverInstrument();
@@ -152,13 +152,13 @@ void SegmentVol::obtenirStatus() {
 void SegmentVol::effectuerMesure(string mesure) {
     if (mesure == TypeMisEtat::TEMPCELSIUS) {
         activerInstrument();
-        instrument->obtenirMeusure(2);
+        instrument->faireMesure(2);
         horloge->lire();
         instrument->setDateMesure(horloge->getDateHeure());
         desactiverInstrument();
     } else if (mesure == TypeMisEtat::PIXEL) {
         activerInstrument();
-        instrument->obtenirMeusure();
+        instrument->faireMesure();
         desactiverInstrument();
     }
     activerModuleEmission();
@@ -245,7 +245,7 @@ void SegmentVol::setIdentifiant(unsigned char id) {
 }
 
 char SegmentVol::intialisationInstrument() {
-
+    cout << "Instru 1" <<endl;
     stringstream ss;
 
     vector<int>adrI2C(0);
@@ -254,7 +254,6 @@ char SegmentVol::intialisationInstrument() {
     vector<int>::iterator itAdrI2C = adrI2C.begin();
     int adrInstrument = 0;
     int iAdrConfig;
-    int iTypeConfig;
 
 
     //lecture des adresse I2C

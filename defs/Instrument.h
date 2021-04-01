@@ -69,7 +69,9 @@ public:
     /// Cette m�thode permet de d�sactiver l'instrument quand il n'est pas utile afin d'�conomiser de l'�nergie.
     /// </summary>
     virtual void desactiver() = 0;
-    virtual int obtenirMeusure(char arg = -1) = 0;
+    virtual int faireMesure(char arg = -1) = 0;
+    virtual float* obtenirMesure() = 0;
+    
 
 
 private:
