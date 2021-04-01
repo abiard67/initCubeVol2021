@@ -31,58 +31,61 @@ public:
 
     Instrument();
     Instrument(const Instrument& orig);
-	
+
     virtual ~Instrument();
     Status * getStatus();
     list<Mesure*> getMesures();
 
-	/// <summary>
-	/// Cette méthode permet de vider la liste de mesures après la transmission par l'unité de communication.
-	/// </summary>
-	void clearMesures();
+    /// <summary>
+    /// Cette mï¿½thode permet de vider la liste de mesures aprï¿½s la transmission par l'unitï¿½ de communication.
+    /// </summary>
+    void clearMesures();
 
-	/// <summary>
-	/// Cette méthode permet de supprimer la dernière mesure de la liste de mesures après la transmission par l'unité de communication.
-	/// </summary>
-	void clearLastMesures();
+    /// <summary>
+    /// Cette mï¿½thode permet de supprimer la derniï¿½re mesure de la liste de mesures aprï¿½s la transmission par l'unitï¿½ de communication.
+    /// </summary>
+    void clearLastMesures();
 
-	/// <summary>
-	/// Cette méthode permet d'ajouter une mesure à la liste de mesures de l'instrument.
-	/// </summary>
-	void addMesure(Mesure *auneMesure);
+    /// <summary>
+    /// Cette mï¿½thode permet d'ajouter une mesure ï¿½ la liste de mesures de l'instrument.
+    /// </summary>
+    void addMesure(Mesure *auneMesure);
 
-	/// <summary>
-	/// Cette méthode permet d'ajouter une date et une heure à la dernière mesure enregistrée.
-	/// </summary>
-	void setDateMesure(string adateHour);
+    /// <summary>
+    /// Cette mï¿½thode permet d'ajouter une date et une heure ï¿½ la derniï¿½re mesure enregistrï¿½e.
+    /// </summary>
+    void setDateMesure(string adateHour);
 
-	/// <summary>
-	/// Cette méthode permet de récolter l'état de l'instrument (mode de fonctionnement (Normal, sommeil etc.)  et température.
-	/// </summary>
-    int obtenirStatus(); 
+    /// <summary>
+    /// Cette mï¿½thode permet de rï¿½colter l'ï¿½tat de l'instrument (mode de fonctionnement (Normal, sommeil etc.)  et tempï¿½rature.
+    /// </summary>
+    int obtenirStatus();
 
-	/// <summary>
-	/// Cette méthode permet d'activer l'instrument avant toute mesure ou prélèvement de données.
-	/// </summary>
-    virtual void activer()=0;
-	/// <summary>
-	/// Cette méthode permet de désactiver l'instrument quand il n'est pas utile afin d'économiser de l'énergie.
-	/// </summary>
-    virtual void desactiver()=0;
-    
+    /// <summary>
+    /// Cette mï¿½thode permet d'activer l'instrument avant toute mesure ou prï¿½lï¿½vement de donnï¿½es.
+    /// </summary>
+    virtual void activer() = 0;
+    /// <summary>
+    /// Cette mï¿½thode permet de dï¿½sactiver l'instrument quand il n'est pas utile afin d'ï¿½conomiser de l'ï¿½nergie.
+    /// </summary>
+    virtual void desactiver() = 0;
+    virtual int obtenirMeusure(char arg = -1) = 0;
+
+
 private:
     string type;
-    
+
 protected:
-	/// <summary>
-	/// Cette méthode envoie une requête à l'instrument pour connaître son mode de fonctionnement. (Normal, sommeil etc.)
-	/// </summary>
-    virtual void obtenirMode()=0;   
-	/// <summary>
-	/// Cette méthode envoie une requête à l'instrument pour récupérer sa température interne.
-	/// Remarque : Si l'instrument est dans l'état SLEEP, il se peut que la température soit nulle.
-	/// </summary>   
-    virtual void obtenirTempInst()=0;     
+    /// <summary>
+    /// Cette mï¿½thode envoie une requï¿½te ï¿½ l'instrument pour connaï¿½tre son mode de fonctionnement. (Normal, sommeil etc.)
+    /// </summary>
+    virtual void obtenirMode() = 0;
+    /// <summary>
+    /// Cette mï¿½thode envoie une requï¿½te ï¿½ l'instrument pour rï¿½cupï¿½rer sa tempï¿½rature interne.
+    /// Remarque : Si l'instrument est dans l'ï¿½tat SLEEP, il se peut que la tempï¿½rature soit nulle.
+    /// </summary>   
+    virtual void obtenirTempInst() = 0;
+
 
     Status* status;
     list<Mesure*> listedemesures;

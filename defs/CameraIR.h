@@ -29,7 +29,7 @@
 using namespace std;
 
 /**
- * En situation de mission, cet instrument transmet une température moyenne au segment sol.
+ * En situation de mission, cet instrument transmet une tempï¿½rature moyenne au segment sol.
  * Dans un contexte de mesure exceptionnelle, cet instrument peut transmettre un tableau de pixels.
  */
 class CameraIR : public Instrument, public I2C{
@@ -39,21 +39,23 @@ public:
     virtual ~CameraIR();
 
 	/// <summary>
-	/// Cette méthode permet de lire une moyenne de température sur un certain nombres de pixels en vue d'effectuer une mission.
-	/// La valeur de retour indique la présence ou non d'une erreur.
+	/// Cette mï¿½thode permet de lire une moyenne de tempï¿½rature sur un certain nombres de pixels en vue d'effectuer une mission.
+	/// La valeur de retour indique la prï¿½sence ou non d'une erreur.
 	/// </summary>
 	/// <param name="arayon">rayon en nombre de pixels</param>
     int lireTemperature( int rayon);
     void setDateMesure(string dateHour);
 	/// <summary>
-	/// Cette méthode permet de capturer l'ensemble des pixels de la cameraIR sur demande.
-	/// elle est spécifique à cet instrument.
+	/// Cette mï¿½thode permet de capturer l'ensemble des pixels de la cameraIR sur demande.
+	/// elle est spï¿½cifique ï¿½ cet instrument.
 	/// </summary>
     int obtenirPixels();
     void activer();
     void desactiver();
     float *getPixels();
     float getMoyenne();
+    int obtenirMeusure(char arg=-1);
+
     
 private:
     float pixels[64];
@@ -61,17 +63,17 @@ private:
     Mode mode;
     float TempInst;
 	/// <summary>
-	/// Cette methode permet de convertir l'octet reçu en temperature.
+	/// Cette methode permet de convertir l'octet reï¿½u en temperature.
 	/// En effet, la camera IR choisie a une resolution de 12 bits et une resolution pour
-	/// les pixels de 0.25 entre 0°C et 80°C
+	/// les pixels de 0.25 entre 0ï¿½C et 80ï¿½C
 	/// </summary>
 	/// <param name="aoctetLow">La camera IR permet de stocker la temperature sur 2 octets. </param>
 	/// <param name="aoctetHigh">La camera IR permet de stocker la temperature sur 2 octets. </param>
 	private: float calculerTemperature(char aoctetLow, char aoctetHigh);
 	/// <summary>
-	/// Cette methode permet de convertir l'octet reçu en temperature.
+	/// Cette methode permet de convertir l'octet reï¿½u en temperature.
 	/// En effet, la camera IR choisie a une resolution de 12 bits et une resolution pour
-	/// le thermistore de 0.0625 entre -20°C et 80°C
+	/// le thermistore de 0.0625 entre -20ï¿½C et 80ï¿½C
 	/// </summary>
 	/// <param name="aoctetLow">La camera IR permet de stocker la temperature sur 2 octets. </param>
 	/// <param name="aoctetHigh">La camera IR permet de stocker la temperature sur 2 octets. </param>

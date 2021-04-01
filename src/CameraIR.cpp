@@ -320,3 +320,15 @@ void CameraIR::obtenirTempInst() {
 float CameraIR::getMoyenne() {
     return moyenne;
 }
+
+int CameraIR::obtenirMeusure(char arg){
+    if (arg == -1)
+    {
+        this->obtenirPixels();   
+    }
+    else {
+        this->obtenirPixels();   
+        this->lireTemperature(arg);
+    }
+    return 0;
+}

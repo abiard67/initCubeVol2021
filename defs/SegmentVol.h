@@ -35,10 +35,16 @@
 #include "Reboot.h"
 #include "Surveillance.h"
 #include "Sauvegarde.h"
+#include "tinyxml2.h"
+#include <sstream>
+#include "Magnetometre.h"
+#include "CameraPhoto.h"
 
+using namespace tinyxml2;
 using namespace std;
 
 class SegmentSol;
+
 class SegmentVol : public TypeMisEtat, TypeAppareil {
 public:
     SegmentVol();
@@ -53,7 +59,10 @@ public:
     void activerInstrument();
     void desactiverInstrument();
     void desactiverModuleEmission();
-    void setSegmentSol(SegmentSol* segmentSol) {this->segmentSol = segmentSol;}
+
+    void setSegmentSol(SegmentSol* segmentSol) {
+        this->segmentSol = segmentSol;
+    }
     void configurerRecupEtat(short period, list<string> instrument);
     thread recupEtat();
     thread tLancerMission();
@@ -71,11 +80,14 @@ public:
     void setIdentifiant(unsigned char id);
     void surveillerConstantes();
     void demandeManuelleReboot();
+    char intialisationInstrument();
+
+
 private:
     unsigned char identifiant;
     Horloge* horloge;
     Temperature* temperature;
-    CameraIR* cameraIR;
+    Instrument* instrument;
     Batterie* batterie;
     EmetteurRecepteur* emetteurRecepteur;
     Mission* mission;
