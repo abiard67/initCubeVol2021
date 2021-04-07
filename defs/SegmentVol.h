@@ -80,7 +80,7 @@ public:
     void setIdentifiant(unsigned char id);
     void surveillerConstantes();
     void demandeManuelleReboot();
-    char intialisationInstrument();
+    int intialisationInstrument();
 
 
 private:

@@ -92,7 +92,7 @@ void SegmentVol::arretMission() {
 void SegmentVol::obtenirStatus(list<string> appareil) {
     list<string>::iterator it;
     horloge->lire();
-	cout << "ici" << endl;
+
 	        if (appareil.begin() == appareil.end()) {
             cout << "Là" << endl;
             ordinateur->obtenirStatus();
@@ -244,20 +244,24 @@ void SegmentVol::setIdentifiant(unsigned char id) {
     identifiant = id;
 }
 
-char SegmentVol::intialisationInstrument() {
-    cout << "Instru 1" <<endl;
-    stringstream ss;
 
+int SegmentVol::intialisationInstrument() {
+	
+	
+    stringstream ss;
+	
+	
     vector<int>adrI2C(0);
     string adrConfig;
     string typeConfig;
-    vector<int>::iterator itAdrI2C = adrI2C.begin();
+    
     int adrInstrument = 0;
     int iAdrConfig;
 
-
+	
     //lecture des adresse I2C
     int N = open("/dev/i2c-1", O_RDWR);
+
     for (int i = 0x00; i <= 0x77; i++) {
         ioctl(N, I2C_SLAVE, i);
 
@@ -268,16 +272,23 @@ char SegmentVol::intialisationInstrument() {
                 case 0x14: break;
                 case 0x68: break;
                 default: adrI2C.push_back(i);
+                                
+
                     break;
             }
         }
     }
+        vector<int>::iterator itAdrI2C = adrI2C.begin();
+
+ 
+    
+    
     close(N);
 
-
+	
     //Lecture de l'adresse de l'instrument
     XMLDocument config;
-    config.LoadFile("../config/initcube.xml");
+	config.LoadFile("../config/initcube.xml");
 
     XMLText* adrNode = config.FirstChildElement("initcube")->FirstChildElement("instrument")->FirstChildElement("description")->FirstChildElement("adresse")->FirstChild()->ToText();
     adrConfig = adrNode->Value();
@@ -286,20 +297,30 @@ char SegmentVol::intialisationInstrument() {
 
     ss << adrConfig;
     ss >> hex>>iAdrConfig;
-
+	    
     //Comparaison des adresses
+    
+
+   if(*itAdrI2C == adrI2C.back()){
+   	adrInstrument = *itAdrI2C;
+   }
+                
+    else{
     while (*itAdrI2C != adrI2C.back()) {
+		cout<<*itAdrI2C<<endl;
         if (*itAdrI2C != iAdrConfig) {
             advance(itAdrI2C, 1);
+        
         } else {
             adrInstrument = *itAdrI2C;
-        }
+               }
 
-    }
+    		}
+	 	}
     switch (adrInstrument) {
         case 0: return -1;
         case 0x69:
-            /*       Magnetometre* magneto = new Magnetometre();
+          /*         Magnetometre* magneto = new Magnetometre();
                    magneto->PassThrough();
                    delete magneto;
 
@@ -310,14 +331,16 @@ char SegmentVol::intialisationInstrument() {
                        if (typeConfig != "magnetometre") {
                            return -1;
                        }
-                       instrument = new Magnetometre();
+                       //instrument = new Magnetometre();
                    }
                    close(I2C);
-             */ if (typeConfig != "camera infrarouge") {
+              if (typeConfig != "camera infrarouge") {
                 return -1;
-            }
+             
+            }*/
+             
             instrument = new CameraIR();
-
+			
             break;
 
             /*  case 0x30:
@@ -327,10 +350,11 @@ char SegmentVol::intialisationInstrument() {
                    instrument = new CameraPhoto();
                    break;
              */
+           
     }
 
 
 
-
+ 
     return 0;
 }
