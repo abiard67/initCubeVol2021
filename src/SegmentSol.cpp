@@ -25,6 +25,7 @@ using namespace std;
 SegmentSol::SegmentSol(SegmentVol *leSegment) {
     this->leSegment = leSegment;
     this->message = new Message();
+    //this->envoyerMsgStart();
 }
 
 SegmentSol::~SegmentSol() {
@@ -304,7 +305,7 @@ void SegmentSol::traiterCommande() {
     } else if (commande->getCode() == TypeCommande::DEPLOY) {
         //à Voir
     } else if (commande->getCode() == TypeCommande::EMPTY) {
-        monReboot->systemeReboot();
+        leSegment->getOrdinateur()->getReboot()->systemeReboot();
     } else if (commande->getCode() == TypeCommande::MEASURE) {
         list<string> mesure = commande->getParametres();
         if (mesure.front() == TypeMisEtat::TEMPCELSIUS) {
@@ -420,3 +421,25 @@ void SegmentSol::envoyerMesure(string type) {
 
 
 
+void SegmentSol::envoyerMsgStart(){
+    
+    mutex_serial.lock();
+    
+    this->tramerMessageStart();
+    //Ouverture de l'accès à la ressource
+    serialib LS;
+    int Ret;
+    Ret = LS.Open(DEVICE_PORT, 9600);
+    //Afficher le Message
+    cout << "Message renvoyé :" << endl;
+    for (int i(0); i < 10; i++) {
+        LS.WriteChar(tableau[i]);
+        cout << tableau[i];
+    }
+    cout << endl;
+
+    //Fermer l'accès à la ressource
+    
+    LS.Close();
+    mutex_serial.unlock();
+}

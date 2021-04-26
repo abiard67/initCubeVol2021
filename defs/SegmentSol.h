@@ -37,6 +37,7 @@ public:
     thread tTraiterCommande();
     void testEnvoie();
     thread tTestEnvoie();
+    void envoyerMsgStart();
     
 private:
     SegmentVol* leSegment;

@@ -166,7 +166,7 @@ protected:
     /// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>
     void ajouterStatusCube(Message* amessage, unsigned int &aposition);
 
-
+    void tramerMessageStart();
                 
         
         Commande*commande= new Commande;

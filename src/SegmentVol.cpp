@@ -29,8 +29,7 @@ SegmentVol::SegmentVol() {
     surveillance = new Surveillance();
     sauvegarde = new Sauvegarde();
     this->intialisationInstrument();
-
-
+    segmentSol->envoyerMsgStart();
 }
 
 SegmentVol::~SegmentVol() {
@@ -62,6 +61,7 @@ void SegmentVol::demandeManuelleReboot() {
     sauvegarde->enregistrerMesure();
     reboot->setNumber(reboot->getNumber() + 1);
     reboot->setDateHour(horloge->getDateHeure());
+    this->getOrdinateur()->getReboot();
     reboot->systemeReboot();
     // Codage d'envoi vers Segment Sol � faire?
 }

@@ -584,171 +584,159 @@ void Protocole::tramerStatus(Message* message, list<string> appareils, int nbreP
     j++;
     tableau[j] = numPaquet;
     j++;
-	
-	if (appareils.empty()) 
-		if (numPaquet == 1) {
-			ajouterDataOrdiBord(message, j);
-			ajouterDataBattery(message, j);
-		} else {
-			ajouterStatusInst(message, j);
-			ajouterStatusCube(message, j);
-		}
-	else 
-	{
-		if (numPaquet == 1) {
-			if (message->getMicroSDenMo()!="0") ajouterDataOrdiBord(message, j);
-			else if (message->getVoltageBat() != "0") ajouterDataBattery(message, j);
-			else if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
-			else if (message->getTemperatureCube()!="0") ajouterStatusCube(message, j);
-			else if ((message->getTemperatureCube()=="0") && (message->getReboot()->getNumber()!=0)) 
-			{
-				strcpy(tab, TypeAppareil::REBOOT.c_str());
-				for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
 
-				strcpy(tab, TypeMisEtat::DATETIME.c_str());
-				for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+    if (appareils.empty())
+        if (numPaquet == 1) {
+            ajouterDataOrdiBord(message, j);
+            ajouterDataBattery(message, j);
+        } else {
+            ajouterStatusInst(message, j);
+            ajouterStatusCube(message, j);
+        } else {
+        if (numPaquet == 1) {
+            if (message->getMicroSDenMo() != "0") ajouterDataOrdiBord(message, j);
+            else if (message->getVoltageBat() != "0") ajouterDataBattery(message, j);
+            else if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
+            else if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
+            else if ((message->getTemperatureCube() == "0") && (message->getReboot()->getNumber() != 0)) {
+                strcpy(tab, TypeAppareil::REBOOT.c_str());
+                for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, message->getReboot()->getDateHour().c_str());
-				for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, TypeMisEtat::DATETIME.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
-				for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, message->getReboot()->getDateHour().c_str());
+                for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
-				for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
-					tableau[j] = tab[k];
-					j++;
+                strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				}
-			}
-		}
-		else if (numPaquet == 2) 
-		{
-			if (message->getVoltageBat() != "0") ajouterDataBattery(message, j);
-			else if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
-			else if (message->getTemperatureCube()!="0") ajouterStatusCube(message, j);
-			else if ((message->getTemperatureCube()=="0") && (message->getReboot()->getNumber()!=0)) 
-			{
-				strcpy(tab, TypeAppareil::REBOOT.c_str());
-				for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
+                for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
 
-				strcpy(tab, TypeMisEtat::DATETIME.c_str());
-				for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                }
+            }
+        } else if (numPaquet == 2) {
+            if (message->getVoltageBat() != "0") ajouterDataBattery(message, j);
+            else if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
+            else if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
+            else if ((message->getTemperatureCube() == "0") && (message->getReboot()->getNumber() != 0)) {
+                strcpy(tab, TypeAppareil::REBOOT.c_str());
+                for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, message->getReboot()->getDateHour().c_str());
-				for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, TypeMisEtat::DATETIME.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
-				for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, message->getReboot()->getDateHour().c_str());
+                for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
-				for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
-					tableau[j] = tab[k];
-					j++;
+                strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				}
-			}
-		}
-		else if (numPaquet == 3) 
-		{
-			if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
-			else if (message->getTemperatureCube()!="0") ajouterStatusCube(message, j);
-			else if ((message->getTemperatureCube()=="0") && (message->getReboot()->getNumber()!=0)) 
-			{
-				strcpy(tab, TypeAppareil::REBOOT.c_str());
-				for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
+                for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
 
-				strcpy(tab, TypeMisEtat::DATETIME.c_str());
-				for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                }
+            }
+        } else if (numPaquet == 3) {
+            if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
+            else if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
+            else if ((message->getTemperatureCube() == "0") && (message->getReboot()->getNumber() != 0)) {
+                strcpy(tab, TypeAppareil::REBOOT.c_str());
+                for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, message->getReboot()->getDateHour().c_str());
-				for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, TypeMisEtat::DATETIME.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
-				for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, message->getReboot()->getDateHour().c_str());
+                for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
-				for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
-					tableau[j] = tab[k];
-					j++;
+                strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				}
-			}
-		}
-		else if (numPaquet == 4) 
-		{
-			if (message->getTemperatureCube()!="0") ajouterStatusCube(message, j);
-			else if ((message->getTemperatureCube()=="0") && (message->getReboot()->getNumber()!=0)) 
-			{
-				strcpy(tab, TypeAppareil::REBOOT.c_str());
-				for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
+                for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
 
-				strcpy(tab, TypeMisEtat::DATETIME.c_str());
-				for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                }
+            }
+        } else if (numPaquet == 4) {
+            if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
+            else if ((message->getTemperatureCube() == "0") && (message->getReboot()->getNumber() != 0)) {
+                strcpy(tab, TypeAppareil::REBOOT.c_str());
+                for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, message->getReboot()->getDateHour().c_str());
-				for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, TypeMisEtat::DATETIME.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
-				for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
-					tableau[j] = tab[k];
-					j++;
-				}
+                strcpy(tab, message->getReboot()->getDateHour().c_str());
+                for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
-				for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
-					tableau[j] = tab[k];
-					j++;
+                strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+                }
 
-				}
-			}
-		}
-	}
+                strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
+                for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
+                    tableau[j] = tab[k];
+                    j++;
+
+                }
+            }
+        }
+    }
 
     /** Mise � jour du champ "nombre d'octets" **/
     tableau[2] = j - 3; //ATTENTION A VERIFIER
@@ -764,7 +752,6 @@ void Protocole::tramerStatus(Message* message, list<string> appareils, int nbreP
         tableau[j] = 0;
 
 }
-
 
 void Protocole::tramerMesure(Message* message, int nbrePaquets, int numPaquet) {
 
@@ -972,6 +959,20 @@ void Protocole::addReceived(char recu [100]) {
 
 void Protocole::supprimerPaquet() {
     this->received.pop_front();
+}
+
+void Protocole::tramerMessageStart() {
+    
+    tableau[0] = '~';
+    tableau[1] = '1';
+    tableau[2] = 'H';
+    tableau[3] = 'E';
+    tableau[4] = 'L';
+    tableau[5] = 'L';
+    tableau[6] = 'O';
+    calculerChecksum(tableau[7], tableau[8]);
+    tableau[9] = 255;
+    
 }
 
 void Protocole::envoieACK(string ACK) {

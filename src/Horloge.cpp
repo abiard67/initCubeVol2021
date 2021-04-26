@@ -91,3 +91,26 @@ string Horloge::getRdvTime() {
 string Horloge::getDateHeure() {
     return dateHeure;
 }
+
+void Horloge::setDateTime(int date, int month, int year,int hour, int min, int sec) {
+        //buffer to format command
+	unsigned char buff[32]={0};
+	//formatting command with the given parameters
+	sprintf((char*)buff,(const char *)"date -s \"%02d/%02d/%04d %02d:%02d:%02d\"",month,date,year,hour,min,sec);
+	//execute formatted command using system()
+	system((const char *)buff);
+}
+
+void Horloge::afficherDateTimeLocale(){
+        time_t tmm = time(0);
+        char* dt = ctime(&tmm);
+        cout<< "La date est l'heure locales sont :"<< dt <<endl;
+}
+
+void Horloge::afficherDateTimeUTC(){
+        time_t tmm = time(0);
+        char* dt = ctime(&tmm);
+        tm *g = gmtime(&tmm);
+        dt = asctime(g);
+        cout<< "Horloge UTC :"<< dt <<endl;
+}
