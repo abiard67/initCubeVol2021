@@ -35,6 +35,12 @@ int Ordinateur::obtenirStatus(){
     return 0;
 }
 
+bool Ordinateur::resetStatus()
+{
+	leStockage->resetStockage();
+	temperatureProcessor=0;
+}
+
 float Ordinateur::getTemperatureProcessor(){
     return this->temperatureProcessor;
 }

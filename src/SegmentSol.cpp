@@ -42,7 +42,7 @@ void SegmentSol::activerReception() {
         monObjSerial->Open("/dev/serial0", 9600); //Ouverture 
 
         char varID = leSegment->getIdentifiant();
-
+		       
         int typeRetourTrame = monObjSerial->ReadString(tableau, 255, 128, 3000);
         cout << "Valeur de Retour : " << typeRetourTrame << endl;
 
@@ -66,11 +66,11 @@ void SegmentSol::activerReception() {
         } else if (typeRetourTrame > 1) {
             cout << "Reception de la Commande OK " << endl;
 
-            cout << "Trame Lue : ";
+            cout << "Trame Lue : " << " avec nombre octets :" << typeRetourTrame;
             for (int i(0); i < typeRetourTrame; i++) {
                 cout << tableau[i];
             }
-
+			cout<<endl;
                 if (tableau[1] == varID) {
                     cout << "La commande est pour notre Cube" << endl;
 
@@ -102,6 +102,7 @@ thread SegmentSol::tActiverReception() {
     });
 }
 
+////////////////////////////////////// A SUPPRIMER : TEST ////////////////////////////////////////////////
 void SegmentSol::testEnvoie() {
 
     mutex_serial.lock();
@@ -137,6 +138,8 @@ thread SegmentSol::tTestEnvoie() {
     });
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 void SegmentSol::envoyerStatus(list<string> status) {
 
     cout << "Appel de envoyerStatus" << endl;
@@ -144,6 +147,7 @@ void SegmentSol::envoyerStatus(list<string> status) {
     serialib LS;
     int Ret;
     list<string>::iterator it;
+	int nbrePaquets = 0;
     unsigned char idSegment = leSegment->getIdentifiant();
     message->setIdSegment(idSegment);
     if (status.begin() == status.end()) {
@@ -157,10 +161,11 @@ void SegmentSol::envoyerStatus(list<string> status) {
             message->setMicroSDenMo(to_string(FUSDenMo));
         }
         message->setTemperatureProc(leSegment->getOrdinateur()->getTemperatureProcessor());
-        message->setReboot(leSegment->getOrdinateur()->getReboot());
         message->setMicroSDenMo(leStockage->getMemoireUSD());
         message->setRAMenPourcent(leStockage->getOccupationRAM());
         message->setDateOrdinateur(leSegment->getHorloge()->getDateHeure());
+		//REBOOT
+        message->setReboot(leSegment->getOrdinateur()->getReboot());
         //BATTERIE
         message->setAmperageBat(leSegment->getBatterie()->getAmperage());
         message->setCapacityBat(leSegment->getBatterie()->getCapacity());
@@ -172,6 +177,8 @@ void SegmentSol::envoyerStatus(list<string> status) {
         message->setStatInstrument(leSegment->getInstrument()->getStatus());
         //CUBE
         message->setTemperatureCube(leSegment->getTemperature()->getTemperature());
+		nbrePaquets = 2;
+
     } else for (it = status.begin(); it != status.end(); it++) {
 
             //ordinateur 
@@ -185,10 +192,10 @@ void SegmentSol::envoyerStatus(list<string> status) {
                     message->setMicroSDenMo(to_string(FUSDenMo));
                 }
                 message->setTemperatureProc(leSegment->getOrdinateur()->getTemperatureProcessor());
-                message->setReboot(leSegment->getOrdinateur()->getReboot());
                 message->setMicroSDenMo(leStockage->getMemoireUSD());
                 message->setRAMenPourcent(leStockage->getOccupationRAM());
                 message->setDateOrdinateur(leSegment->getHorloge()->getDateHeure());
+				nbrePaquets++;
 
             }//BATT
             else if (*it == TypeAppareil::BATTERIE) {
@@ -198,44 +205,51 @@ void SegmentSol::envoyerStatus(list<string> status) {
                 message->setChargeStatus(leSegment->getBatterie()->getInCharge());
                 message->setTemperatureBat(leSegment->getBatterie()->getTemperature());
                 message->setVoltageBat(leSegment->getBatterie()->getVoltage());
+				nbrePaquets++;
             }//Instrument
             else if (*it == TypeAppareil::INSTRUMENT) {
                 message->setStatInstrument(leSegment->getInstrument()->getStatus());
+				nbrePaquets++;
             }//Cube
             else if (*it == TypeAppareil::CUBE) {
                 message->setTemperatureCube(leSegment->getTemperature()->getTemperature());
-            } else
+				nbrePaquets++;
+            }
+			else if (*it == TypeAppareil::REBOOT) {
+				message->setReboot(leSegment->getOrdinateur()->getReboot());
+				if (message->getTemperatureCube() =="0") nbrePaquets++;
+            }
+			else
                 this->envoieACK("ERROR-E13");
         }
-    int nbrePaquets = 2;
+
     mutex_serial.lock();
-    for (int i = 0; i < nbrePaquets; i++) {
+   // if (status.begin() == status.end()) {
+		for (int i = 0; i < nbrePaquets; i++) {
+			Ret = LS.Open(DEVICE_PORT, 9600);
+			if (Ret == 1) {
+				cout << "Accès à la ressource pour l'envoie du status : réussi" << endl;
+			} else {
+				cout << "Accès à la ressource pour l'envoie du status : échoué" << endl;
+			}
 
+			tramerStatus(message, status, nbrePaquets, i + 1);
+			Ret = LS.Write(tableau, tableau[2] + 6);
 
+			if (Ret >= 1) {
+				cout << "Ecriture vers la ressource pour l'envoie du status : réussi" << endl;
+			} else {
+				cout << "Ecriture vers la ressource pour l'envoie du status : échoué" << endl;
+			}
 
+			LS.Close();
+			cout << "Le status a été envoyé." << endl;
+			cout << tableau << endl;
 
-        Ret = LS.Open(DEVICE_PORT, 9600);
-        if (Ret == 1) {
-            cout << "Accès à la ressource pour l'envoie du status : réussi" << endl;
-        } else {
-            cout << "Accès à la ressource pour l'envoie du status : échoué" << endl;
-        }
-
-        tramerStatus(message, nbrePaquets, i + 1);
-        Ret = LS.Write(tableau, tableau[2] + 6);
-
-        if (Ret >= 1) {
-            cout << "Ecriture vers la ressource pour l'envoie du status : réussi" << endl;
-        } else {
-            cout << "Ecriture vers la ressource pour l'envoie du status : échoué" << endl;
-        }
-
-        LS.Close();
-        cout << "Le status a été envoyé." << endl;
-        cout << tableau << endl;
-
-    }
+		}
+	//}
     mutex_serial.unlock();
+	message=new Message();
 }
 
 void SegmentSol::envoyerMission() {
@@ -251,9 +265,9 @@ void SegmentSol::envoyerMission() {
     message->setTypeMission(leTypeMission);
     int nbrePaquets = this->calculerNombrePaquets(message);
     for (int i = 0; i < nbrePaquets; i++) {
-        //Ret=LS.Open(DEVICE_PORT,9600); 
+        Ret=LS.Open(DEVICE_PORT,9600); 
 
-        //tramerMission(message, nbrePaquets, i+1);
+        tramerMission(message, nbrePaquets, i+1);
 
         Ret = LS.Write(tableau, tableau[2] + 6);
 
@@ -262,7 +276,7 @@ void SegmentSol::envoyerMission() {
         //auto end = std::chrono::high_resolution_clock::now();
         // std::chrono::duration<double, std::milli> elapsed = end-start;
         //std::cout << "Waited " << elapsed.count() << " ms\n";
-        //LS.Close();
+        LS.Close();
         cout << "Envoi status" << tableau << endl;
     }
     camera->clearMesures();
@@ -286,7 +300,7 @@ void SegmentSol::traiterCommande() {
         leSegment->arretMission();
 
     } else if (commande->getCode() == TypeCommande::DATE) {
-        leSegment->getHorloge();
+        leSegment->getHorloge(); //setHorloge => 1 argument
     } else if (commande->getCode() == TypeCommande::DEPLOY) {
         //à Voir
     } else if (commande->getCode() == TypeCommande::EMPTY) {
@@ -304,8 +318,9 @@ void SegmentSol::traiterCommande() {
     } else if (commande->getCode() == TypeCommande::SAVE) {
         //à Voir
     } else if (commande->getCode() == TypeCommande::STATUS) {
-        list<string> status; // = commande->getParametres();
-        leSegment->obtenirStatus(status);
+        list<string> status = commande->getParametres();
+
+		leSegment->obtenirStatus(status);
     } else if (commande->getCode() == TypeCommande::SURVIVAL) {
         //à Voir
     } else
@@ -357,7 +372,8 @@ void SegmentSol::envoyerMesure(string type) {
 
             LS.Close();
             cout << "Mesure de Température (TC) envoyée." << endl;
-            cout << tableau << endl;
+			for (int visue = 0; visue<tableau[2] + 6;visue++)
+            cout << (int)tableau[visue] << endl;
             mutex_serial.unlock();
         }
         message->clearMesures();

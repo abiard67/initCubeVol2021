@@ -45,6 +45,13 @@ int Instrument::obtenirStatus() {
     return 0;
 }
 
+void Instrument::resetStatus()
+{
+	status->setMode(SLEEP);
+	status->setOnOff(false);
+	status->setTemp(0);
+}
+
 Status * Instrument::getStatus() {
     return status;
 }

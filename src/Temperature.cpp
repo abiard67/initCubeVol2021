@@ -21,6 +21,7 @@ char Temperature::adressecapteuri2c = 0x18;
 char Temperature::pointeurderegistre = 0x05;
 
 Temperature::Temperature() {
+	temperaturesys=0;
 }
 
 Temperature::Temperature(const Temperature& orig) {
@@ -35,8 +36,8 @@ int Temperature::recupTempSys() {
     setAddrRegistre(pointeurderegistre);
     ecrire();
     char* valeurLue = lire();
-    temperatureHigh = 12; //valeurLue[0] & bithuitadouze;
-    temperatureLow = 86; //valeurLue[1];
+    temperatureHigh = valeurLue[0] & bithuitadouze;
+    temperatureLow = valeurLue[1];
     if ((valeurLue[0] & bitdesigne) == bitdesigne) {
 
         //TEMPERATURE N�GATIVE
@@ -46,8 +47,12 @@ int Temperature::recupTempSys() {
 
         //TEMPERATURE POSITIVE
         temperaturesys = (float) (temperatureHigh * 16.0 + temperatureLow / 16.0);
-
     }
+}
+
+void Temperature::resetTemperature()
+{
+	temperaturesys=0;
 }
 
 float Temperature::getTemperature() {

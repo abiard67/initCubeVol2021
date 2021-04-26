@@ -19,7 +19,26 @@
 using namespace std ;
 
 Message::Message() {
+	typeMission = "";
 
+	microSDenMo = "0";
+	RAMenPourcent = "0";
+	temperatureProc = "0.0";
+	dateOrdinateur = "0000/00/00 00:00:00" ;
+	chargeBat = "0";
+	voltageBat= "0";
+	amperageBat= "0";
+	chargeStatus = false;
+	temperatureBat= "0";
+	capacityBat= "0";
+	statInstrument = new Status();
+	/**
+	 * Cet attribut correspond à la température du cube, entre les cartes.
+	 */
+	temperatureCube= "0";
+	reboot = new Reboot();  
+	////////// Modification depuis la dernière fois pour récupérer cette information
+	typeMesure = "";
 }
 
 Message::Message(const Message& orig) {

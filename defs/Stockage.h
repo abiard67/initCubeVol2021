@@ -41,6 +41,7 @@ public:
     string getPourcentage();
     string getOccupationRAM();
     string getUnit();
+	void resetStockage();
 
 private:
     

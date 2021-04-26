@@ -81,6 +81,7 @@ public:
     void surveillerConstantes();
     void demandeManuelleReboot();
     int intialisationInstrument();
+	int resetStatus(list<string> appareil);
 
 
 private:

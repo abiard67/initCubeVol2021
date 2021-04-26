@@ -20,6 +20,7 @@
 #include <thread>
 #include <list>
 #include <vector>
+#include <map>
 #include <iterator>
 
 
@@ -130,11 +131,13 @@ protected:
      */
     char tableau[100];
     list<vector<char>> received;
+	map <string,int> decoupePaquets;
 
     void calculerChecksum(char & PF, char & pf);
     bool verifierChecksum();
     void tramerMission(Message* message, int nbrePaquets, int numPaquet);
     void tramerStatus(Message* message, int nbrePaquets, int numPaquet);
+    void tramerStatus(Message* message, list<string> appareils, int nbrePaquets, int numPaquet);
     void tramerMesure(Message* message, int nbrePaquets, int numPaquet);
     unsigned char calculerNombrePaquets(Message * message);
     void extraireCommande(char reception[]);

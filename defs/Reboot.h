@@ -27,6 +27,7 @@ public:
     string getDateHour();
     void setDateHour(string adateHour);
     void setNumber(int anumber);
+	void resetStatus();
     void systemeReboot();
 private:
     string dateHour;

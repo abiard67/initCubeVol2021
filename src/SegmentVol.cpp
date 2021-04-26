@@ -31,7 +31,6 @@ SegmentVol::SegmentVol() {
     this->intialisationInstrument();
 
 
-
 }
 
 SegmentVol::~SegmentVol() {
@@ -92,19 +91,22 @@ void SegmentVol::arretMission() {
 void SegmentVol::obtenirStatus(list<string> appareil) {
     list<string>::iterator it;
     horloge->lire();
-
-	        if (appareil.begin() == appareil.end()) {
-            cout << "Là" << endl;
-            ordinateur->obtenirStatus();
-            instrument->obtenirStatus();
-            batterie->obtenirStatus();
-            horloge->lire();
-            temperature->recupTempSys();
-        }
-        else
+		list<string>::iterator it2;
+		for (it2 = appareil.begin(); it2 != appareil.end(); ++it2)
+		{
+			cout<< "Le parametres est"<<*it2<<"et TypeAppareil::ORDIBORD"<<TypeAppareil::ORDIBORD<<"//"<<endl;
+		}
+	if (appareil.begin() == appareil.end()) {
+        cout << "Là" << endl;
+        ordinateur->obtenirStatus();
+        instrument->obtenirStatus();
+        batterie->obtenirStatus();
+        horloge->lire();
+        temperature->recupTempSys();
+    }
+    else
     for (it = appareil.begin(); it != appareil.end(); it++) {
         
-
         if (*it == TypeAppareil::ORDIBORD) {
             ordinateur->obtenirStatus();
             if (ordinateur->obtenirStatus() == -1) {
@@ -128,11 +130,17 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
             if (temperature->recupTempSys() == -1) {
                 segmentSol->envoieACK("ERROR-23");
             }
-        } else
-            segmentSol->envoieACK("ERROR-E12");
+        } 
+
+		if ((*it != TypeAppareil::ORDIBORD) && (*it != TypeAppareil::INSTRUMENT) && 
+			(*it != TypeAppareil::BATTERIE) && (*it != TypeAppareil::CUBE) && (*it!=TypeAppareil::REBOOT))
+		{
+				segmentSol->envoieACK("ERROR-E12");
+		}
     }
     activerModuleEmission();
     segmentSol->envoyerStatus(appareil);
+
 }
 
 void SegmentVol::obtenirStatus() {
@@ -145,7 +153,7 @@ void SegmentVol::obtenirStatus() {
         horloge->lire();
         temperature->recupTempSys();
         activerModuleEmission();
-        // segmentSol->envoyerStatus();
+        // segmentSol->envoyerStatus(); //////////////////////////////////////////////////////
     }
 }
 
@@ -288,19 +296,16 @@ int SegmentVol::intialisationInstrument() {
 	
     //Lecture de l'adresse de l'instrument
     XMLDocument config;
-	config.LoadFile("../config/initcube.xml");
-
+	XMLError anError = config.LoadFile("../config/initcube.xml");
     XMLText* adrNode = config.FirstChildElement("initcube")->FirstChildElement("instrument")->FirstChildElement("description")->FirstChildElement("adresse")->FirstChild()->ToText();
     adrConfig = adrNode->Value();
     XMLText* typeNode = config.FirstChildElement("initcube")->FirstChildElement("instrument")->FirstChildElement("description")->FirstChildElement("type")->FirstChild()->ToText();
     typeConfig = typeNode->Value();
-
     ss << adrConfig;
     ss >> hex>>iAdrConfig;
 	    
     //Comparaison des adresses
     
-
    if(*itAdrI2C == adrI2C.back()){
    	adrInstrument = *itAdrI2C;
    }
@@ -344,7 +349,7 @@ int SegmentVol::intialisationInstrument() {
             break;
 
             /*  case 0x30:
-                   if (typeConfig != "camera phto") {
+                   if (typeConfig != "camera photo") {
                        return -1;
                    }
                    instrument = new CameraPhoto();
@@ -357,4 +362,32 @@ int SegmentVol::intialisationInstrument() {
 
  
     return 0;
+}
+int SegmentVol::resetStatus(list<string> appareil)
+{
+	list<string>::iterator it;
+	if (appareil.begin() == appareil.end()) {
+		ordinateur->resetStatus();
+		instrument->resetStatus();
+		batterie->resetStatus();
+		reboot->resetStatus();
+		temperature->resetTemperature();
+    }
+    else
+    for (it = appareil.begin(); it != appareil.end(); it++) {
+        
+        if (*it == TypeAppareil::ORDIBORD) {
+			ordinateur->resetStatus();
+        }
+        if (*it == TypeAppareil::INSTRUMENT) {
+			instrument->resetStatus();
+        }
+        if (*it == TypeAppareil::BATTERIE) {
+			batterie->resetStatus();
+        }
+        if (*it == TypeAppareil::CUBE) {
+			temperature->resetTemperature();
+        } 
+    }
+
 }

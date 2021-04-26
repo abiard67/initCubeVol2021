@@ -89,6 +89,14 @@ int Batterie::obtenirStatus() {
     obtenirTension();
     return 0;
 }
+void Batterie::resetStatus()
+{
+	chargingLevel = 0;
+    voltage = 0;
+    amperage = 0;
+    inCharge = false;
+    temperature = 0;
+}
 
 unsigned char Batterie::getChargingLevel() {
     return chargingLevel;

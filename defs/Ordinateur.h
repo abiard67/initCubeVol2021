@@ -35,11 +35,11 @@ public:
     Ordinateur();
     virtual ~Ordinateur();
     int obtenirStatus();
-        
+    bool resetStatus();        
     Stockage * getStockage();
     float getTemperatureProcessor();
 	Reboot* getReboot();
-    
+
 
 protected:
     

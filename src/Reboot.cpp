@@ -46,3 +46,8 @@ void Reboot::systemeReboot() {
     system("sudo reboot");
 }
 
+void Reboot::resetStatus(){
+	dateHour = "0000/00/00 00:00:00";
+    number = 0;
+}
+

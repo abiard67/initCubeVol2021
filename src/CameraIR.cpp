@@ -122,10 +122,10 @@ int CameraIR::lireTemperature(int rayon) {
             for (int i = 0; i < 4; i++) {
                 setAddrRegistre(addr[i]);
                 ecrire();
-                //recup = lire();
-                //if (i==0)
-                //	if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
-                moy = 120; //moy + calculerTemperature(recup[0], recup[1]);
+                recup = lire();
+                if (i==0)
+                	if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
+                moy =moy + calculerTemperature(recup[0], recup[1]);
             }
             this->moyenne = moy / 4;
             break;
@@ -152,10 +152,10 @@ int CameraIR::lireTemperature(int rayon) {
             for (int i = 0; i < 16; i++) {
                 setAddrRegistre(addr[i]);
                 ecrire();
-                //recup = lire();
-                //if (i==0)
-                //	if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
-                moy = 512; //moy + calculerTemperature(recup[0], recup[1]);
+                recup = lire();
+                if (i==0)
+                	if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
+                moy = moy + calculerTemperature(recup[0], recup[1]);
             }
             this->moyenne = moy / 16;
             break;
@@ -208,10 +208,10 @@ int CameraIR::lireTemperature(int rayon) {
             for (int i = 0; i < 16; i++) {
                 setAddrRegistre(addr[i]);
                 ecrire();
-                //recup = lire();
-                //if (i==0)
-                //	if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
-                moy = 972; //moy + calculerTemperature(recup[0], recup[1]);
+                recup = lire();
+                if (i==0)
+                	if ((recup[0]==0) && (recup[1]==128)) return -1; //Au cas où l'instrument serait dans l'état SLEEP
+                moy = moy + calculerTemperature(recup[0], recup[1]);
             }
             this->moyenne = moy / 36;
             break;
@@ -271,23 +271,23 @@ void CameraIR::obtenirMode() {
     //Récolte de l'état de fonctionnement
     setAddrRegistre(POWERCTLREG);
     ecrire();
-    recup[0] = NORMALFONCT; //recup =lire();
+    recup =lire();
     /*Attention! La situation recup[0]==SLEEPFONCT ne se produit jamais car le registre 
             POWERCTLREG est inaccessible si la camera est dans le mode SLEEP.*/
     if (recup[0] == NORMALFONCT) {
         setAddrRegistre(FIRSTPIXREG);
         ecrire();
-        //recup =lire();
-        //if ((recup[0]==0) && (recup[1]==128))
-        //{
+        recup =lire();
+        if ((recup[0]==0) && (recup[1]==128))
+        {
         Mode leMode = SLEEP;
         this->status->setMode(leMode);
-        //}
-        //else
-        //{
-        //	Mode leMode=NORMAL;
-        //	this->status->setMode(leMode);
-        //}
+        }
+        else
+        {
+        	Mode leMode=NORMAL;
+        	this->status->setMode(leMode);
+        }
     }
     else {
         Mode leMode = STAND_BY;
@@ -304,15 +304,15 @@ void CameraIR::obtenirTempInst() {
     if (this->status->getMode() != SLEEP) {
         setAddrRegistre(THERMREG);
         ecrire();
-        //buf = lire();
+        buf = lire();
     } else {
-        //this->activer();
+        this->activer();
         setAddrRegistre(THERMREG);
-        //ecrire();
-        //buf = lire();
-        //this->desactiver();
+        ecrire();
+        buf = lire();
+        this->desactiver();
     }
-    tempInstrument = 27; // calculerTempInst(buf[0],buf[1]);
+    tempInstrument =  calculerTempInst(buf[0],buf[1]);
     status->setTemp(tempInstrument);
 
 }
@@ -327,7 +327,6 @@ int CameraIR::faireMesure(char arg){
         this->obtenirPixels();   
     }
     else {
-        this->obtenirPixels();   
         this->lireTemperature(arg);
     }
     return 0;

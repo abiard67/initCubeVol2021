@@ -30,6 +30,7 @@ public:
     Batterie();
     virtual ~Batterie();
     int obtenirStatus();
+	void resetStatus();
     unsigned char getChargingLevel();
     float getVoltage();
     short getAmperage();

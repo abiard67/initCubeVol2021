@@ -37,6 +37,7 @@ public:
     virtual ~Temperature();
     int recupTempSys();
     float getTemperature();
+	void resetTemperature();
     void sePlacer();
     
 private:

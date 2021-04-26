@@ -19,11 +19,11 @@ string  Stockage::memram = "Mem:";
 string  Stockage::memUSD = "/dev/root";
 
 Stockage::Stockage(){
-    memoireRAM = "666666";
-    memoireUSD = "1888888";
-    pourcentageutilise = "66";
-	occupationRAM="77";
-	unit="ko";
+    memoireRAM = "0";
+    memoireUSD = "0";
+    pourcentageutilise = "0";
+	occupationRAM="0";
+	unit="Mo";
 }
 
 Stockage::~Stockage() {
@@ -31,7 +31,7 @@ Stockage::~Stockage() {
 
 
 FILE * Stockage::ouvrirAccesUSD(){
-    FILE * fichierUSD = popen("df -k", "r");
+    FILE * fichierUSD = popen("df -m", "r");
     return fichierUSD;
 }
 
@@ -155,4 +155,12 @@ string Stockage::getMemoireRAM(){
 
 string Stockage::getOccupationRAM(){
     return occupationRAM;
+}
+
+void Stockage::resetStockage()
+{
+    memoireRAM = "0";
+    memoireUSD = "0";
+    pourcentageutilise = "0";
+	occupationRAM="0";
 }
