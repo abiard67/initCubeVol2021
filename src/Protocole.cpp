@@ -87,41 +87,90 @@ void Protocole::extraireCommande(char reception[]) {
 
 void Protocole::extraireParametres(char reception[]) {
 
-    vector <char>trame(0);
-
-
-    for (int i = 0; i <= reception[2] + 3; i++) {
-        trame.push_back(reception[i]);
-
-    }
-
-    list<string> parametres;
-    vector<char>::iterator it = trame.begin();
-
-    string arg = "";
-    char elem = '-';
-
-
-    if (it != trame.end()) {
-
-        for (it = trame.begin(); it != trame.end(); ++it) {
-
-            if (*it == elem) {
-                arg = elem;
-                do {
-                    it++;
-                    arg = arg + *(it);
-                } while ((*(it + 1) != elem) &&(it != trame.end() - 2));
-
-                parametres.push_back(arg);
-                cout << arg << endl;
-                arg = "";
-
-            }
+    vector <char>trame;
+    size_t found, found2 ;
+   
+    
+    for (int i = 0; i <= reception[2]+3; i++) {       
+                trame.push_back(reception[i]);
+                   
+    } 
+    
+     list<string> parametres;   
+     list<string> paramValeurs;
+     vector<char>::iterator it = trame.begin();
+     
+     string arg="";
+     char elem ='-';
+     
+      
+     if(it!=trame.end()){
+    
+        for(it = trame.begin();it!=trame.end();++it){
+          
+        if (*it==elem){
+          arg=elem;  
+        do
+        {
+                it++;
+            arg=arg+*(it);
         }
-    }
-    commande->setParametres(parametres);
+        while((*(it+1)!=elem) &&(it!=trame.end()-2)) ;      
+          
+          parametres.push_back(arg);
+          arg="";
+     
+        }     
+       }
+        if(commande->getCode()== TypeCommande::MISSION){
+		list<string>::iterator it2;
+		for (it2 = parametres.begin(); it2 != parametres.end(); ++it2)
+	 	{
+			//http://www.cplusplus.com/reference/string/string/find/
+			found = ((string)*it2).find(TypeMisEtat::PERIOD);
 
+			if (found!=std::string::npos)
+					 
+			{
+				paramValeurs.push_back(TypeMisEtat::PERIOD);
+				paramValeurs.push_back(((string)*it2).substr(found+TypeMisEtat::PERIOD.length(), ((string)*it2).size()));
+			       
+			}
+			else {
+				found = ((string)*it2).find(TypeMisEtat::DURATION);
+				found2= ((string)*it2).find(TypeMisEtat::DATETIME);
+				if ((found!=std::string::npos) && (found!=found2))
+						 
+				{
+					paramValeurs.push_back(TypeMisEtat::DURATION);
+					paramValeurs.push_back(((string)*it2).substr(found+TypeMisEtat::DURATION.length(), ((string)*it2).size()));
+				       
+				}
+				else {
+					found= ((string)*it2).find(TypeMisEtat::DATETIME);
+					if (found!=std::string::npos) 
+							 
+					{
+						paramValeurs.push_back(TypeMisEtat::DATETIME);
+						paramValeurs.push_back(((string)*it2).substr(found+TypeMisEtat::DATETIME.length(), ((string)*it2).size()));
+					       
+					}
+					else {
+						paramValeurs.push_back((string)*it2);
+					}
+				}
+			}
+		}
+
+
+	commande->setParametres(paramValeurs);
+        }   
+        else {
+	commande->setParametres(parametres);
+	}
+     }  
+     
+ 
 }
 
 bool Protocole::verifierChecksum() {
