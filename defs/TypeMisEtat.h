@@ -14,89 +14,89 @@ class TypeMisEtat
 	/**
 	 * Les températures seront données en °C.
 	 */
-	protected: static string TEMPCELSIUS;
+	public: static string TEMPCELSIUS;
 	/**
 	 * La grandeur mesurée ou à mesurer est une température.
 	 */
-	protected: static string TEMPERATURE;
+	public: static string TEMPERATURE;
 	/**
 	 * Demande ou transmission des pixels d'une image
 	 */
-	protected: static string PIXEL;
+	public: static string PIXEL;
 	/**
 	 * Périodicité avec laquelle une activité doit être effectuée
 	 */
-	protected: static string PERIOD;
+	public: static string PERIOD;
 	/**
 	 * Durée d'une activité
 	 */
-	protected: static string DURATION;
+	public: static string DURATION;
 	/**
 	 * Date de début de mission ou date à bord ou date de dernier redémarrage
 	 */
-	protected: static string DATETIME;
+	public: static string DATETIME;
 	/**
 	 * Stockage libre en Mio
 	 */
-	protected: static string STOCKMO;
+	public: static string STOCKMO;
 	/**
 	 * Stockage occupé en pourcentage
 	 */
-	protected: static string STOPOURCENT;
+	public: static string STOPOURCENT;
 	/**
 	 * Quantité RAM libre en Mio
 	 */
-	protected: static string RAMMO;
+	public: static string RAMMO;
 	/**
 	 * Quantité RAM occupé en pourcentage
 	 */
-	protected: static string RAMPOURCENT;
+	public: static string RAMPOURCENT;
 
 
 	/**
 	 * Appareil allumé
 	 */
-	protected: static string ON;
+	public: static string ON;
 	/**
 	 * Appareil éteint
 	 */
-	protected: static string OFF;
+	public: static string OFF;
 	/**
 	 * Signalisation d'une erreur de fonctionnement
 	 */
-	protected: static string ERROR;
+	public: static string ERROR;
 	/**
 	 * Mode veille de l'appareil
 	 */
-	protected: static string SLEEP;
+	public: static string SLEEP;
 	/**
 	 * L'appareil est prêt à être réveillé par une requête
 	 */
-	protected: static string STANDBY;
+	public: static string STANDBY;
 	/**
 	 * L'appareil est en fonctionnement normal et consomme de l'énergie
 	 */
-	protected: static string NORMAL;
+	public: static string NORMAL;
 	/**
 	 * Permet d'indiquer le niveau de charge de la batterie en %.
 	 */
-	protected: static string CHARGE;
+	public: static string CHARGE;
 	/**
 	 * Permet d'indiquer la tension de la batterie en V.
 	 */
-	protected: static string VOLTAGE;
+	public: static string VOLTAGE;
 	/**
 	 * Permet d'indiquer le courant de la batterie en mA.
 	 */
-	protected: static string AMPERAGE;
+	public: static string AMPERAGE;
 	/**
 	 * Permet d'indiquer que la batterie est en charge
 	 */
-	protected: static string LOAD;
+	public: static string LOAD;
 	/**
 	 * Permet d'indiquer le nombre de redémarrage depuis le dernier contact
 	 */
-	protected: static string REBOOT_NUMBER;
+	public: static string REBOOT_NUMBER;
 };
 
 #endif

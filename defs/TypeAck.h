@@ -21,10 +21,10 @@ class TypeAck {
 		TypeAck();
 		TypeAck(const TypeAck& orig);
 		virtual ~TypeAck();
-	protected: static string OK;
-	protected: static string FAIL;
-	protected: static string BUSY;
-	protected: static string ERROR;
+	public: static string OK;
+	public: static string FAIL;
+	public: static string BUSY;
+	public: static string ERROR;
 };
 
 #endif /* TYPEACK_H */

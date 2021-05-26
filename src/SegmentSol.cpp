@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   SegmentSol.cpp
  * Author: snir2g2
- * 
+ *
  * Created on 19 mars 2019, 15:24
  */
 
@@ -16,86 +16,77 @@
 #include "../defs/SegmentSol.h"
 #include "../defs/SegmentVol.h"
 #include "../defs/serialib.h"
-#include "../defs/Protocole.h"
+#include "../defs/FrameManager.h"
 #include "../defs/Message.h"
 
 
 using namespace std;
 
+    mutex mutex_serial, mutex_message;
+	condition_variable cv;
+	bool ready = false;
+
 SegmentSol::SegmentSol(SegmentVol *leSegment) {
     this->leSegment = leSegment;
-    this->message = new Message();
-    //this->envoyerMsgStart();
+
 }
 
 SegmentSol::~SegmentSol() {
 }
 
 void SegmentSol::activerReception() {
-
-
+	serialib * monObjSerial = new serialib; //Déclaration de l'instance
+	vector<char> laTrame;
+	vector<char>::iterator it ;
     while (true) {
 
-        mutex_serial.lock();
-
-        serialib * monObjSerial = new serialib; //Déclaration de l'instance
-
-        monObjSerial->Open("/dev/serial0", 9600); //Ouverture 
-
+		unique_lock<mutex> lck(mutex_serial);
+		while (ready) 	cv.wait(lck);
+        monObjSerial->Open("/dev/serial0", 9600); //Ouverture
         char varID = leSegment->getIdentifiant();
-		       
-        int typeRetourTrame = monObjSerial->ReadString(tableau, 255, 128, 3000);
-        cout << "Valeur de Retour : " << typeRetourTrame << endl;
+		message->setIdSegment(varID);
+        int typeRetourTrame = monObjSerial->ReadString(trameReception, 255, 128, 3000);
 
-        if (typeRetourTrame == 0) {
-            cout << "Pas de commande reçu." << endl;
-            monObjSerial->Close();
-            mutex_serial.unlock();
-        } else if (typeRetourTrame == -1) {
-            cout << "Erreur TimeOut mal définie" << endl;
-            monObjSerial->Close();
-            mutex_serial.unlock();
-        } else if (typeRetourTrame == -2) {
-            cout << "Erreur impossible d'accéder à la ressource." << endl;
-            monObjSerial->Close();
-            mutex_serial.unlock();
-        } else if (typeRetourTrame == -3) {
-            cout << "Erreur, trop d'octects lus." << endl;
-            this->envoieACK("BUSY");
-            monObjSerial->Close();
-            mutex_serial.unlock();
+		if (typeRetourTrame == -3) {
+			laTrame = this->tramerACK(message,"BUSY");
+      //Créé un méthode envoyerLaTrame(laTrame) ?
+			for (it = laTrame.begin(); it != laTrame.end() ; it++) {
+				monObjSerial->WriteChar(*it);
+			}
         } else if (typeRetourTrame > 1) {
-            cout << "Reception de la Commande OK " << endl;
 
-            cout << "Trame Lue : " << " avec nombre octets :" << typeRetourTrame;
-            for (int i(0); i < typeRetourTrame; i++) {
-                cout << tableau[i];
-            }
-			cout<<endl;
-                if (tableau[1] == varID) {
-                    cout << "La commande est pour notre Cube" << endl;
+                if (trameReception[0] == varID)
+				{
 
                     bool boolChecksum = this->verifierChecksum();
                     if (boolChecksum == true) {
-                        this->envoieACK("ACK");
-                        thread tCOM = this->tTraiterCommande(); //Mettre à Traiter la commande
-                        tCOM.join();
-                    }
-                    if (boolChecksum == false) {
-                        this->envoieACK("NACK");
-                    }
 
-                } else {
-                    cout << "La commande n'est pas pour notre Cube" << endl;
+						laTrame = this->tramerACK(message,"ACK");
+
+            //Créé un méthode envoyerLaTrame(laTrame) ?
+						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
+							monObjSerial->WriteChar(*it);
+						}
+                        thread tCOM = this->tTraiterCommande(); //Mettre à Traiter la commande
+                        tCOM.detach();
+                    }
+					else {
+						laTrame = this->tramerACK(message,"NACK");
+
+            //Créé un méthode envoyerLaTrame(laTrame) ?
+						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
+							monObjSerial->WriteChar(*it);
+						}
+                    }
                 }
-                monObjSerial->Close();
-            mutex_serial.unlock();
-        } else {
-            monObjSerial->Close();
-            mutex_serial.unlock();
         }
+		monObjSerial->Close();
     }
 }
+
+
+
+
 
 thread SegmentSol::tActiverReception() {
     return thread([this] {
@@ -143,10 +134,9 @@ thread SegmentSol::tTestEnvoie() {
 
 void SegmentSol::envoyerStatus(list<string> status) {
 
-    cout << "Appel de envoyerStatus" << endl;
-
     serialib LS;
     int Ret;
+	bool argumentsOK=true;
     list<string>::iterator it;
 	int nbrePaquets = 0;
     unsigned char idSegment = leSegment->getIdentifiant();
@@ -182,7 +172,7 @@ void SegmentSol::envoyerStatus(list<string> status) {
 
     } else for (it = status.begin(); it != status.end(); it++) {
 
-            //ordinateur 
+            //ordinateur
             if (*it == TypeAppareil::ORDIBORD) {
                 Stockage * leStockage = leSegment->getOrdinateur()->getStockage();
                 std::size_t found = leStockage->getUnit().find('k');
@@ -220,36 +210,37 @@ void SegmentSol::envoyerStatus(list<string> status) {
 				message->setReboot(leSegment->getOrdinateur()->getReboot());
 				if (message->getTemperatureCube() =="0") nbrePaquets++;
             }
-			else
-                this->envoieACK("ERROR-E13");
+			else {
+				argumentsOK=false;
+			}
         }
 
-    mutex_serial.lock();
-   // if (status.begin() == status.end()) {
-		for (int i = 0; i < nbrePaquets; i++) {
+		ready = true;
+		unique_lock<mutex> lck(mutex_serial);
+		cv.notify_all();
+		if (argumentsOK)
+		{
+			for (int i = 0; i < nbrePaquets; i++) {
 			Ret = LS.Open(DEVICE_PORT, 9600);
-			if (Ret == 1) {
-				cout << "Accès à la ressource pour l'envoie du status : réussi" << endl;
-			} else {
-				cout << "Accès à la ressource pour l'envoie du status : échoué" << endl;
-			}
-
-			tramerStatus(message, status, nbrePaquets, i + 1);
-			Ret = LS.Write(tableau, tableau[2] + 6);
-
 			if (Ret >= 1) {
-				cout << "Ecriture vers la ressource pour l'envoie du status : réussi" << endl;
-			} else {
-				cout << "Ecriture vers la ressource pour l'envoie du status : échoué" << endl;
-			}
 
-			LS.Close();
-			cout << "Le status a été envoyé." << endl;
-			cout << tableau << endl;
+				tramerStatus(message, status, nbrePaquets, i + 1);
+				Ret = LS.Write(trameEmission, trameEmission[1] + 5);
+				LS.Close();
+				}
+			}
+		}
+		else {
+				vector<char> laTrame = this->tramerACK(message,"ERROR-E13");
+				vector<char>::iterator it ;
+				Ret = LS.Open(DEVICE_PORT, 9600);
+				for (it = laTrame.begin(); it != laTrame.end() ; it++) {
+					LS.WriteChar(*it);
+				}
+				LS.Close();
 
 		}
-	//}
-    mutex_serial.unlock();
+    ready = false;
 	message=new Message();
 }
 
@@ -258,19 +249,20 @@ void SegmentSol::envoyerMission() {
     char Ret;
     unsigned char idSegment = leSegment->getIdentifiant();
     message->setIdSegment(idSegment);
-    Instrument* camera = leSegment->getInstrument();
-    list<Mesure*> mesures = camera->getMesures();
+    Instrument* instrument = leSegment->getInstrument();
+    list<Mesure*> mesures = instrument->getMesures();
     message->setMesures(mesures);
     Mission * laMission = leSegment->getMission();
     string leTypeMission = laMission ->getMeasureType();
     message->setTypeMission(leTypeMission);
     int nbrePaquets = this->calculerNombrePaquets(message);
+	ready = true;
+	std::unique_lock<std::mutex> lck(mutex_serial);
+	cv.notify_all();
     for (int i = 0; i < nbrePaquets; i++) {
-        Ret=LS.Open(DEVICE_PORT,9600); 
-
+        Ret=LS.Open(DEVICE_PORT,9600);
         tramerMission(message, nbrePaquets, i+1);
-
-        Ret = LS.Write(tableau, tableau[2] + 6);
+        Ret = LS.Write(trameEmission, trameEmission[1] + 5);
 
         //auto start = std::chrono::high_resolution_clock::now();
         //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -278,26 +270,24 @@ void SegmentSol::envoyerMission() {
         // std::chrono::duration<double, std::milli> elapsed = end-start;
         //std::cout << "Waited " << elapsed.count() << " ms\n";
         LS.Close();
-        cout << "Envoi status" << tableau << endl;
     }
-    camera->clearMesures();
-    mesures = camera->getMesures();
+    ready = false; //mutex_serial.unlock();
+    instrument->clearMesures();
+    mesures = instrument->getMesures();
 
 }
 
 void SegmentSol::traiterCommande() {
     //  Commande* maCoco = new Commande();
     Reboot* monReboot = new Reboot();
-    this->extraireCommande(tableau);
-    this->extraireParametres(tableau);
-    cout << "Mon tableau" << endl;
-    cout << tableau << endl;
+    this->extraireCommande(trameReception);
+    this->extraireParametres(trameReception);
 
     //Traitement des commandes
 
     if (commande->getCode() == TypeCommande::MISSION) {
         leSegment->creerMission(10, 60, 0, 0); //(short periode, short duree, string debut, string type)
-        leSegment->lancerMission(); // voir le creeMission avec JOJO 
+        leSegment->lancerMission(); // voir le creeMission avec JOJO
         leSegment->arretMission();
 
     } else if (commande->getCode() == TypeCommande::DATE) {
@@ -305,15 +295,16 @@ void SegmentSol::traiterCommande() {
     } else if (commande->getCode() == TypeCommande::DEPLOY) {
         //à Voir
     } else if (commande->getCode() == TypeCommande::EMPTY) {
-        leSegment->getOrdinateur()->getReboot()->systemeReboot();
+        monReboot->systemeReboot();
     } else if (commande->getCode() == TypeCommande::MEASURE) {
         list<string> mesure = commande->getParametres();
         if (mesure.front() == TypeMisEtat::TEMPCELSIUS) {
             leSegment->effectuerMesure(TEMPCELSIUS);
         } else if (mesure.front() == TypeMisEtat::PIXEL) {
             leSegment->effectuerMesure(PIXEL);
-        } else
-            this->envoieACK("ERROR-E11");
+        } else {
+				envoyerInfos("ERROR-E11");
+		}
     } else if (commande->getCode() == TypeCommande::MEETING) {
         //à Voir
     } else if (commande->getCode() == TypeCommande::SAVE) {
@@ -325,7 +316,9 @@ void SegmentSol::traiterCommande() {
     } else if (commande->getCode() == TypeCommande::SURVIVAL) {
         //à Voir
     } else
-        this->envoieACK("ERROR-E10");
+	{
+				envoyerInfos("ERROR-E10");
+	}
 }
 
 thread SegmentSol::tTraiterCommande() {
@@ -335,111 +328,62 @@ thread SegmentSol::tTraiterCommande() {
 }
 
 void SegmentSol::envoyerMesure(string type) {
-
-
     serialib LS;
     int Ret;
-    Instrument* camera = leSegment->getInstrument();
+    Instrument* instrument = leSegment->getInstrument();
     unsigned char idSegment = leSegment->getIdentifiant();
+	mutex_message.lock();
 
     message->setIdSegment(idSegment);
+	message->setTypeMesure(type);
 
-    message->setTypeMesure(type);
-
-    if (type.find(Protocole::TEMPCELSIUS) != string::npos) {
-
+    if (type.find(FrameManager::TEMPCELSIUS) != string::npos) {
         list<Mesure*> mesures = leSegment->getInstrument()->getMesures();
         message->setMesures(mesures);
         int nbrePaquets = 1;
+		ready = true;
+		unique_lock<mutex> lck(mutex_serial);
+		cv.notify_all();
         for (int i = 0; i < nbrePaquets; i++) {
-
-            mutex_serial.lock();
-            Ret = LS.Open(DEVICE_PORT, 9600);
-
-            if (Ret == 1) {
-                cout << "Accès à la ressource pour l'envoie de la mesure Température : réussi" << endl;
-            } else {
-                cout << "Accès à la ressource pour l'envoie de la mesure Température : échoué" << endl;
-            }
-
             tramerMesure(message, nbrePaquets, 1);
-            Ret = LS.Write(tableau, tableau[2] + 6);
-
-            if (Ret >= 1) {
-                cout << "Ecriture vers la ressource pour l'envoie de la mesure Température : réussi" << endl;
-            } else {
-                cout << "Ecriture vers la ressource pour l'envoie de la mesure Température : échoué" << endl;
-            }
-
+			Ret = LS.Open(DEVICE_PORT, 9600);
+            Ret = LS.Write(trameEmission, trameEmission[1] + 5);
             LS.Close();
-            cout << "Mesure de Température (TC) envoyée." << endl;
-			for (int visue = 0; visue<tableau[2] + 6;visue++)
-            cout << (int)tableau[visue] << endl;
-            mutex_serial.unlock();
         }
         message->clearMesures();
-        camera->clearLastMesures();
-    } else if (type.find(Protocole::PIXEL) != string::npos) {
+        instrument->clearLastMesures();
+    } else if (type.find(FrameManager::PIXEL) != string::npos) {
 
         float * mesures = leSegment->getInstrument()->obtenirMesure();
         for (int i = 0; i < 64; i++) {
             message->addPixel(*(mesures + i));
-            cout << "prel  PIXELS" << *(mesures + i) << endl;
-
         }
         int nbrePaquets = 8;
+		ready = true;
+		std::unique_lock<std::mutex> lck(mutex_serial);
+		cv.notify_all();
         for (int i = 0; i < nbrePaquets; i++) {
-
-            mutex_serial.lock();
             Ret = LS.Open(DEVICE_PORT, 9600);
 
-            if (Ret == 1) {
-                cout << "Accès à la ressource pour l'envoie de la mesure du PIXEL : réussi" << endl;
-            } else {
-                cout << "Accès à la ressource pour l'envoie de la mesure du PIXEL : échoué" << endl;
-            }
-
             tramerMesure(message, nbrePaquets, i + 1);
-            Ret = LS.Write(tableau, tableau[2] + 6);
-
-            if (Ret >= 1) {
-                cout << "Ecriture vers la ressource pour l'envoie de la mesure du PIXEL : réussi" << endl;
-            } else {
-                cout << "Ecriture vers la ressource pour l'envoie de la mesure du PIXEL : échoué" << endl;
-            }
-
+            Ret = LS.Write(trameEmission, trameEmission[1] + 5);
             LS.Close();
-            cout << "Mesure du PIXEL envoyée." << endl;
-            cout << tableau << endl;
-            mutex_serial.unlock();
         }
         message->clearPixels();
     }
-
+	        ready = false; //mutex_serial.unlock();
+		mutex_message.unlock();
 
 }
 
-
-
-void SegmentSol::envoyerMsgStart(){
-    
-    mutex_serial.lock();
-    
-    this->tramerMessageStart();
-    //Ouverture de l'accès à la ressource
-    serialib LS;
-    int Ret;
-    Ret = LS.Open(DEVICE_PORT, 9600);
-    //Afficher le Message
-    cout << "Message renvoyé :" << endl;
-    for (int i(0); i < 10; i++) {
-        LS.WriteChar(tableau[i]);
-        cout << tableau[i];
-    }
-    cout << endl;
-
-    //Fermer l'accès à la ressource
-    
-    LS.Close();
-    mutex_serial.unlock();
+void SegmentSol::envoyerInfos(string type){
+					message->setIdSegment(leSegment->getIdentifiant());
+				vector<char> laTrame = this->tramerACK(message,type);
+				vector<char>::iterator it ;
+				serialib LS;
+				LS.Open(DEVICE_PORT, 9600);
+				for (it = laTrame.begin(); it != laTrame.end() ; it++) {
+					LS.WriteChar(*it);
+				}
+				LS.Close();
 }

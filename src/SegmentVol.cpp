@@ -25,11 +25,9 @@ SegmentVol::SegmentVol() {
     ordinateur = new Ordinateur();
     etat = new Etat();
     segmentSol = new SegmentSol(this);
-    reboot = new Reboot();
-    surveillance = new Surveillance();
+    surveillance = new Surveillance(this);
     sauvegarde = new Sauvegarde();
     this->intialisationInstrument();
-    segmentSol->envoyerMsgStart();
 }
 
 SegmentVol::~SegmentVol() {
@@ -58,11 +56,10 @@ void SegmentVol::surveillerConstantes() {
 }
 
 void SegmentVol::demandeManuelleReboot() {
-    sauvegarde->enregistrerMesure();
-    reboot->setNumber(reboot->getNumber() + 1);
-    reboot->setDateHour(horloge->getDateHeure());
-    this->getOrdinateur()->getReboot();
-    reboot->systemeReboot();
+	sauvegarde->enregistrerMesures(this->instrument->getMesures());
+	ordinateur->getReboot()->setNumber(ordinateur->getReboot()->getNumber() + 1);
+    ordinateur->getReboot()->setDateHour(horloge->getDateHeure());
+    ordinateur->getReboot()->systemeReboot();
     // Codage d'envoi vers Segment Sol � faire?
 }
 
@@ -92,12 +89,8 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
     list<string>::iterator it;
     horloge->lire();
 		list<string>::iterator it2;
-		for (it2 = appareil.begin(); it2 != appareil.end(); ++it2)
-		{
-			cout<< "Le parametres est"<<*it2<<"et TypeAppareil::ORDIBORD"<<TypeAppareil::ORDIBORD<<"//"<<endl;
-		}
+
 	if (appareil.begin() == appareil.end()) {
-        cout << "Là" << endl;
         ordinateur->obtenirStatus();
         instrument->obtenirStatus();
         batterie->obtenirStatus();
@@ -110,32 +103,32 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
         if (*it == TypeAppareil::ORDIBORD) {
             ordinateur->obtenirStatus();
             if (ordinateur->obtenirStatus() == -1) {
-                segmentSol->envoieACK("ERROR-20");
+                segmentSol->envoyerInfos("ERROR-20");
             }
         }
-        if (*it == TypeAppareil::INSTRUMENT) {
+        else if (*it == TypeAppareil::INSTRUMENT) {
             instrument->obtenirStatus();
             if (instrument->obtenirStatus() == -1) {
-                segmentSol->envoieACK("ERROR-21");
+                segmentSol->envoyerInfos("ERROR-21");
             }
         }
-        if (*it == TypeAppareil::BATTERIE) {
+        else if (*it == TypeAppareil::BATTERIE) {
             batterie->obtenirStatus();
             if (batterie->obtenirStatus() == -1) {
-                segmentSol->envoieACK("ERROR-22");
+                segmentSol->envoyerInfos("ERROR-22");
             }
         }
-        if (*it == TypeAppareil::CUBE) {
+        else if (*it == TypeAppareil::CUBE) {
             temperature->recupTempSys();
             if (temperature->recupTempSys() == -1) {
-                segmentSol->envoieACK("ERROR-23");
+                segmentSol->envoyerInfos("ERROR-23");
             }
         } 
 
-		if ((*it != TypeAppareil::ORDIBORD) && (*it != TypeAppareil::INSTRUMENT) && 
+		else if ((*it != TypeAppareil::ORDIBORD) && (*it != TypeAppareil::INSTRUMENT) && 
 			(*it != TypeAppareil::BATTERIE) && (*it != TypeAppareil::CUBE) && (*it!=TypeAppareil::REBOOT))
 		{
-				segmentSol->envoieACK("ERROR-E12");
+				segmentSol->envoyerInfos("ERROR-E12");
 		}
     }
     activerModuleEmission();
@@ -370,7 +363,7 @@ int SegmentVol::resetStatus(list<string> appareil)
 		ordinateur->resetStatus();
 		instrument->resetStatus();
 		batterie->resetStatus();
-		reboot->resetStatus();
+		ordinateur->getReboot()->resetStatus();
 		temperature->resetTemperature();
     }
     else
@@ -389,5 +382,6 @@ int SegmentVol::resetStatus(list<string> appareil)
 			temperature->resetTemperature();
         } 
     }
+	return 0;
 
 }

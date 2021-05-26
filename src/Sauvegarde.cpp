@@ -24,7 +24,8 @@ Sauvegarde::Sauvegarde(const Sauvegarde& orig) {
 Sauvegarde::~Sauvegarde() {
 }
 
-bool Sauvegarde::enregistrerMesure() { // initialement prévu : bool Sauvegarde::enregistrerMesure(Mesure mesure);
+bool Sauvegarde::enregistrerMesures(list<Mesure *> lesMesures) { // initialement prévu : bool Sauvegarde::enregistrerMesure(Mesure mesure);
+	this->lesMesures = lesMesures;
     //pugi::xml_document doc;
     //char commandeCreer[256];
     //char xmlFile[] = "initcube.xml";

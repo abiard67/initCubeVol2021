@@ -22,7 +22,7 @@ public:
     TypeCommande(const TypeCommande& orig);
     virtual ~TypeCommande();
 private:
-protected:
+public:
     static string MISSION;
     static string MEASURE;
     static string STATUS;

@@ -45,6 +45,8 @@ private:
     static char adressecapteuri2c;
     static char pointeurderegistre;
     static char bithuitadouze;
+	static char positif;
+	static char negatif;
     float temperaturesys;
 };
 

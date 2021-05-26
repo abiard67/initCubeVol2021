@@ -44,8 +44,9 @@ using namespace tinyxml2;
 using namespace std;
 
 class SegmentSol;
+class Surveillance;
 
-class SegmentVol : public TypeMisEtat, TypeAppareil {
+class SegmentVol {
 public:
     SegmentVol();
     virtual ~SegmentVol();
@@ -94,9 +95,8 @@ private:
     Mission* mission;
     Ordinateur* ordinateur;
     SegmentSol* segmentSol;
-    Reboot* reboot;
-    Surveillance* surveillance;
-    Sauvegarde* sauvegarde;
+	Surveillance * surveillance;
+	Sauvegarde* sauvegarde;
     Etat* etat;
     bool etatThread;
 };
