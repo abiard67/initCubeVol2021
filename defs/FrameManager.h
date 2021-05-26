@@ -97,7 +97,7 @@ public:
     /// Elle DOIT �tre utilis�e apr�s traitement du paquet.
     void supprimerPaquet();
 
-    vector<char> tramerACK(Message* message,string ACK);
+    vector<char> tramerRepAcq(Message* message,string ReponseAcquitement);
     //thread tEnvoieACK(string ACK);
 
 protected:
@@ -125,6 +125,7 @@ protected:
     char tableau[100];
     char trameReception[100];
     char trameEmission[100];
+    int nbOctectsDataRecu;
 
     list<vector<char>> received;
 	map <string,int> decoupePaquets;
@@ -138,6 +139,8 @@ protected:
     unsigned char calculerNombrePaquets(Message * message);
     void extraireCommande(char reception[]);
     void extraireParametres(char reception[]);
+    void extrairenbOctectsDataRecu(char reception[]);
+    void detramerCommande();
     /// Cette m�thode permet d'ajouter les donn�es de l'ordinateur de bord � la trame.
     /// </summary>
     /// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>

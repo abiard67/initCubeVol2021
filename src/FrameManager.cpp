@@ -60,6 +60,21 @@ void FrameManager::calculerChecksum(char trame[104], char & PF, char & pf) {
 
 }
 
+void FrameManager::detramerCommande() {
+
+  extrairenbOctectsDataRecu(trameReception);
+  extraireCommande(trameReception);
+  extraireParametres(trameReception);
+
+}
+
+
+void FrameManager::extrairenbOctectsDataRecu(char reception[]) {
+
+  nbOctectsDataRecu = (int) reception[1];
+
+}
+
 void FrameManager::extraireCommande(char reception[]) {
 
     vector <char> trame(0);
@@ -956,27 +971,25 @@ void FrameManager::supprimerPaquet() {
     this->received.pop_front();
 }
 
-vector<char> FrameManager::tramerACK(Message* message, string ACK) {
+vector<char> FrameManager::tramerRepAcq(Message* message, string ReponseAcquitement) {
 
 
-    vector<char> trameACK(0);
+    vector<char> trameRepAcq(0);
     int j=0;
-    char tableauACK[100];
+    char tableauRepAcq[100];
 	char PF,pf;
 	short Checksum = 0;
     char leChecksum[2];
-    //Ecrire mon ACK ACK
 
-	//trameACK.push_back('~');
-	trameACK.push_back( message->getIdSegment());
+	trameRepAcq.push_back( message->getIdSegment());
 
-	strcpy(tableauACK, ACK.c_str());
-    for (j = 0; j < (int)ACK.size(); j++) {
-        trameACK.push_back( tableauACK[j]);
+	strcpy(tableauRepAcq, ReponseAcquitement.c_str());
+    for (j = 0; j < (int)ReponseAcquitement.size(); j++) {
+        trameRepAcq.push_back( tableauRepAcq[j]);
     }
 
-	for (int i = 1; i < (int)trameACK.size(); i++) {
-        Checksum = Checksum^tableauACK[i];
+	for (int i = 1; i < (int)trameRepAcq.size(); i++) {
+        Checksum = Checksum^tableauRepAcq[i];
     }
     sprintf(leChecksum, "%2X", Checksum);
     if (leChecksum[0] == 32) leChecksum[0] = '0';
@@ -984,10 +997,9 @@ vector<char> FrameManager::tramerACK(Message* message, string ACK) {
     PF = leChecksum[0];
     pf = leChecksum[1];
 
-	trameACK.push_back( PF);
-	trameACK.push_back( pf);
-	trameACK.push_back( 255);
-	return trameACK;
-
+	trameRepAcq.push_back( PF);
+	trameRepAcq.push_back( pf);
+	trameRepAcq.push_back( 255);
+	return trameRepAcq;
 
 }

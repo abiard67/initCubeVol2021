@@ -48,30 +48,32 @@ void SegmentSol::activerReception() {
         int typeRetourTrame = monObjSerial->ReadString(trameReception, 255, 128, 3000);
 
 		if (typeRetourTrame == -3) {
-			laTrame = this->tramerACK(message,"BUSY");
+			laTrame = this->tramerRepAcq(message,"BUSY");
       //Créé un méthode envoyerLaTrame(laTrame) ?
 			for (it = laTrame.begin(); it != laTrame.end() ; it++) {
 				monObjSerial->WriteChar(*it);
 			}
         } else if (typeRetourTrame > 1) {
-
+          cout << "Trame reçue" << endl;
                 if (trameReception[0] == varID)
 				{
-
+                    cout << "Trame pour notre Sat" << endl;
                     bool boolChecksum = this->verifierChecksum();
                     if (boolChecksum == true) {
-
-						laTrame = this->tramerACK(message,"ACK");
+                    cout << "Envoie de l'ACK" << endl;
+						laTrame = this->tramerRepAcq(message,"ACK");
 
             //Créé un méthode envoyerLaTrame(laTrame) ?
 						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
 							monObjSerial->WriteChar(*it);
 						}
+                        cout << "Traitement de la commande..." << endl;
                         thread tCOM = this->tTraiterCommande(); //Mettre à Traiter la commande
                         tCOM.detach();
                     }
 					else {
-						laTrame = this->tramerACK(message,"NACK");
+            cout << "Envoie d'un NACK" << endl;
+            laTrame = this->tramerRepAcq(message,"NACK");
 
             //Créé un méthode envoyerLaTrame(laTrame) ?
 						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
@@ -80,6 +82,7 @@ void SegmentSol::activerReception() {
                     }
                 }
         }
+    cout << "Zzz..." << endl;
 		monObjSerial->Close();
     }
 }
@@ -231,7 +234,7 @@ void SegmentSol::envoyerStatus(list<string> status) {
 			}
 		}
 		else {
-				vector<char> laTrame = this->tramerACK(message,"ERROR-E13");
+				vector<char> laTrame = this->tramerRepAcq(message,"ERROR-E13");
 				vector<char>::iterator it ;
 				Ret = LS.Open(DEVICE_PORT, 9600);
 				for (it = laTrame.begin(); it != laTrame.end() ; it++) {
@@ -278,10 +281,9 @@ void SegmentSol::envoyerMission() {
 }
 
 void SegmentSol::traiterCommande() {
-    //  Commande* maCoco = new Commande();
+
     Reboot* monReboot = new Reboot();
-    this->extraireCommande(trameReception);
-    this->extraireParametres(trameReception);
+
 
     //Traitement des commandes
 
@@ -323,6 +325,7 @@ void SegmentSol::traiterCommande() {
 
 thread SegmentSol::tTraiterCommande() {
     return thread([this] {
+        detramerCommande();
         traiterCommande();
     });
 }
@@ -378,7 +381,7 @@ void SegmentSol::envoyerMesure(string type) {
 
 void SegmentSol::envoyerInfos(string type){
 					message->setIdSegment(leSegment->getIdentifiant());
-				vector<char> laTrame = this->tramerACK(message,type);
+				vector<char> laTrame = this->tramerRepAcq(message,type);
 				vector<char>::iterator it ;
 				serialib LS;
 				LS.Open(DEVICE_PORT, 9600);
