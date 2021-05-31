@@ -64,8 +64,14 @@ void FrameManager::detramerCommande() {
 
   extrairenbOctectsDataRecu(trameReception);
   cout << "Nb d'octets du PDU : " << commande->getnbOctectsDataRecu() << endl;
-  extraireCommande(trameReception);
-  extraireParametres(trameReception);
+  vector <char> commandePDU(0);
+  for (int i = 2; i <= commande->getnbOctectsDataRecu()+2; i++) {
+      commandePDU.push_back(trameReception[i]);
+      cout << commandePDU[i];
+  }
+  cout << endl;
+  extraireCommande(commandePDU);
+  extraireParametres(commandePDU);
 
 }
 
@@ -76,20 +82,21 @@ void FrameManager::extrairenbOctectsDataRecu(char reception[]) {
   commande->setnbOctectsDataRecu(nbdata);
 }
 
-void FrameManager::extraireCommande(char reception[]) {
+void FrameManager::extraireCommande(vector <char> trame) {
 
-    vector <char> trame(0);
-    for (int i = 0; i <= 104; i++) {
+    //vector <char> trame(0);
+
+    /*for (int i = 0; i <= 104; i++) {
 
         trame.push_back(reception[i]);
 
-    }
+    }*/
 
     vector<char>::iterator it = trame.begin();
     string cmdReception;
-    advance(it, 1);
+    //advance(it, 1);
     int nbOctects = commande->getnbOctectsDataRecu();
-    advance(it, 1);
+    //advance(it, 1);
 
     for (int i = 0; i != nbOctects && *it != '-'; i++) {
 
@@ -101,16 +108,16 @@ void FrameManager::extraireCommande(char reception[]) {
     commande->setCode(cmdReception);
 }
 
-void FrameManager::extraireParametres(char reception[]) {
+void FrameManager::extraireParametres(vector <char> trame) {
 
-     vector <char>trame;
+     //vector <char>trame;
     size_t found, found2 ;
 
 
-    for (int i = 0; i <= reception[1]+2; i++) {
+    /*for (int i = 0; i <= reception[1]+2; i++) {
                 trame.push_back(reception[i]);
 
-    }
+    }*/
 
      list<string> parametres;
      list<string> paramValeurs;
@@ -131,7 +138,7 @@ void FrameManager::extraireParametres(char reception[]) {
                 it++;
             arg=arg+*(it);
         }
-        while((*(it+1)!=elem) &&(it!=trame.end()-2)) ;
+        while((*(it+1)!=elem) &&(it!=trame.end()-1)) ;
 
           parametres.push_back(arg);
           arg="";

@@ -137,8 +137,8 @@ protected:
     void tramerStatus(Message* message, list<string> appareils, int nbrePaquets, int numPaquet);
     void tramerMesure(Message* message, int nbrePaquets, int numPaquet);
     unsigned char calculerNombrePaquets(Message * message);
-    void extraireCommande(char reception[]);
-    void extraireParametres(char reception[]);
+    void extraireCommande(vector <char> trame);
+    void extraireParametres(vector <char> trame);
     void extrairenbOctectsDataRecu(char reception[]);
     void detramerCommande();
     /// Cette m�thode permet d'ajouter les donn�es de l'ordinateur de bord � la trame.
