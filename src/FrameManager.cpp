@@ -65,9 +65,7 @@ void FrameManager::detramerCommande() {
   extrairenbOctectsDataRecu(trameReception);
   cout << "Nb d'octets du PDU : " << commande->getnbOctectsDataRecu() << endl;
   extraireCommande(trameReception);
-  cout << "Type de Commande : " << commande->getCode() << endl;
   extraireParametres(trameReception);
-  cout << "Paramètres : " << commande->getParametres() << endl;
 
 }
 
@@ -90,7 +88,7 @@ void FrameManager::extraireCommande(char reception[]) {
     vector<char>::iterator it = trame.begin();
     string cmdReception;
     advance(it, 1);
-    int nbOctects = *it;
+    int nbOctects = commande->getnbOctectsDataRecu();
     advance(it, 1);
 
     for (int i = 0; i != nbOctects && *it != '-'; i++) {
