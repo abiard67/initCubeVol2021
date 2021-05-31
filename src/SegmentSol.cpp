@@ -67,9 +67,8 @@ void SegmentSol::activerReception() {
 						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
 							monObjSerial->WriteChar(*it);
 						}
-                        cout << "Traitement de la commande..." << endl;
-                        thread tCOM = this->tTraiterCommande(); //Mettre à Traiter la commande
-                        tCOM.detach();
+                        cout << "Ajout d'une commande reçue à la fille d'attente..." << endl;
+                        this->ajouter_cmd_queue(trameReception);
                     }
 					else {
             cout << "Envoie d'un NACK" << endl;
@@ -244,6 +243,23 @@ void SegmentSol::envoyerMission() {
 
 }
 
+void SegmentSol::traiter_cmd_queue() {
+while (true){
+    if (q.size() > 0) {
+      cout << "Commande mise au traitement :" << q.front() << endl;
+      for (int i = 0; i < 100; i++) {
+        trameAtraiter[i] = q.front()[i];
+        cout << trameAtraiter[i];
+      }
+      cout << endl;
+      cout << "Traitement de la commande..." << endl;
+      q.pop(); //Sortir la commande de la queue
+      detramerCommande(); //Détramer la commande afin de la traiter en suivant l'encapsulation
+      traiterCommande(); //Traiter la commande utile
+    }
+  }
+}
+
 void SegmentSol::traiterCommande() {
 
     Reboot* monReboot = new Reboot();
@@ -290,6 +306,12 @@ thread SegmentSol::tTraiterCommande() {
     return thread([this] {
         detramerCommande();
         traiterCommande();
+    });
+}
+
+thread SegmentSol::tTraiter_cmd_queue() {
+    return thread([this] {
+        traiter_cmd_queue();
     });
 }
 

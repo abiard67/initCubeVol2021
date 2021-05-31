@@ -12,7 +12,9 @@ int main(int argc, char** argv) {
     SegmentSol* monSeg = new SegmentSol(segmentVol);
 	segmentVol->setSegmentSol(monSeg);
     thread t1 = monSeg->tActiverReception();
+    thread t2 = monSeg->tTraiter_cmd_queue();
 
     t1.join();
+    t2.join();
     return 0;
 }

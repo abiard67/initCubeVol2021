@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   SegmentSol.h
  * Author: snir2g2
  *
@@ -22,7 +22,7 @@
 #include "SegmentVol.h"
 #include "Message.h"
 
-#define         DEVICE_PORT             "/dev/serial0" 
+#define         DEVICE_PORT             "/dev/serial0"
 
 class SegmentVol;
 class SegmentSol: public FrameManager{
@@ -37,13 +37,14 @@ public:
     thread tActiverReception();
     void traiterCommande();
     thread tTraiterCommande();
+    thread tTraiter_cmd_queue();
     void testEnvoie();
     thread tTestEnvoie();
-    
+    void traiter_cmd_queue();
+
 private:
     SegmentVol* leSegment;
 
 };
 
 #endif /* SEGMENTSOL_H */
-

@@ -22,6 +22,8 @@
 #include <vector>
 #include <map>
 #include <iterator>
+#include <cstdlib>
+#include<bits/stdc++.h>
 
 
 #include "../defs/Message.h"
@@ -36,6 +38,7 @@ public:
     FrameManager();
     FrameManager(const FrameManager& orig);
     virtual ~FrameManager();
+    void print_queue(queue<char *> q);
     /**
      * accesseur au tableau de 100 octets � transmettre ou re�us
      */
@@ -98,7 +101,7 @@ public:
     void supprimerPaquet();
 
     vector<char> tramerRepAcq(Message* message,string ReponseAcquitement);
-    //thread tEnvoieACK(string ACK);
+
 
 protected:
     /**
@@ -125,7 +128,8 @@ protected:
     char tableau[100];
     char trameReception[100];
     char trameEmission[100];
-
+    queue<char *> q;
+    char trameAtraiter[100];
 
     list<vector<char>> received;
 	map <string,int> decoupePaquets;
@@ -141,6 +145,7 @@ protected:
     void extraireParametres(vector <char> trame);
     void extrairenbOctectsDataRecu(char reception[]);
     void detramerCommande();
+    void ajouter_cmd_queue(char reception[]);
     /// Cette m�thode permet d'ajouter les donn�es de l'ordinateur de bord � la trame.
     /// </summary>
     /// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>
