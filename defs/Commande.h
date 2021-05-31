@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   Commande.h
  * Author: snir2g2
  *
@@ -25,10 +25,12 @@ public:
     string getCode();
     list<string>getParametres();
     void setParametres(list<string>parametres);
+    void setnbOctectsDataRecu(int nbOctectsDataRecu);
+    int getnbOctectsDataRecu();
 private:
     string code;
     list<string> parametres;
+    int nbOctectsDataRecu;
 };
 
 #endif /* COMMANDE_H */
-

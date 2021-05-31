@@ -63,16 +63,19 @@ void FrameManager::calculerChecksum(char trame[104], char & PF, char & pf) {
 void FrameManager::detramerCommande() {
 
   extrairenbOctectsDataRecu(trameReception);
+  cout << "Nb d'octets du PDU : " << commande->getnbOctectsDataRecu() << endl;
   extraireCommande(trameReception);
+  cout << "Type de Commande : " << commande->getCode() << endl;
   extraireParametres(trameReception);
+  cout << "Paramètres : " << commande->getParametres() << endl;
 
 }
 
 
 void FrameManager::extrairenbOctectsDataRecu(char reception[]) {
 
-  nbOctectsDataRecu = (int) reception[1];
-
+  int nbdata = (int) reception[1];
+  commande->setnbOctectsDataRecu(nbdata);
 }
 
 void FrameManager::extraireCommande(char reception[]) {

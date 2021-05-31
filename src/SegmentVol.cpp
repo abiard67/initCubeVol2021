@@ -1,15 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   SegmentVol.cpp
- * Author: snir2g1
- * 
- * Created on 21 mars 2019, 16:25
- */
 #include <iostream>
 
 #include "../defs/SegmentVol.h"
@@ -99,7 +87,7 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
     }
     else
     for (it = appareil.begin(); it != appareil.end(); it++) {
-        
+
         if (*it == TypeAppareil::ORDIBORD) {
             ordinateur->obtenirStatus();
             if (ordinateur->obtenirStatus() == -1) {
@@ -123,9 +111,9 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
             if (temperature->recupTempSys() == -1) {
                 segmentSol->envoyerInfos("ERROR-23");
             }
-        } 
+        }
 
-		else if ((*it != TypeAppareil::ORDIBORD) && (*it != TypeAppareil::INSTRUMENT) && 
+		else if ((*it != TypeAppareil::ORDIBORD) && (*it != TypeAppareil::INSTRUMENT) &&
 			(*it != TypeAppareil::BATTERIE) && (*it != TypeAppareil::CUBE) && (*it!=TypeAppareil::REBOOT))
 		{
 				segmentSol->envoyerInfos("ERROR-E12");
@@ -247,19 +235,19 @@ void SegmentVol::setIdentifiant(unsigned char id) {
 
 
 int SegmentVol::intialisationInstrument() {
-	
-	
+
+
     stringstream ss;
-	
-	
+
+
     vector<int>adrI2C(0);
     string adrConfig;
     string typeConfig;
-    
+
     int adrInstrument = 0;
     int iAdrConfig;
 
-	
+
     //lecture des adresse I2C
     int N = open("/dev/i2c-1", O_RDWR);
 
@@ -273,7 +261,7 @@ int SegmentVol::intialisationInstrument() {
                 case 0x14: break;
                 case 0x68: break;
                 default: adrI2C.push_back(i);
-                                
+
 
                     break;
             }
@@ -281,12 +269,12 @@ int SegmentVol::intialisationInstrument() {
     }
         vector<int>::iterator itAdrI2C = adrI2C.begin();
 
- 
-    
-    
+
+
+
     close(N);
 
-	
+
     //Lecture de l'adresse de l'instrument
     XMLDocument config;
 	XMLError anError = config.LoadFile("../config/initcube.xml");
@@ -296,19 +284,19 @@ int SegmentVol::intialisationInstrument() {
     typeConfig = typeNode->Value();
     ss << adrConfig;
     ss >> hex>>iAdrConfig;
-	    
+
     //Comparaison des adresses
-    
+
    if(*itAdrI2C == adrI2C.back()){
    	adrInstrument = *itAdrI2C;
    }
-                
+
     else{
     while (*itAdrI2C != adrI2C.back()) {
 		cout<<*itAdrI2C<<endl;
         if (*itAdrI2C != iAdrConfig) {
             advance(itAdrI2C, 1);
-        
+
         } else {
             adrInstrument = *itAdrI2C;
                }
@@ -334,11 +322,11 @@ int SegmentVol::intialisationInstrument() {
                    close(I2C);
               if (typeConfig != "camera infrarouge") {
                 return -1;
-             
+
             }*/
-             
+
             instrument = new CameraIR();
-			
+
             break;
 
             /*  case 0x30:
@@ -348,12 +336,12 @@ int SegmentVol::intialisationInstrument() {
                    instrument = new CameraPhoto();
                    break;
              */
-           
+
     }
 
 
 
- 
+
     return 0;
 }
 int SegmentVol::resetStatus(list<string> appareil)
@@ -368,7 +356,7 @@ int SegmentVol::resetStatus(list<string> appareil)
     }
     else
     for (it = appareil.begin(); it != appareil.end(); it++) {
-        
+
         if (*it == TypeAppareil::ORDIBORD) {
 			ordinateur->resetStatus();
         }
@@ -380,7 +368,7 @@ int SegmentVol::resetStatus(list<string> appareil)
         }
         if (*it == TypeAppareil::CUBE) {
 			temperature->resetTemperature();
-        } 
+        }
     }
 	return 0;
 

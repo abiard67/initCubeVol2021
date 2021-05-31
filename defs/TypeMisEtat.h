@@ -97,6 +97,10 @@ class TypeMisEtat
 	 * Permet d'indiquer le nombre de redémarrage depuis le dernier contact
 	 */
 	public: static string REBOOT_NUMBER;
+	/**
+	 * Permet d'indiquer une trame contenant une image
+	 */
+	public: static string IMG;
 };
 
 #endif

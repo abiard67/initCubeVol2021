@@ -125,7 +125,7 @@ protected:
     char tableau[100];
     char trameReception[100];
     char trameEmission[100];
-    int nbOctectsDataRecu;
+
 
     list<vector<char>> received;
 	map <string,int> decoupePaquets;

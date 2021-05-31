@@ -49,7 +49,7 @@ void SegmentSol::activerReception() {
 
 		if (typeRetourTrame == -3) {
 			laTrame = this->tramerRepAcq(message,"BUSY");
-      //Créé un méthode envoyerLaTrame(laTrame) ?
+
 			for (it = laTrame.begin(); it != laTrame.end() ; it++) {
 				monObjSerial->WriteChar(*it);
 			}
@@ -63,7 +63,7 @@ void SegmentSol::activerReception() {
                     cout << "Envoie de l'ACK" << endl;
 						laTrame = this->tramerRepAcq(message,"ACK");
 
-            //Créé un méthode envoyerLaTrame(laTrame) ?
+
 						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
 							monObjSerial->WriteChar(*it);
 						}
@@ -75,14 +75,14 @@ void SegmentSol::activerReception() {
             cout << "Envoie d'un NACK" << endl;
             laTrame = this->tramerRepAcq(message,"NACK");
 
-            //Créé un méthode envoyerLaTrame(laTrame) ?
+
 						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
 							monObjSerial->WriteChar(*it);
 						}
                     }
                 }
         }
-    cout << "Zzz..." << endl;
+    //Pas de commande reçue
 		monObjSerial->Close();
     }
 }
@@ -96,44 +96,6 @@ thread SegmentSol::tActiverReception() {
         activerReception();
     });
 }
-
-////////////////////////////////////// A SUPPRIMER : TEST ////////////////////////////////////////////////
-void SegmentSol::testEnvoie() {
-
-    mutex_serial.lock();
-    char monChar = '7';
-
-    //Ouverture de l'accès à la ressource
-    serialib * monObjSerialTest = new serialib;
-    int typeRetourAccesRessource = monObjSerialTest->Open("/dev/serial0", 9600);
-
-    if (typeRetourAccesRessource == 1) {
-        cout << "Accès à la ressource pour un test d'envoie : réussi" << endl;
-    } else {
-        cout << "Accès à la ressource pour un test d'envoie : échoué" << endl;
-    }
-
-    //Ecriture du Test d'envoie vers le port serial
-    int typeRetourTestEnvoie = monObjSerialTest->WriteChar(monChar);
-
-    if (typeRetourTestEnvoie >= 1) {
-        cout << "Ecriture vers la ressource pour un test d'envoie : réussi" << endl;
-    } else {
-        cout << "Ecriture vers la ressource pour un test d'envoie : échoué" << endl;
-    }
-
-    monObjSerialTest->Close();
-    mutex_serial.unlock();
-
-}
-
-thread SegmentSol::tTestEnvoie() {
-    return thread([this] {
-        testEnvoie();
-    });
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
 
 void SegmentSol::envoyerStatus(list<string> status) {
 
@@ -220,7 +182,6 @@ void SegmentSol::envoyerStatus(list<string> status) {
 
 		ready = true;
 		unique_lock<mutex> lck(mutex_serial);
-		cv.notify_all();
 		if (argumentsOK)
 		{
 			for (int i = 0; i < nbrePaquets; i++) {
@@ -243,6 +204,7 @@ void SegmentSol::envoyerStatus(list<string> status) {
 				LS.Close();
 
 		}
+    cv.notify_all();
     ready = false;
 	message=new Message();
 }
@@ -261,7 +223,7 @@ void SegmentSol::envoyerMission() {
     int nbrePaquets = this->calculerNombrePaquets(message);
 	ready = true;
 	std::unique_lock<std::mutex> lck(mutex_serial);
-	cv.notify_all();
+
     for (int i = 0; i < nbrePaquets; i++) {
         Ret=LS.Open(DEVICE_PORT,9600);
         tramerMission(message, nbrePaquets, i+1);
@@ -274,7 +236,9 @@ void SegmentSol::envoyerMission() {
         //std::cout << "Waited " << elapsed.count() << " ms\n";
         LS.Close();
     }
-    ready = false; //mutex_serial.unlock();
+    cv.notify_all();
+    ready = false;
+
     instrument->clearMesures();
     mesures = instrument->getMesures();
 
@@ -283,7 +247,6 @@ void SegmentSol::envoyerMission() {
 void SegmentSol::traiterCommande() {
 
     Reboot* monReboot = new Reboot();
-
 
     //Traitement des commandes
 
@@ -364,7 +327,7 @@ void SegmentSol::envoyerMesure(string type) {
         int nbrePaquets = 8;
 		ready = true;
 		std::unique_lock<std::mutex> lck(mutex_serial);
-		cv.notify_all();
+
         for (int i = 0; i < nbrePaquets; i++) {
             Ret = LS.Open(DEVICE_PORT, 9600);
 
@@ -374,7 +337,9 @@ void SegmentSol::envoyerMesure(string type) {
         }
         message->clearPixels();
     }
-	        ready = false; //mutex_serial.unlock();
+          cv.notify_all();
+          ready = false; //mutex_serial.unlock();
+
 		mutex_message.unlock();
 
 }

@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   Magnetometre.cpp
  * Author: LucasG
- * 
+ *
  * Created on 31 mars 2020, 15:51
  */
 
@@ -23,7 +23,7 @@ Magnetometre::~Magnetometre() {
 }
 
 void Magnetometre::activer(){
-    
+
 }
 
 void Magnetometre::desactiver(){
@@ -31,7 +31,7 @@ void Magnetometre::desactiver(){
 char mode[]={0x0A,0x00};
 
 
-    
+
 }
 
 
@@ -48,7 +48,7 @@ float resultat;
 	//Test bit de signe
 	if ((TempInstr & 0x800)==0) //si signe positif
 		resultat = resultat*0.0625;
-	else 
+	else
 	{
 		TempInstr= TempInstr & 0x7FF;
 		resultat = TempInstr;
@@ -57,9 +57,9 @@ float resultat;
 
 	return resultat;
 }
-        
+
 void Magnetometre::PassThrough() {
-      
+
 // Ouverture du chemin //
 int N = open("/dev/i2c-1",O_RDWR);
 //
@@ -75,7 +75,7 @@ char reponse[1];
 write(N,commande,1);
 
 //// Lecture du contenu du registre //
-read(N,reponse,1); 
+read(N,reponse,1);
 
 // Positionnement du curseur sur le bit BYPASS_EN //
 commande[1]=reponse[0] | 0x2;
@@ -86,9 +86,9 @@ write(N,commande,2);
 int magneto = 0x0C;
 
 //int state1 = ioctl (N, I2C_SLAVE, magneto);
-   }  
+   }
 bool Magnetometre::LireDonnee(){
-		
+
 	champX = 35;
 	champY = 2;
 	champZ = 3;
@@ -99,4 +99,3 @@ void Magnetometre::getChamp(short champ [3]){
 	champ[1] = champY;
 	champ[2] = champZ;
 }
-
