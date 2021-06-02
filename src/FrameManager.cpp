@@ -75,16 +75,22 @@ void FrameManager::ajouter_cmd_queue(char reception[]){
   for (int i = 0; i < 100; i++) {
       q.back()[i] = reception [i];
   }
+  cout << "La Queue : " << endl;
+  print_queue(q); //affichage de la queue
+  cout << "Taille de la queue :" << q.size() << endl;
 }
 
 
 void FrameManager::detramerCommande() {
 
   extrairenbOctectsDataRecu(trameAtraiter);
+  cout << "Nb d'octets du PDU : " << commande->getnbOctectsDataRecu() << endl;
   vector <char> commandePDU(0);
   for (int i = 2; i < commande->getnbOctectsDataRecu()+2; i++) {
       commandePDU.push_back(trameAtraiter[i]);
+      cout << commandePDU[i];
   }
+  cout << endl;
   extraireCommande(commandePDU);
   extraireParametres(commandePDU);
 
@@ -221,13 +227,13 @@ bool FrameManager::verifierChecksum() {
 }
 
 unsigned char FrameManager::calculerNombrePaquets(Message * message) {
-    list<Mesure*> listeDeMesures = message->getMesures();
-    int nbreTotalMesures = listeDeMesures.size();
-    if (message->getTypeMission() == TypeMisEtat::TEMPCELSIUS) {
-        this->nbrePaquets = nbreTotalMesures / 2;
-    }
-    return nbrePaquets;
-}
+  list<Mesure*> listeDeMesures = message->getMesures();
+     int nbreTotalMesures = listeDeMesures.size();
+     if (message->getTypeMission() == TypeMisEtat::TEMPCELSIUS) {
+ this->nbrePaquets = nbreTotalMesures / 2 + nbreTotalMesures%2; ///////////////////////////////////////
+     }
+     return nbrePaquets;
+ }
 
 /**
  *  /~/id/nbre octets/"MISSION"/nbrepaquets/numPaquet/ Ttemp1/ -DTdate1/ Ttemp2/ -DTdate2/CheksumPF/cheksumpf

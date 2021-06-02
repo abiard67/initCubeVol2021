@@ -39,7 +39,10 @@
 #include <sstream>
 #include "Magnetometre.h"
 #include "CameraPhoto.h"
-
+#include <ctime>
+#include <ratio>
+#include <chrono>
+#include <sstream>
 using namespace tinyxml2;
 using namespace std;
 
