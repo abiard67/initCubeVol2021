@@ -274,7 +274,6 @@ int SegmentVol::intialisationInstrument() {
 
     close(N);
 
-
     //Lecture de l'adresse de l'instrument
     XMLDocument config;
 	XMLError anError = config.LoadFile("../config/initcube.xml");
@@ -303,6 +302,7 @@ int SegmentVol::intialisationInstrument() {
 
     		}
 	 	}
+
     switch (adrInstrument) {
         case 0: return -1;
         case 0x69:

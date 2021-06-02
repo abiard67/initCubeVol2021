@@ -23,8 +23,8 @@
 using namespace std;
 
     mutex mutex_serial, mutex_message;
-//	condition_variable cv;
-//	bool ready = false;
+	condition_variable cv;
+	bool ready = false;
 
 SegmentSol::SegmentSol(SegmentVol *leSegment) {
     this->leSegment = leSegment;
@@ -40,8 +40,8 @@ void SegmentSol::activerReception() {
 	vector<char>::iterator it ;
     while (true) {
 
-//		unique_lock<mutex> lck(mutex_serial);
-//		while (ready) 	cv.wait(lck);
+	//	unique_lock<mutex> lck(mutex_serial);
+	//	while (ready) 	cv.wait(lck);
         monObjSerial->Open("/dev/serial0", 9600); //Ouverture
         char varID = leSegment->getIdentifiant();
 		message->setIdSegment(varID);
@@ -54,19 +54,24 @@ void SegmentSol::activerReception() {
 				monObjSerial->WriteChar(*it);
 			}
         } else if (typeRetourTrame > 1) {
+          cout << "Trame reçue" << endl;
                 if (trameReception[0] == varID)
 				{
+                    cout << "Trame pour notre Sat" << endl;
                     bool boolChecksum = this->verifierChecksum();
                     if (boolChecksum == true) {
+                    cout << "Envoie de l'ACK" << endl;
 						laTrame = this->tramerRepAcq(message,"ACK");
 
 
 						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
 							monObjSerial->WriteChar(*it);
 						}
+                        cout << "Ajout d'une commande reçue à la fille d'attente..." << endl;
                         this->ajouter_cmd_queue(trameReception);
                     }
 					else {
+            cout << "Envoie d'un NACK" << endl;
             laTrame = this->tramerRepAcq(message,"NACK");
 
 
@@ -174,8 +179,8 @@ void SegmentSol::envoyerStatus(list<string> status) {
 			}
         }
 
-//		ready = true;
-//		unique_lock<mutex> lck(mutex_serial);
+		//ready = true;
+		//unique_lock<mutex> lck(mutex_serial);
 		if (argumentsOK)
 		{
 			for (int i = 0; i < nbrePaquets; i++) {
@@ -198,8 +203,8 @@ void SegmentSol::envoyerStatus(list<string> status) {
 				LS.Close();
 
 		}
-//    cv.notify_all();
-//    ready = false;
+    //cv.notify_all();
+    //ready = false;
 	message=new Message();
 }
 
@@ -215,7 +220,7 @@ void SegmentSol::envoyerMission() {
     string leTypeMission = laMission ->getMeasureType();
     message->setTypeMission(leTypeMission);
     int nbrePaquets = this->calculerNombrePaquets(message);
-//	ready = true;
+	ready = true;
 	std::unique_lock<std::mutex> lck(mutex_serial);
 
     for (int i = 0; i < nbrePaquets; i++) {
@@ -230,8 +235,8 @@ void SegmentSol::envoyerMission() {
         //std::cout << "Waited " << elapsed.count() << " ms\n";
         LS.Close();
     }
-//    cv.notify_all();
-//    ready = false;
+    cv.notify_all();
+    ready = false;
 
     instrument->clearMesures();
     mesures = instrument->getMesures();
@@ -241,10 +246,13 @@ void SegmentSol::envoyerMission() {
 void SegmentSol::traiter_cmd_queue() {
 while (true){
     if (q.size() > 0) {
+      cout << "Commande mise au traitement :" << q.front() << endl;
       for (int i = 0; i < 100; i++) {
         trameAtraiter[i] = q.front()[i];
+        cout << trameAtraiter[i];
       }
       cout << endl;
+      cout << "Traitement de la commande..." << endl;
       q.pop(); //Sortir la commande de la queue
       detramerCommande(); //Détramer la commande afin de la traiter en suivant l'encapsulation
       traiterCommande(); //Traiter la commande utile
@@ -259,16 +267,36 @@ void SegmentSol::traiterCommande() {
     //Traitement des commandes
 
     if (commande->getCode() == TypeCommande::MISSION) {
-        leSegment->creerMission(10, 60, 0, 0); //(short periode, short duree, string debut, string type)
-        leSegment->lancerMission(); // voir le creeMission avec JOJO
-        leSegment->arretMission();
+        list<string> typeMission = commande->getParametres();
+
+                vector<string> vector_string;
+                   for (auto list : typeMission) {
+                        vector_string.push_back(list); //vector_string.at(5) = duree ,vector_string.at(6) = type ;
+                        }
+                        string duree = vector_string.at(1); //duree
+cout<<"duree = "<<duree<<endl;
+                        string periode = vector_string.at(3); //période
+cout<<"periode = "<<periode<<endl;
+                              int int_1 = stoi(duree);
+                              int int_2 = stoi(periode);
+cout<<"DT de départ = "<<vector_string.at(5)<<endl;
+cout<<"type = "<<vector_string.at(6)<<endl;
+
+                            (short)int_1 ;
+                            (short)int_2 ;
+cout<<"duree2 = "<<int_1<<endl;
+cout<<"periode2 = "<<int_2<<endl;
+
+                leSegment->creerMission(int_1,int_2,vector_string.at(5),vector_string.at(6)) ;
+                thread lMission = leSegment->tLancerMission();
+                lMission.detach();
 
     } else if (commande->getCode() == TypeCommande::DATE) {
         leSegment->getHorloge(); //setHorloge => 1 argument
     } else if (commande->getCode() == TypeCommande::DEPLOY) {
         //à Voir
     } else if (commande->getCode() == TypeCommande::EMPTY) {
-        monReboot->systemeReboot();
+        leSegment->getOrdinateur()->getReboot()->systemeReboot();
     } else if (commande->getCode() == TypeCommande::MEASURE) {
         list<string> mesure = commande->getParametres();
         if (mesure.front() == TypeMisEtat::TEMPCELSIUS) {
@@ -321,9 +349,9 @@ void SegmentSol::envoyerMesure(string type) {
         list<Mesure*> mesures = leSegment->getInstrument()->getMesures();
         message->setMesures(mesures);
         int nbrePaquets = 1;
-		//ready = true;
-		//unique_lock<mutex> lck(mutex_serial);
-		//cv.notify_all();
+		ready = true;
+		unique_lock<mutex> lck(mutex_serial);
+		cv.notify_all();
         for (int i = 0; i < nbrePaquets; i++) {
             tramerMesure(message, nbrePaquets, 1);
 			Ret = LS.Open(DEVICE_PORT, 9600);
@@ -339,7 +367,7 @@ void SegmentSol::envoyerMesure(string type) {
             message->addPixel(*(mesures + i));
         }
         int nbrePaquets = 8;
-//		ready = true;
+		ready = true;
 		std::unique_lock<std::mutex> lck(mutex_serial);
 
         for (int i = 0; i < nbrePaquets; i++) {
@@ -351,8 +379,8 @@ void SegmentSol::envoyerMesure(string type) {
         }
         message->clearPixels();
     }
-//          cv.notify_all();
-//          ready = false; //mutex_serial.unlock();
+          cv.notify_all();
+          ready = false; //mutex_serial.unlock();
 
 		mutex_message.unlock();
 

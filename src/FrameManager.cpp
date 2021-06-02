@@ -75,22 +75,16 @@ void FrameManager::ajouter_cmd_queue(char reception[]){
   for (int i = 0; i < 100; i++) {
       q.back()[i] = reception [i];
   }
-  cout << "La Queue : " << endl;
-  print_queue(q); //affichage de la queue
-  cout << "Taille de la queue :" << q.size() << endl;
 }
 
 
 void FrameManager::detramerCommande() {
 
   extrairenbOctectsDataRecu(trameAtraiter);
-  cout << "Nb d'octets du PDU : " << commande->getnbOctectsDataRecu() << endl;
   vector <char> commandePDU(0);
-  for (int i = 2; i <= commande->getnbOctectsDataRecu()+2; i++) {
+  for (int i = 2; i < commande->getnbOctectsDataRecu()+2; i++) {
       commandePDU.push_back(trameAtraiter[i]);
-      cout << commandePDU[i];
   }
-  cout << endl;
   extraireCommande(commandePDU);
   extraireParametres(commandePDU);
 
@@ -311,6 +305,8 @@ void FrameManager::tramerMission(Message* message, int nbrePaquets, int numPaque
           j++;
       }
       laListe.pop_front(); //On supprime la donn�e trait�e
+}
+  if (laListe.empty() == false) {
 
       /*************** Traitement de la deuxi�me donn�e ********************/
       trameEmission[j] = ' ';

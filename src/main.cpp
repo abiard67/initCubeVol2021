@@ -6,7 +6,6 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-
     SegmentVol* segmentVol = new SegmentVol();
     segmentVol->setIdentifiant(1);
     SegmentSol* monSeg = new SegmentSol(segmentVol);
