@@ -60,14 +60,7 @@ void FrameManager::calculerChecksum(char trame[104], char & PF, char & pf) {
 
 }
 
-//A SUPPR APRES TESTS
-void FrameManager::print_queue(queue<char *> q) {
-    while (!q.empty()) {
-        cout << q.front() << " ";
-        q.pop();
-    }
-    cout << endl;
-}
+
 
 void FrameManager::ajouter_cmd_queue(char reception[]){
   q.push(new char [100]); //ca marche //Crée un tableau de char sans nom dans la prochaine case de la queue
@@ -75,22 +68,16 @@ void FrameManager::ajouter_cmd_queue(char reception[]){
   for (int i = 0; i < 100; i++) {
       q.back()[i] = reception [i];
   }
-  cout << "La Queue : " << endl;
-  print_queue(q); //affichage de la queue
-  cout << "Taille de la queue :" << q.size() << endl;
 }
 
 
 void FrameManager::detramerCommande() {
 
   extrairenbOctectsDataRecu(trameAtraiter);
-  cout << "Nb d'octets du PDU : " << commande->getnbOctectsDataRecu() << endl;
   vector <char> commandePDU(0);
   for (int i = 2; i < commande->getnbOctectsDataRecu()+2; i++) {
       commandePDU.push_back(trameAtraiter[i]);
-      cout << commandePDU[i];
   }
-  cout << endl;
   extraireCommande(commandePDU);
   extraireParametres(commandePDU);
 

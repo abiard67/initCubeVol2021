@@ -38,7 +38,6 @@ public:
     FrameManager();
     FrameManager(const FrameManager& orig);
     virtual ~FrameManager();
-    void print_queue(queue<char *> q);
     /**
      * accesseur au tableau de 100 octets � transmettre ou re�us
      */

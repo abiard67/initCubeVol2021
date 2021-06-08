@@ -54,24 +54,19 @@ void SegmentSol::activerReception() {
 				monObjSerial->WriteChar(*it);
 			}
         } else if (typeRetourTrame > 1) {
-          cout << "Trame reçue" << endl;
                 if (trameReception[0] == varID)
 				{
-                    cout << "Trame pour notre Sat" << endl;
                     bool boolChecksum = this->verifierChecksum();
                     if (boolChecksum == true) {
-                    cout << "Envoie de l'ACK" << endl;
 						laTrame = this->tramerRepAcq(message,"ACK");
 
 
 						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
 							monObjSerial->WriteChar(*it);
 						}
-                        cout << "Ajout d'une commande reçue à la fille d'attente..." << endl;
                         this->ajouter_cmd_queue(trameReception);
                     }
 					else {
-            cout << "Envoie d'un NACK" << endl;
             laTrame = this->tramerRepAcq(message,"NACK");
 
 
@@ -246,13 +241,9 @@ std::unique_lock<std::mutex> lck(mutex_serial);
 void SegmentSol::traiter_cmd_queue() {
 while (true){
     if (q.size() > 0) {
-      cout << "Commande mise au traitement :" << q.front() << endl;
       for (int i = 0; i < 100; i++) {
         trameAtraiter[i] = q.front()[i];
-        cout << trameAtraiter[i];
       }
-      cout << endl;
-      cout << "Traitement de la commande..." << endl;
       q.pop(); //Sortir la commande de la queue
       detramerCommande(); //Détramer la commande afin de la traiter en suivant l'encapsulation
       traiterCommande(); //Traiter la commande utile
@@ -262,7 +253,7 @@ while (true){
 
 void SegmentSol::traiterCommande() {
 
-    
+
 
     //Traitement des commandes
 
