@@ -262,7 +262,7 @@ while (true){
 
 void SegmentSol::traiterCommande() {
 
-    Reboot* monReboot = new Reboot();
+    
 
     //Traitement des commandes
 
@@ -273,19 +273,13 @@ void SegmentSol::traiterCommande() {
                    for (auto list : typeMission) {
                         vector_string.push_back(list); //vector_string.at(5) = duree ,vector_string.at(6) = type ;
                         }
-                        string duree = vector_string.at(1); //duree
-cout<<"duree = "<<duree<<endl;
-                        string periode = vector_string.at(3); //période
-cout<<"periode = "<<periode<<endl;
-                              int int_1 = stoi(duree);
-                              int int_2 = stoi(periode);
-cout<<"DT de départ = "<<vector_string.at(5)<<endl;
-cout<<"type = "<<vector_string.at(6)<<endl;
+                        string duree = vector_string.at(3); //duree
+                        string periode = vector_string.at(1); //période
+                        int int_1 = stoi(duree);
+                        int int_2 = stoi(periode);
 
-                            (short)int_1 ;
-                            (short)int_2 ;
-cout<<"duree2 = "<<int_1<<endl;
-cout<<"periode2 = "<<int_2<<endl;
+                        (short)int_1 ;
+                        (short)int_2 ;
 
                 leSegment->creerMission(int_1,int_2,vector_string.at(5),vector_string.at(6)) ;
                 thread lMission = leSegment->tLancerMission();

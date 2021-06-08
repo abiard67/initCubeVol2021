@@ -13,15 +13,21 @@
 
 #ifndef SAUVEGARDE_H
 #define SAUVEGARDE_H
-//#include "../lib/pugixml-1.9/src/pugixml.hpp"
+#include "pugixml.hpp"
 #include <list>
 #include "Mesure.h"
+#include "SegmentVol.h"
+
+class SegmentVol;
 
 class Sauvegarde {
 public:
     Sauvegarde();
     Sauvegarde(const Sauvegarde& orig);
     virtual ~Sauvegarde();
+	bool creerSauvegarde(SegmentVol* segmentVol);
+	bool chargerContexte(SegmentVol* segmentVol);
+	bool supprimerSaugegarde();
     bool enregistrerMesures(list<Mesure *> lesMesures); 
     bool ajouterAMission(); // initialement prévu : bool ajouterAMission(Mesure mesure);
     unsigned char lireID();

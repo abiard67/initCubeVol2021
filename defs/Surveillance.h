@@ -20,10 +20,11 @@
 #include "Sauvegarde.h"
 //#include "Horloge.h"
 
-#define tempProcessAcceptable 40 // 70 OU 85 MAIS 40 POUR TEST
-#define tempBattAcceptable 45 // OU 59
+#define tempProcessAcceptable 70 // 70 OU 85 MAIS 40 POUR TEST
+#define tempBattAcceptable 50 // OU 59
 
 class SegmentVol;
+class Sauvegarde;
 
 class Surveillance {
 public:

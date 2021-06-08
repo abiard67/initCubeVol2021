@@ -5,10 +5,14 @@ LIB = ./lib
 SRC = ./src
 BIN = ./bin
 
-all: $(LIB)/TypeAppareil.o $(LIB)/TypeAck.o $(LIB)/TypeCommande.o $(LIB)/Commande.o $(LIB)/tinyxml2.o $(LIB)/Surveillance.o $(LIB)/Sauvegarde.o $(LIB)/TypeMisEtat.o $(LIB)/Reboot.o $(LIB)/Status.o $(LIB)/FrameManager.o $(LIB)/Message.o $(LIB)/Mesure.o $(LIB)/serialib.o $(LIB)/Batterie.o $(LIB)/CameraIR.o $(LIB)/EmetteurRecepteur.o $(LIB)/Etat.o $(LIB)/Horloge.o $(LIB)/I2C.o $(LIB)/Instrument.o $(LIB)/Mission.o $(LIB)/Ordinateur.o $(LIB)/Stockage.o $(LIB)/SegmentSol.o $(LIB)/SegmentVol.o $(LIB)/Temperature.o 
+all: $(LIB)/TypeAppareil.o $(LIB)/TypeAck.o $(LIB)/TypeCommande.o $(LIB)/Commande.o $(LIB)/tinyxml2.o $(LIB)/Surveillance.o $(LIB)/Sauvegarde.o $(LIB)/TypeMisEtat.o $(LIB)/Reboot.o $(LIB)/Status.o $(LIB)/FrameManager.o $(LIB)/Message.o $(LIB)/Mesure.o $(LIB)/serialib.o $(LIB)/Batterie.o $(LIB)/CameraIR.o $(LIB)/EmetteurRecepteur.o $(LIB)/Etat.o $(LIB)/Horloge.o $(LIB)/I2C.o $(LIB)/Instrument.o $(LIB)/Mission.o $(LIB)/Ordinateur.o $(LIB)/Stockage.o $(LIB)/SegmentSol.o $(LIB)/SegmentVol.o $(LIB)/Temperature.o $(LIB)/pugixml.o 
 	@echo "Compilation programme principal"
-	$(CC) $(FLAGS) $(SRC)/main.cpp $(LIB)/TypeAppareil.o $(LIB)/TypeAck.o $(LIB)/TypeCommande.o $(LIB)/Commande.o $(LIB)/tinyxml2.o $(LIB)/Surveillance.o $(LIB)/Sauvegarde.o $(LIB)/TypeMisEtat.o $(LIB)/Reboot.o $(LIB)/Status.o $(LIB)/FrameManager.o $(LIB)/Message.o $(LIB)/Mesure.o $(LIB)/serialib.o $(LIB)/Batterie.o $(LIB)/CameraIR.o $(LIB)/EmetteurRecepteur.o $(LIB)/Etat.o $(LIB)/Horloge.o $(LIB)/I2C.o $(LIB)/Instrument.o $(LIB)/Mission.o $(LIB)/Ordinateur.o $(LIB)/Stockage.o $(LIB)/SegmentSol.o $(LIB)/SegmentVol.o $(LIB)/Temperature.o -std=c++14 -lpthread  -o $(BIN)/main
+	$(CC) $(FLAGS) $(SRC)/main.cpp $(LIB)/TypeAppareil.o $(LIB)/TypeAck.o $(LIB)/TypeCommande.o $(LIB)/Commande.o $(LIB)/tinyxml2.o $(LIB)/Surveillance.o $(LIB)/Sauvegarde.o $(LIB)/TypeMisEtat.o $(LIB)/Reboot.o $(LIB)/Status.o $(LIB)/FrameManager.o $(LIB)/Message.o $(LIB)/Mesure.o $(LIB)/serialib.o $(LIB)/Batterie.o $(LIB)/CameraIR.o $(LIB)/EmetteurRecepteur.o $(LIB)/Etat.o $(LIB)/Horloge.o $(LIB)/I2C.o $(LIB)/Instrument.o $(LIB)/Mission.o $(LIB)/Ordinateur.o $(LIB)/Stockage.o $(LIB)/SegmentSol.o $(LIB)/SegmentVol.o $(LIB)/Temperature.o $(LIB)/pugixml.o -std=c++14 -lpthread  -o $(BIN)/main
 	@echo "Compilation terminer"
+
+$(LIB)/pugixml.o : $(SRC)/pugixml.cpp $(DEFS)/pugixml.hpp
+	@echo "Compilation classe pugixml"
+	$(CC) -c $(SRC)/pugixml.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
 
 $(LIB)/Surveillance.o : $(SRC)/Surveillance.cpp $(DEFS)/Surveillance.h 
 	@echo "Compilation classe Surveillance"

@@ -24,6 +24,37 @@ Sauvegarde::Sauvegarde(const Sauvegarde& orig) {
 Sauvegarde::~Sauvegarde() {
 }
 
+bool Sauvegarde::creerSauvegarde(SegmentVol* segmentVol){
+	 pugi::xml_document doc;
+ 
+ auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version")    = "1.0";
+    declarationNode.append_attribute("encoding")   = "ISO-8859-1";
+    declarationNode.append_attribute("standalone") = "yes";
+    pugi::xml_node Segment = doc.append_child("SegmentVol");
+    pugi::xml_node Instrument = Segment.append_child("Instrument");
+    pugi::xml_node Mission = Segment.append_child("Mission");
+	pugi::xml_attribute periodicity = Mission.append_attribute("periodicity");
+	periodicity.set_value(segmentVol->getMission()->getPeriodicity());
+	pugi::xml_attribute duration = Mission.append_attribute("duration");
+	duration.set_value(segmentVol->getMission()->getDuration());
+    pugi::xml_node Ordinateur_de_bord = Segment.append_child("Ordinateur_de_bord");
+    pugi::xml_node Batterie = Segment.append_child("Batterie");
+   
+ 
+ doc.save_file("Save2.xml");
+ return true;
+}
+
+bool Sauvegarde::chargerContexte(SegmentVol* segmentVol){
+
+	return true;
+}
+bool Sauvegarde::supprimerSaugegarde(){
+
+	return true;
+}
+
 bool Sauvegarde::enregistrerMesures(list<Mesure *> lesMesures) { // initialement prévu : bool Sauvegarde::enregistrerMesure(Mesure mesure);
 	this->lesMesures = lesMesures;
     //pugi::xml_document doc;

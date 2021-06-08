@@ -311,45 +311,46 @@ void FrameManager::tramerMission(Message* message, int nbrePaquets, int numPaque
           j++;
       }
       laListe.pop_front(); //On supprime la donn�e trait�e
-}
-  if (laListe.empty() == false) {
 
-      /*************** Traitement de la deuxi�me donn�e ********************/
-      trameEmission[j] = ' ';
-      j++;
-      strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
-      for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
-          trameEmission[j] = tab[k];
-          j++;
-      }
+	if (laListe.empty() == false) {
 
-      lIndice = laListe.begin();
-      lamesure = *lIndice; //On met dans la variable lamesure le contenu de l'it�rateur
-      stream.str(""); //On vide le flux
-      stream << fixed << setprecision(1) << lamesure->getMesure();
-      valeurMesure = stream.str();
-      strcpy(tab, valeurMesure.c_str());
-      for (unsigned int k = 0; k < valeurMesure.size(); k++) {
-          trameEmission[j] = tab[k];
-          j++;
-      }
-      trameEmission[j] = ' ';
-      j++;
-      strcpy(tab, TypeMisEtat::DATETIME.c_str());
-      for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-          trameEmission[j] = tab[k];
-          j++;
-      }
-      dateHour = lamesure->getDateHour();
-      strcpy(tab, dateHour.c_str());
-      for (unsigned int k = 0; k < dateHour.size(); k++) {
-          trameEmission[j] = tab[k];
-          j++;
-      }
-      laListe.pop_front();
+		  /*************** Traitement de la deuxi�me donn�e ********************/
+		  trameEmission[j] = ' ';
+		  j++;
+		  strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
+		  for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
+			  trameEmission[j] = tab[k];
+			  j++;
+		  }
 
-      /** Mise � jour de la liste **/
-      message->setMesures(laListe);
+		  lIndice = laListe.begin();
+		  lamesure = *lIndice; //On met dans la variable lamesure le contenu de l'it�rateur
+		  stream.str(""); //On vide le flux
+		  stream << fixed << setprecision(1) << lamesure->getMesure();
+		  valeurMesure = stream.str();
+		  strcpy(tab, valeurMesure.c_str());
+		  for (unsigned int k = 0; k < valeurMesure.size(); k++) {
+			  trameEmission[j] = tab[k];
+			  j++;
+		  }
+		  trameEmission[j] = ' ';
+		  j++;
+		  strcpy(tab, TypeMisEtat::DATETIME.c_str());
+		  for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+			  trameEmission[j] = tab[k];
+			  j++;
+		  }
+		  dateHour = lamesure->getDateHour();
+		  strcpy(tab, dateHour.c_str());
+		  for (unsigned int k = 0; k < dateHour.size(); k++) {
+			  trameEmission[j] = tab[k];
+			  j++;
+		  }
+		  laListe.pop_front();
+
+		  /** Mise � jour de la liste **/
+		  message->setMesures(laListe);
+	}
   }
 
   /** Mise � jour du champ "nombre d'octets" **/
@@ -396,8 +397,8 @@ void FrameManager::ajouterDataOrdiBord(Message* amessage, unsigned int &apositio
         trameEmission[aposition] = tab[k];
         aposition++;
     }
-    trameEmission[aposition] = ' ';
-    aposition++;
+    //trameEmission[aposition] = ' ';
+    //aposition++;
     strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
     for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
         trameEmission[aposition] = tab[k];
@@ -409,8 +410,8 @@ void FrameManager::ajouterDataOrdiBord(Message* amessage, unsigned int &apositio
         trameEmission[aposition] = tab[k];
         aposition++;
     }
-    trameEmission[aposition] = ' ';
-    aposition++;
+    //trameEmission[aposition] = ' ';
+    //aposition++;
     strcpy(tab, TypeMisEtat::DATETIME.c_str());
     for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
         trameEmission[aposition] = tab[k];
@@ -468,8 +469,8 @@ void FrameManager::ajouterDataBattery(Message* amessage, unsigned int &aposition
         }
     }
 
-    trameEmission[aposition] = ' ';
-    aposition++;
+    //trameEmission[aposition] = ' ';
+    //aposition++;
     strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
     for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
         trameEmission[aposition] = tab[k];
@@ -480,8 +481,8 @@ void FrameManager::ajouterDataBattery(Message* amessage, unsigned int &aposition
         trameEmission[aposition] = tab[k];
         aposition++;
     }
-    trameEmission[aposition] = ' ';
-    aposition++;
+    //trameEmission[aposition] = ' ';
+    //aposition++;
 }
 
 void FrameManager::ajouterStatusInst(Message* amessage, unsigned int &aposition) {
@@ -526,8 +527,8 @@ void FrameManager::ajouterStatusInst(Message* amessage, unsigned int &aposition)
         }
     }
 
-    trameEmission[aposition] = ' ';
-    aposition++;
+    //trameEmission[aposition] = ' ';
+    //aposition++;
     strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
     for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
         trameEmission[aposition] = tab[k];
@@ -540,8 +541,8 @@ void FrameManager::ajouterStatusInst(Message* amessage, unsigned int &aposition)
         trameEmission[aposition] = tab[k];
         aposition++;
     }
-    trameEmission[aposition] = ' ';
-    aposition++;
+    //trameEmission[aposition] = ' ';
+    //aposition++;
 }
 
 void FrameManager::ajouterStatusCube(Message* amessage, unsigned int &aposition) {
@@ -552,8 +553,8 @@ void FrameManager::ajouterStatusCube(Message* amessage, unsigned int &aposition)
         trameEmission[aposition] = tab[k];
         aposition++;
     }
-    trameEmission[aposition] = ' ';
-    aposition++;
+    //trameEmission[aposition] = ' ';
+    //aposition++;
 
     strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
     for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
@@ -568,8 +569,8 @@ void FrameManager::ajouterStatusCube(Message* amessage, unsigned int &aposition)
         aposition++;
     }
 
-    trameEmission[aposition] = ' ';
-    aposition++;
+    //trameEmission[aposition] = ' ';
+    //aposition++;
 
     if (amessage->getReboot()->getNumber() > 0) {
         strcpy(tab, TypeAppareil::REBOOT.c_str());
@@ -1019,8 +1020,8 @@ vector<char> FrameManager::tramerRepAcq(Message* message, string ReponseAcquitem
         trameRepAcq.push_back( tableauRepAcq[j]);
     }
 
-	for (int i = 1; i < (int)trameRepAcq.size(); i++) {
-        Checksum = Checksum^tableauRepAcq[i];
+	for (int i = 0; i < (int)trameRepAcq.size(); i++) {
+        Checksum = Checksum^trameRepAcq[i];
     }
     sprintf(leChecksum, "%2X", Checksum);
     if (leChecksum[0] == 32) leChecksum[0] = '0';

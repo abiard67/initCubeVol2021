@@ -28,6 +28,7 @@ public:
     string getRdvTime();
     void setRdvTime(string rdvTime);
     string getDateHeure();
+	void setDateTime(int date, int month, int year,int hour, int min, int sec);
 private:
     string dateHeure;
     string rdvTime;

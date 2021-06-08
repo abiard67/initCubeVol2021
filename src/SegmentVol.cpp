@@ -89,12 +89,12 @@ void SegmentVol::lancerMission() {
         ///////////////////////////////////////////////////////////////
 
         leReste = leReste.substr(pos + 1);
-        pos = leReste.find(':'); // on trouve le preimer ":"
+        pos = leReste.find(':'); // on trouve le premier ":"
 
         iss = istringstream(leReste.substr(0, pos));
         iss>>hour; // on stock l'heure
 
-        timeinfo.tm_hour = hour - 1;
+        timeinfo.tm_hour = hour;
 
         /////////////////////////////////////////////////////////////
 
@@ -116,10 +116,9 @@ void SegmentVol::lancerMission() {
         system_clock::time_point tp = system_clock::from_time_t(tt);
         //auto attent = chrono::time_point_cast<std::chrono::seconds>(delay);
         int elapsed_seconds = chrono::duration_cast<chrono::seconds> (tp - system_clock::now()).count(); //l'heure de la mission (tp) - l'heure local du systeme
-system_clock::time_point today = system_clock::now();
-  std::time_t tooooday;
-  tooooday = system_clock::to_time_t ( today );
-
+		system_clock::time_point today = system_clock::now();
+		  std::time_t tooooday;
+		  tooooday = system_clock::to_time_t ( today );
         if (elapsed_seconds > 0) {
             this_thread::sleep_for(chrono::seconds(elapsed_seconds)); // on attends le nombre de seconds qui est le resultat de la soustration donc elapsed_seconds
         } else {
@@ -202,6 +201,7 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
 
 void SegmentVol::obtenirStatus() {
     short intervale = etat->getPeriodicity();
+		list<string> appareil;
     while (true) {
         this_thread::sleep_for(chrono::minutes(intervale));
         ordinateur->obtenirStatus();
@@ -210,6 +210,7 @@ void SegmentVol::obtenirStatus() {
         horloge->lire();
         temperature->recupTempSys();
         activerModuleEmission();
+		segmentSol->envoyerStatus(appareil);
         // segmentSol->envoyerStatus(); //////////////////////////////////////////////////////
     }
 }

@@ -40,6 +40,7 @@ void Surveillance::surveillerConstantes() {
 
 void Surveillance::valeurIncompatible() {
     etatThread = false;
+	sauvegarde->creerSauvegarde(segmentVol);
 	sauvegarde->enregistrerMesures(segmentVol->getInstrument()->getMesures());
 	segmentVol->getOrdinateur()->getReboot()->setNumber(segmentVol->getOrdinateur()->getReboot()->getNumber()+1);
 	segmentVol->getOrdinateur()->getReboot()->setDateHour(segmentVol->getHorloge()->getDateHeure());
