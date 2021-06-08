@@ -23,12 +23,12 @@
 using namespace std;
 
     mutex mutex_serial, mutex_message;
-	condition_variable cv;
-	bool ready = false;
+	//condition_variable cv;
+	//bool ready = false;
 
 SegmentSol::SegmentSol(SegmentVol *leSegment) {
     this->leSegment = leSegment;
-
+    sem_init(&sync, 0, 0);
 }
 
 SegmentSol::~SegmentSol() {
@@ -39,40 +39,23 @@ void SegmentSol::activerReception() {
 	vector<char> laTrame;
 	vector<char>::iterator it ;
     while (true) {
-
-	//	unique_lock<mutex> lck(mutex_serial);
-	//	while (ready) 	cv.wait(lck);
         monObjSerial->Open("/dev/serial0", 9600); //Ouverture
         char varID = leSegment->getIdentifiant();
 		message->setIdSegment(varID);
         int typeRetourTrame = monObjSerial->ReadString(trameReception, 255, 128, 0);
 
 		if (typeRetourTrame == -3) {
-			laTrame = this->tramerRepAcq(message,"BUSY");
-
-			for (it = laTrame.begin(); it != laTrame.end() ; it++) {
-				monObjSerial->WriteChar(*it);
-			}
+      envoyerInfos("BUSY");
         } else if (typeRetourTrame > 1) {
                 if (trameReception[0] == varID)
 				{
                     bool boolChecksum = this->verifierChecksum();
                     if (boolChecksum == true) {
-						laTrame = this->tramerRepAcq(message,"ACK");
-
-
-						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
-							monObjSerial->WriteChar(*it);
-						}
+            envoyerInfos("ACK");
                         this->ajouter_cmd_queue(trameReception);
                     }
 					else {
-            laTrame = this->tramerRepAcq(message,"NACK");
-
-
-						for (it = laTrame.begin(); it != laTrame.end() ; it++) {
-							monObjSerial->WriteChar(*it);
-						}
+            envoyerInfos("NACK");
                     }
                 }
         }
@@ -216,7 +199,7 @@ void SegmentSol::envoyerMission() {
   message->setTypeMission(leTypeMission);
   int nbrePaquets = this->calculerNombrePaquets(message);
 //	ready = true;
-std::unique_lock<std::mutex> lck(mutex_serial);
+//std::unique_lock<std::mutex> lck(mutex_serial);
 
   for (int i = 0; i < nbrePaquets; i++) {
       Ret=LS.Open(DEVICE_PORT,9600);
@@ -240,6 +223,7 @@ std::unique_lock<std::mutex> lck(mutex_serial);
 
 void SegmentSol::traiter_cmd_queue() {
 while (true){
+    sem_wait(&sync);
     if (q.size() > 0) {
       for (int i = 0; i < 100; i++) {
         trameAtraiter[i] = q.front()[i];
@@ -334,9 +318,9 @@ void SegmentSol::envoyerMesure(string type) {
         list<Mesure*> mesures = leSegment->getInstrument()->getMesures();
         message->setMesures(mesures);
         int nbrePaquets = 1;
-		ready = true;
-		unique_lock<mutex> lck(mutex_serial);
-		cv.notify_all();
+		//ready = true;
+		//unique_lock<mutex> lck(mutex_serial);
+		//cv.notify_all();
         for (int i = 0; i < nbrePaquets; i++) {
             tramerMesure(message, nbrePaquets, 1);
 			Ret = LS.Open(DEVICE_PORT, 9600);
@@ -352,8 +336,8 @@ void SegmentSol::envoyerMesure(string type) {
             message->addPixel(*(mesures + i));
         }
         int nbrePaquets = 8;
-		ready = true;
-		std::unique_lock<std::mutex> lck(mutex_serial);
+		//ready = true;
+		//std::unique_lock<std::mutex> lck(mutex_serial);
 
         for (int i = 0; i < nbrePaquets; i++) {
             Ret = LS.Open(DEVICE_PORT, 9600);
@@ -364,8 +348,8 @@ void SegmentSol::envoyerMesure(string type) {
         }
         message->clearPixels();
     }
-          cv.notify_all();
-          ready = false; //mutex_serial.unlock();
+          //cv.notify_all();
+          //ready = false; //mutex_serial.unlock();
 
 		mutex_message.unlock();
 

@@ -68,6 +68,7 @@ void FrameManager::ajouter_cmd_queue(char reception[]){
   for (int i = 0; i < 100; i++) {
       q.back()[i] = reception [i];
   }
+  sem_post(&sync);
 }
 
 

@@ -23,6 +23,8 @@
 #include <map>
 #include <iterator>
 #include <cstdlib>
+#include <pthread.h>
+#include <semaphore.h>
 #include<bits/stdc++.h>
 
 
@@ -171,7 +173,7 @@ protected:
 
 
 
-
+    sem_t sync;
         Commande*commande;
 		Message* message;
     //Commande* commande;
