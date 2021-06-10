@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   Horloge.h
  * Author: snir2g1
  *
@@ -28,11 +28,10 @@ public:
     string getRdvTime();
     void setRdvTime(string rdvTime);
     string getDateHeure();
-	void setDateTime(int date, int month, int year,int hour, int min, int sec);
+	void initDateTime(int date, int month, int year,int hour, int min, int sec);
 private:
     string dateHeure;
     string rdvTime;
 };
 
 #endif /* HORLOGE_H */
-
