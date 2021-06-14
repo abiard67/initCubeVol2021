@@ -889,7 +889,7 @@ void FrameManager::tramerMesure(Message* message, int nbrePaquets, int numPaquet
               if (nbrePixels == 8) break; // sortie tous les 8 pixels.
 
           }
-          lIndice++;
+	lIndice++;
           lesPixels.erase(lesPixels.begin(), lIndice);
           message->setPixels(lesPixels);
       } else if (message->getTypeMesure() == TypeMisEtat::TEMPCELSIUS) {
@@ -993,6 +993,7 @@ void FrameManager::supprimerPaquet() {
 }
 
 vector<char> FrameManager::tramerRepAcq(Message* message, string ReponseAcquitement) {
+
 
     vector<char> trameRepAcq(0);
     int j=0;

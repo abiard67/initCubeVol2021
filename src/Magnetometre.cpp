@@ -99,3 +99,5 @@ void Magnetometre::getChamp(short champ [3]){
 	champ[1] = champY;
 	champ[2] = champZ;
 }
+
+
