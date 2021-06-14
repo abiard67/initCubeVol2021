@@ -65,8 +65,8 @@ int Batterie::obtenirCharge() {
         inCharge = true;
     } else {
         inCharge = false;
-        return -1 ;
     }
+	return 0;
 }
 
 int Batterie::obtenirTension() {

@@ -14,6 +14,7 @@
 #include "../defs/Etat.h"
 
 Etat::Etat() {
+		periodicity = 3;
 }
 
 Etat::~Etat() {

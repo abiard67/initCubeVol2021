@@ -22,23 +22,23 @@ class TypeAppareil {
 	/**
 	 * Précise que les données qui suivent sont liées à l'ordinateur de bord.
 	 */
-	protected: static string ORDIBORD;
+	public: static string ORDIBORD;
 	/**
 	 * Précise que les données qui suivent sont liées à l'instrument.
 	 */
-	protected: static string INSTRUMENT;
+	public: static string INSTRUMENT;
 	/**
 	 * Précise que les données qui suivent sont liées à la batterie.
 	 */
-	protected: static string BATTERIE;
+	public: static string BATTERIE;
 	/**
 	 * Précise que les données qui suivent sont liées aux redémarrages de l'ordinateur de bord.
 	 */
-	protected: static string REBOOT;
+	public: static string REBOOT;
 	/**
 	 * Il s'agit de données liées au Cube globalement.
 	 */
-	protected: static string CUBE;
+	public: static string CUBE;
 
 };
 

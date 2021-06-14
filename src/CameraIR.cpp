@@ -33,7 +33,7 @@ int CameraIR::obtenirPixels() {
     // float t = 5+0.5*i;
     //     pixels[i] = t;
     //}
-    //recuperation des pixels
+    //recuperation des pix
     for (int i = 0; i < 64; i++) {
         setAddrRegistre(adresse);
         ecrire();

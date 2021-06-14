@@ -100,17 +100,3 @@ void Horloge::setDateTime(int date, int month, int year,int hour, int min, int s
 	//execute formatted command using system()
 	system((const char *)buff);
 }
-
-void Horloge::afficherDateTimeLocale(){
-        time_t tmm = time(0);
-        char* dt = ctime(&tmm);
-        cout<< "La date est l'heure locales sont :"<< dt <<endl;
-}
-
-void Horloge::afficherDateTimeUTC(){
-        time_t tmm = time(0);
-        char* dt = ctime(&tmm);
-        tm *g = gmtime(&tmm);
-        dt = asctime(g);
-        cout<< "Horloge UTC :"<< dt <<endl;
-}

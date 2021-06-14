@@ -13,7 +13,9 @@
 
 #include "../defs/Surveillance.h"
 
-Surveillance::Surveillance() {
+Surveillance::Surveillance(SegmentVol* segmentVol) {
+	this->segmentVol=segmentVol;
+	sauvegarde = new Sauvegarde();
 }
 
 Surveillance::Surveillance(const Surveillance& orig) {
@@ -26,11 +28,11 @@ void Surveillance::surveillerConstantes() {
     etatThread = true;
     while (etatThread) {
         sleep(1);
-        if (ordinateur->getTemperatureProcessor() > tempProcessAcceptable) {
+		if (segmentVol->getOrdinateur()->getTemperatureProcessor() > tempProcessAcceptable) {
             valeurIncompatible();
-        } else if (batterie->getTemperature() > tempBattAcceptable) {
+		} else if (segmentVol->getBatterie()->getTemperature() > tempBattAcceptable) {
             valeurIncompatible();
-        } else if (stockage->getOccupationRAM() > stockage->getMemoireRAM()) {
+		} else if (segmentVol->getOrdinateur()->getStockage()->getOccupationRAM() > segmentVol->getOrdinateur()->getStockage()->getMemoireRAM()) {
             valeurIncompatible();
         }
     }
@@ -38,8 +40,9 @@ void Surveillance::surveillerConstantes() {
 
 void Surveillance::valeurIncompatible() {
     etatThread = false;
-    sauvegarde->enregistrerMesure();
-    reboot->setNumber(reboot->getNumber()+1);
-    reboot->setDateHour(horloge->getDateHeure());
-    reboot->systemeReboot();
+	sauvegarde->creerSauvegarde(segmentVol);
+	sauvegarde->enregistrerMesures(segmentVol->getInstrument()->getMesures());
+	segmentVol->getOrdinateur()->getReboot()->setNumber(segmentVol->getOrdinateur()->getReboot()->getNumber()+1);
+	segmentVol->getOrdinateur()->getReboot()->setDateHour(segmentVol->getHorloge()->getDateHeure());
+    segmentVol->getOrdinateur()->getReboot()->systemeReboot();
 }

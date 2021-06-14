@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   SegmentSol.h
  * Author: snir2g2
  *
@@ -17,35 +17,34 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
-#include "Protocole.h"
+#include <condition_variable>
+#include "FrameManager.h"
 #include "SegmentVol.h"
 #include "Message.h"
 
-#define         DEVICE_PORT             "/dev/serial0" 
+#define         DEVICE_PORT             "/dev/serial0"
 
 class SegmentVol;
-class SegmentSol: public Protocole{
+class SegmentSol: public FrameManager{
 public:
     SegmentSol(SegmentVol *leSegment);
     virtual ~SegmentSol();
     void envoyerStatus(list<string> status);
     void envoyerMission();
     void envoyerMesure(string type);
+	void envoyerInfos(string type);
     void activerReception();
     thread tActiverReception();
     void traiterCommande();
     thread tTraiterCommande();
+    thread tTraiter_cmd_queue();
     void testEnvoie();
     thread tTestEnvoie();
-    void envoyerMsgStart();
-    
+    void traiter_cmd_queue();
+
 private:
     SegmentVol* leSegment;
-    Message* message;
-    mutex mutex_serial;
-    
 
 };
 
 #endif /* SEGMENTSOL_H */
-

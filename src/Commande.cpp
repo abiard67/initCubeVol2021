@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   Commande.cpp
  * Author: snir2g2
- * 
+ *
  * Created on 19 mars 2019, 15:35
  */
 
@@ -20,12 +20,17 @@ Commande::~Commande() {
 }
 
 string Commande::getCode(){
-    
+
     return code;
 }
 
+void Commande::setnbOctectsDataRecu(int nbOctectsDataRecu){
+
+    this->nbOctectsDataRecu = nbOctectsDataRecu;
+}
+
 void Commande::setCode(string cmd){
-    
+
     this->code = cmd;
 }
 
@@ -36,4 +41,9 @@ void Commande::setParametres(list<string> parametres){
 std::list<string> Commande::getParametres(){
 
     return parametres;
+}
+
+int Commande::getnbOctectsDataRecu(){
+
+  return nbOctectsDataRecu;
 }

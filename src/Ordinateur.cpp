@@ -39,6 +39,7 @@ bool Ordinateur::resetStatus()
 {
 	leStockage->resetStockage();
 	temperatureProcessor=0;
+	return true;
 }
 
 float Ordinateur::getTemperatureProcessor(){

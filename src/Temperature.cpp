@@ -20,6 +20,9 @@ char Temperature::bithuitadouze = 0x1F;
 char Temperature::adressecapteuri2c = 0x18;
 char Temperature::pointeurderegistre = 0x05;
 
+char Temperature::positif = 1;
+char Temperature::negatif = 2;
+
 Temperature::Temperature() {
 	temperaturesys=0;
 }
@@ -43,11 +46,14 @@ int Temperature::recupTempSys() {
         //TEMPERATURE N�GATIVE
         temperaturesys = (float) (256.0 - ((temperatureHigh * 16.0) + (temperatureLow / 16.0)));
         temperaturesys = -1 * temperaturesys;
+		return negatif;
     } else {
 
         //TEMPERATURE POSITIVE
         temperaturesys = (float) (temperatureHigh * 16.0 + temperatureLow / 16.0);
+		return positif;
     }
+	return 0;
 }
 
 void Temperature::resetTemperature()

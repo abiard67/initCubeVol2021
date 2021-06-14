@@ -5,10 +5,22 @@ LIB = ./lib
 SRC = ./src
 BIN = ./bin
 
-all: $(LIB)/TypeAppareil.o $(LIB)/TypeAck.o $(LIB)/TypeCommande.o $(LIB)/TypeMisEtat.o $(LIB)/Reboot.o $(LIB)/Status.o $(LIB)/Protocole.o $(LIB)/Message.o $(LIB)/Mesure.o $(LIB)/serialib.o $(LIB)/Batterie.o $(LIB)/CameraIR.o $(LIB)/EmetteurRecepteur.o $(LIB)/Etat.o $(LIB)/Horloge.o $(LIB)/I2C.o $(LIB)/Instrument.o $(LIB)/Mission.o $(LIB)/Ordinateur.o $(LIB)/Stockage.o $(LIB)/SegmentSol.o $(LIB)/SegmentVol.o $(LIB)/Temperature.o 
+all: $(LIB)/TypeAppareil.o $(LIB)/TypeAck.o $(LIB)/TypeCommande.o $(LIB)/Commande.o $(LIB)/tinyxml2.o $(LIB)/Surveillance.o $(LIB)/Sauvegarde.o $(LIB)/TypeMisEtat.o $(LIB)/Reboot.o $(LIB)/Status.o $(LIB)/FrameManager.o $(LIB)/Message.o $(LIB)/Mesure.o $(LIB)/serialib.o $(LIB)/Batterie.o $(LIB)/CameraIR.o $(LIB)/EmetteurRecepteur.o $(LIB)/Etat.o $(LIB)/Horloge.o $(LIB)/I2C.o $(LIB)/Instrument.o $(LIB)/Mission.o $(LIB)/Ordinateur.o $(LIB)/Stockage.o $(LIB)/SegmentSol.o $(LIB)/SegmentVol.o $(LIB)/Temperature.o $(LIB)/pugixml.o 
 	@echo "Compilation programme principal"
-	$(CC) $(FLAGS) $(SRC)/main.cpp $(LIB)/TypeAppareil.o $(LIB)/TypeAck.o $(LIB)/TypeCommande.o $(LIB)/TypeMisEtat.o $(LIB)/Reboot.o $(LIB)/Status.o $(LIB)/Protocole.o $(LIB)/Message.o $(LIB)/Mesure.o $(LIB)/serialib.o $(LIB)/Batterie.o $(LIB)/CameraIR.o $(LIB)/EmetteurRecepteur.o $(LIB)/Etat.o $(LIB)/Horloge.o $(LIB)/I2C.o $(LIB)/Instrument.o $(LIB)/Mission.o $(LIB)/Ordinateur.o $(LIB)/Stockage.o $(LIB)/SegmentSol.o $(LIB)/SegmentVol.o $(LIB)/Temperature.o -std=c++14 -lpthread  -o $(BIN)/main
+	$(CC) $(FLAGS) $(SRC)/main.cpp $(LIB)/TypeAppareil.o $(LIB)/TypeAck.o $(LIB)/TypeCommande.o $(LIB)/Commande.o $(LIB)/tinyxml2.o $(LIB)/Surveillance.o $(LIB)/Sauvegarde.o $(LIB)/TypeMisEtat.o $(LIB)/Reboot.o $(LIB)/Status.o $(LIB)/FrameManager.o $(LIB)/Message.o $(LIB)/Mesure.o $(LIB)/serialib.o $(LIB)/Batterie.o $(LIB)/CameraIR.o $(LIB)/EmetteurRecepteur.o $(LIB)/Etat.o $(LIB)/Horloge.o $(LIB)/I2C.o $(LIB)/Instrument.o $(LIB)/Mission.o $(LIB)/Ordinateur.o $(LIB)/Stockage.o $(LIB)/SegmentSol.o $(LIB)/SegmentVol.o $(LIB)/Temperature.o $(LIB)/pugixml.o -std=c++14 -lpthread  -o $(BIN)/main
 	@echo "Compilation terminer"
+
+$(LIB)/pugixml.o : $(SRC)/pugixml.cpp $(DEFS)/pugixml.hpp
+	@echo "Compilation classe pugixml"
+	$(CC) -c $(SRC)/pugixml.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
+
+$(LIB)/Surveillance.o : $(SRC)/Surveillance.cpp $(DEFS)/Surveillance.h 
+	@echo "Compilation classe Surveillance"
+	$(CC) -c $(SRC)/Surveillance.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
+
+$(LIB)/Sauvegarde.o : $(SRC)/Sauvegarde.cpp $(DEFS)/Sauvegarde.h 
+	@echo "Compilation classe Sauvegarde"
+	$(CC) -c $(SRC)/Sauvegarde.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
 
 $(LIB)/Reboot.o : $(SRC)/Reboot.cpp $(DEFS)/Reboot.h 
 	@echo "Compilation classe Reboot"
@@ -17,6 +29,14 @@ $(LIB)/Reboot.o : $(SRC)/Reboot.cpp $(DEFS)/Reboot.h
 $(LIB)/TypeCommande.o : $(SRC)/TypeCommande.cpp $(DEFS)/TypeCommande.h 
 	@echo "Compilation classe TypeCommande"
 	$(CC) -c $(SRC)/TypeCommande.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
+
+$(LIB)/Commande.o : $(SRC)/Commande.cpp $(DEFS)/Commande.h 
+	@echo "Compilation classe Commande"
+	$(CC) -c $(SRC)/Commande.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
+
+$(LIB)/tinyxml2.o : $(SRC)/tinyxml2.cpp $(DEFS)/tinyxml2.h 
+	@echo "Compilation classe tinyxml2"
+	$(CC) -c $(SRC)/tinyxml2.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
 
 $(LIB)/TypeAck.o : $(SRC)/TypeAck.cpp $(DEFS)/TypeAck.h 
 	@echo "Compilation classe TypeAck"
@@ -30,9 +50,9 @@ $(LIB)/TypeAppareil.o : $(SRC)/TypeAppareil.cpp $(DEFS)/TypeAppareil.h
 	@echo "Compilation classe TypeAppareil"
 	$(CC) -c $(SRC)/TypeAppareil.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
 
-$(LIB)/Protocole.o : $(SRC)/Protocole.cpp $(DEFS)/Protocole.h 
-	@echo "Compilation classe Protocole"
-	$(CC) -c $(SRC)/Protocole.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
+$(LIB)/FrameManager.o : $(SRC)/FrameManager.cpp $(DEFS)/FrameManager.h 
+	@echo "Compilation classe FrameManager"
+	$(CC) -c $(SRC)/FrameManager.cpp -std=c++14 -lpthread  -o $@ $(FLAGS) 
 
 $(LIB)/Message.o : $(SRC)/Message.cpp $(DEFS)/Message.h 
 	@echo "Compilation classe Message"

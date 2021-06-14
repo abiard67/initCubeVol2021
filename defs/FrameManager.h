@@ -4,15 +4,15 @@
  * and open the template in the editor.
  */
 
-/* 
- * File:   Protocole.h
+/*
+ * File:   FrameManager.h
  * Author: snir2g2
  *
  * Created on 18 mars 2019, 08:36
  */
 
-#ifndef PROTOCOLE_H
-#define PROTOCOLE_H
+#ifndef FrameManager_H
+#define FrameManager_H
 
 #include <stdio.h>
 #include <string>
@@ -22,6 +22,10 @@
 #include <vector>
 #include <map>
 #include <iterator>
+#include <cstdlib>
+#include <pthread.h>
+#include <semaphore.h>
+#include<bits/stdc++.h>
 
 
 #include "../defs/Message.h"
@@ -31,11 +35,11 @@
 #include "../defs/TypeAck.h"
 #include "Commande.h"
 
-class Protocole : public TypeCommande, public TypeMisEtat, public TypeAppareil, public TypeAck {
+class FrameManager : public TypeCommande, public TypeMisEtat, public TypeAppareil, public TypeAck {
 public:
-    Protocole();
-    Protocole(const Protocole& orig);
-    virtual ~Protocole();
+    FrameManager();
+    FrameManager(const FrameManager& orig);
+    virtual ~FrameManager();
     /**
      * accesseur au tableau de 100 octets � transmettre ou re�us
      */
@@ -46,7 +50,7 @@ public:
     /**
      * modificateur au tableau de 100 octets � transmettre ou re�us
      * compl�t� par des 0 si n�cessaire
-     * 
+     *
      */
     void setTableau(char laDataRecu[100]);
     void setNbrePaquets(int n);
@@ -70,7 +74,7 @@ public:
 
     /// <summary>
     /// M�thode d'extraction du nombre de paquets et du num�ro de paquet.
-    /// Compl�te les attributs correspondants de Protocole.
+    /// Compl�te les attributs correspondants de FrameManager.
     /// </summary>
     /// <param name="apos">Position du dernier caract�re du code message.</param>
     void extraireNombrePaquets(int &pos);
@@ -92,20 +96,13 @@ public:
     /// <param name="pos">position du type de donn�es de Mission</param>
     string extraireTypeDataMission(int &pos);
 
-    /// M�thode d'extraction des donn�es d'une mission dans le tableau d'octets re�us
-    /// � utiliser apr�s  extraireTypeDataMission
-    /// <param name="datas"> liste des donn�es de la mission</param>
-    /// <param name="dateHours"> liste des dates/heures de pr�l�vement</param>
-    /// <param name="dateHours"> position des donn�es de Mission</param>
-    int extraireDataMission(list<float> &datas, list<string> &dateHours, int &pos, string typeMission);
-
     /// M�thode permettant de supprimer le paquet trait� dans la liste des paquets
     /// recus
     /// Elle DOIT �tre utilis�e apr�s traitement du paquet.
     void supprimerPaquet();
 
-    void envoieACK(string ACK);
-    //thread tEnvoieACK(string ACK);
+    vector<char> tramerRepAcq(Message* message,string ReponseAcquitement);
+
 
 protected:
     /**
@@ -114,7 +111,7 @@ protected:
     static string ERR_CHECKSUM;
     static string ERR_FORMAT;
     /**
-     * d�claration de constantes protocole
+     * d�claration de constantes FrameManager
      */
     static int pause;
 
@@ -130,18 +127,26 @@ protected:
      * tableau de 100 octets � transmettre (compl�t� par des 0)
      */
     char tableau[100];
+    char trameReception[100];
+    char trameEmission[100];
+    queue<char *> q;
+    char trameAtraiter[100];
+
     list<vector<char>> received;
 	map <string,int> decoupePaquets;
 
-    void calculerChecksum(char & PF, char & pf);
+    void calculerChecksum(char trame[104], char & PF, char & pf);
     bool verifierChecksum();
     void tramerMission(Message* message, int nbrePaquets, int numPaquet);
     void tramerStatus(Message* message, int nbrePaquets, int numPaquet);
     void tramerStatus(Message* message, list<string> appareils, int nbrePaquets, int numPaquet);
     void tramerMesure(Message* message, int nbrePaquets, int numPaquet);
     unsigned char calculerNombrePaquets(Message * message);
-    void extraireCommande(char reception[]);
-    void extraireParametres(char reception[]);
+    void extraireCommande(vector <char> trame);
+    void extraireParametres(vector <char> trame);
+    void extrairenbOctectsDataRecu(char reception[]);
+    void detramerCommande();
+    void ajouter_cmd_queue(char reception[]);
     /// Cette m�thode permet d'ajouter les donn�es de l'ordinateur de bord � la trame.
     /// </summary>
     /// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>
@@ -166,13 +171,12 @@ protected:
     /// <param name="aposition">Position o� doivent �tre ins�r�es les informations.</param>
     void ajouterStatusCube(Message* amessage, unsigned int &aposition);
 
-    void tramerMessageStart();
-                
-        
-        Commande*commande= new Commande;
+
+
+    sem_t sync;
+        Commande*commande;
+		Message* message;
     //Commande* commande;
 };
 
-#endif /* PROTOCOLE_H */
-
-
+#endif /* FrameManager_H */

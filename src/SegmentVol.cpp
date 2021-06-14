@@ -1,21 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   SegmentVol.cpp
- * Author: snir2g1
- * 
- * Created on 21 mars 2019, 16:25
- */
 #include <iostream>
 
 #include "../defs/SegmentVol.h"
 
 using namespace std;
-
+using namespace std::chrono ;
 SegmentVol::SegmentVol() {
     horloge = new Horloge();
     temperature = new Temperature();
@@ -25,11 +13,9 @@ SegmentVol::SegmentVol() {
     ordinateur = new Ordinateur();
     etat = new Etat();
     segmentSol = new SegmentSol(this);
-    reboot = new Reboot();
-    surveillance = new Surveillance();
+    surveillance = new Surveillance(this);
     sauvegarde = new Sauvegarde();
     this->intialisationInstrument();
-    segmentSol->envoyerMsgStart();
 }
 
 SegmentVol::~SegmentVol() {
@@ -58,25 +44,99 @@ void SegmentVol::surveillerConstantes() {
 }
 
 void SegmentVol::demandeManuelleReboot() {
-    sauvegarde->enregistrerMesure();
-    reboot->setNumber(reboot->getNumber() + 1);
-    reboot->setDateHour(horloge->getDateHeure());
-    this->getOrdinateur()->getReboot();
-    reboot->systemeReboot();
-    // Codage d'envoi vers Segment Sol � faire?
+	sauvegarde->enregistrerMesures(this->instrument->getMesures());
+	ordinateur->getReboot()->setNumber(ordinateur->getReboot()->getNumber() + 1);
+    ordinateur->getReboot()->setDateHour(horloge->getDateHeure());
+    ordinateur->getReboot()->systemeReboot();
 }
 
 void SegmentVol::lancerMission() {
     short interval = mission->getPeriodicity();
+    string startTime = mission->getStartTime(); // on initialise le debut
+    string measureType = mission->getMeasureType(); // le type de measure a voir avec richard
     etatThread = true;
+    istringstream iss; // On crée le flux
+    if (startTime != "") { // si il n'y a pas de debut on envoie directement les informations
+
+        size_t pos = startTime.find('/'); // on trouve le premier "/"
+
+        int year, month, day, hour, minute, second;
+        iss = istringstream(startTime.substr(0, pos)); //iss = On récuperer l'info avant le premier "/"
+        iss>>year; // on le stock dans int year
+
+        tm timeinfo = tm(); //timeinfo = https://www.cplusplus.com/reference/ctime/tm/
+        timeinfo.tm_year = year - 1900; // On suit le protocole de timeinfo
+
+        ///////////////////////////////////////////////////////////////
+        string leReste = startTime.substr(pos + 1); // on déclare "leReste" = ce qui a apres "/"
+        pos = leReste.find('/'); // on trouve "/" suivant
+
+        iss = istringstream(leReste.substr(0, pos)); // iss = premier arguments apres "/"
+        iss>>month; //on stock le mois
+
+        timeinfo.tm_mon = month - 1; // month: january
+
+        ////////////////////////////////////////////////////////////////
+
+        leReste = leReste.substr(pos + 1);
+        pos = leReste.find(' '); // on cherche l'espace
+
+        iss = istringstream(leReste.substr(0, pos)); //
+        iss>>day; //on stock le jour
+
+        timeinfo.tm_mday = day; // day: 1st
+
+        ///////////////////////////////////////////////////////////////
+
+        leReste = leReste.substr(pos + 1);
+        pos = leReste.find(':'); // on trouve le premier ":"
+
+        iss = istringstream(leReste.substr(0, pos));
+        iss>>hour; // on stock l'heure
+
+        timeinfo.tm_hour = hour;
+
+        /////////////////////////////////////////////////////////////
+
+        leReste = leReste.substr(pos + 1);
+        pos = leReste.find(':'); // le suivant ":"
+        iss = istringstream(leReste.substr(0, pos));
+        iss>>minute; // on stock les secondes
+        timeinfo.tm_min = minute; //
+
+        ////////////////////////////////////////////////////////////
+
+        iss = istringstream(leReste.substr(pos + 1, 2));
+        iss>>second; // on termine et on stock les secondes
+        timeinfo.tm_sec = second;
+
+        ///////////////////////////////////////////////////////////
+
+        time_t tt = mktime(&timeinfo); //Permet d'ajuster les dates en cas de probleme
+        system_clock::time_point tp = system_clock::from_time_t(tt);
+        //auto attent = chrono::time_point_cast<std::chrono::seconds>(delay);
+        int elapsed_seconds = chrono::duration_cast<chrono::seconds> (tp - system_clock::now()).count(); //l'heure de la mission (tp) - l'heure local du systeme
+		system_clock::time_point today = system_clock::now();
+		  std::time_t tooooday;
+		  tooooday = system_clock::to_time_t ( today );
+        if (elapsed_seconds > 0) {
+            this_thread::sleep_for(chrono::seconds(elapsed_seconds)); // on attends le nombre de seconds qui est le resultat de la soustration donc elapsed_seconds
+        } else {
+            segmentSol->envoyerInfos("ERROR-24"); // on revoie un code error si le nombre de seconde est inferieur a 0
+            return;
+        }
+
+    }
 
     while (etatThread) {
-        this_thread::sleep_for(chrono::minutes(interval));
+        thread laFindeMission = this->tArretMission(); // Permet de savoir quand arret la mission donc la duree
+        laFindeMission.detach();
         activerInstrument();
         instrument->faireMesure(2);
         horloge->lire();
         instrument->setDateMesure(horloge->getDateHeure());
         desactiverInstrument();
+        this_thread::sleep_for(chrono::minutes(interval)); // pause selon les minutes, arretMission
     }
     activerModuleEmission();
     segmentSol->envoyerMission();
@@ -92,12 +152,8 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
     list<string>::iterator it;
     horloge->lire();
 		list<string>::iterator it2;
-		for (it2 = appareil.begin(); it2 != appareil.end(); ++it2)
-		{
-			cout<< "Le parametres est"<<*it2<<"et TypeAppareil::ORDIBORD"<<TypeAppareil::ORDIBORD<<"//"<<endl;
-		}
+
 	if (appareil.begin() == appareil.end()) {
-        cout << "Là" << endl;
         ordinateur->obtenirStatus();
         instrument->obtenirStatus();
         batterie->obtenirStatus();
@@ -106,36 +162,36 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
     }
     else
     for (it = appareil.begin(); it != appareil.end(); it++) {
-        
+
         if (*it == TypeAppareil::ORDIBORD) {
             ordinateur->obtenirStatus();
             if (ordinateur->obtenirStatus() == -1) {
-                segmentSol->envoieACK("ERROR-20");
+                segmentSol->envoyerInfos("ERROR-20");
             }
         }
-        if (*it == TypeAppareil::INSTRUMENT) {
+        else if (*it == TypeAppareil::INSTRUMENT) {
             instrument->obtenirStatus();
             if (instrument->obtenirStatus() == -1) {
-                segmentSol->envoieACK("ERROR-21");
+                segmentSol->envoyerInfos("ERROR-21");
             }
         }
-        if (*it == TypeAppareil::BATTERIE) {
+        else if (*it == TypeAppareil::BATTERIE) {
             batterie->obtenirStatus();
             if (batterie->obtenirStatus() == -1) {
-                segmentSol->envoieACK("ERROR-22");
+                segmentSol->envoyerInfos("ERROR-22");
             }
         }
-        if (*it == TypeAppareil::CUBE) {
+        else if (*it == TypeAppareil::CUBE) {
             temperature->recupTempSys();
             if (temperature->recupTempSys() == -1) {
-                segmentSol->envoieACK("ERROR-23");
+                segmentSol->envoyerInfos("ERROR-23");
             }
-        } 
+        }
 
-		if ((*it != TypeAppareil::ORDIBORD) && (*it != TypeAppareil::INSTRUMENT) && 
+		else if ((*it != TypeAppareil::ORDIBORD) && (*it != TypeAppareil::INSTRUMENT) &&
 			(*it != TypeAppareil::BATTERIE) && (*it != TypeAppareil::CUBE) && (*it!=TypeAppareil::REBOOT))
 		{
-				segmentSol->envoieACK("ERROR-E12");
+				segmentSol->envoyerInfos("ERROR-E12");
 		}
     }
     activerModuleEmission();
@@ -145,6 +201,7 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
 
 void SegmentVol::obtenirStatus() {
     short intervale = etat->getPeriodicity();
+		list<string> appareil;
     while (true) {
         this_thread::sleep_for(chrono::minutes(intervale));
         ordinateur->obtenirStatus();
@@ -153,6 +210,7 @@ void SegmentVol::obtenirStatus() {
         horloge->lire();
         temperature->recupTempSys();
         activerModuleEmission();
+		segmentSol->envoyerStatus(appareil);
         // segmentSol->envoyerStatus(); //////////////////////////////////////////////////////
     }
 }
@@ -254,19 +312,19 @@ void SegmentVol::setIdentifiant(unsigned char id) {
 
 
 int SegmentVol::intialisationInstrument() {
-	
-	
+
+
     stringstream ss;
-	
-	
+
+
     vector<int>adrI2C(0);
     string adrConfig;
     string typeConfig;
-    
+
     int adrInstrument = 0;
     int iAdrConfig;
 
-	
+
     //lecture des adresse I2C
     int N = open("/dev/i2c-1", O_RDWR);
 
@@ -280,7 +338,7 @@ int SegmentVol::intialisationInstrument() {
                 case 0x14: break;
                 case 0x68: break;
                 default: adrI2C.push_back(i);
-                                
+
 
                     break;
             }
@@ -288,12 +346,12 @@ int SegmentVol::intialisationInstrument() {
     }
         vector<int>::iterator itAdrI2C = adrI2C.begin();
 
- 
-    
-    
+
+
+
     close(N);
 
-	
+
     //Lecture de l'adresse de l'instrument
     XMLDocument config;
 	XMLError anError = config.LoadFile("../config/initcube.xml");
@@ -303,19 +361,18 @@ int SegmentVol::intialisationInstrument() {
     typeConfig = typeNode->Value();
     ss << adrConfig;
     ss >> hex>>iAdrConfig;
-	    
+
     //Comparaison des adresses
-    
+
    if(*itAdrI2C == adrI2C.back()){
    	adrInstrument = *itAdrI2C;
    }
-                
+
     else{
     while (*itAdrI2C != adrI2C.back()) {
-		cout<<*itAdrI2C<<endl;
         if (*itAdrI2C != iAdrConfig) {
             advance(itAdrI2C, 1);
-        
+
         } else {
             adrInstrument = *itAdrI2C;
                }
@@ -341,11 +398,11 @@ int SegmentVol::intialisationInstrument() {
                    close(I2C);
               if (typeConfig != "camera infrarouge") {
                 return -1;
-             
+
             }*/
-             
+
             instrument = new CameraIR();
-			
+
             break;
 
             /*  case 0x30:
@@ -355,12 +412,12 @@ int SegmentVol::intialisationInstrument() {
                    instrument = new CameraPhoto();
                    break;
              */
-           
+
     }
 
 
 
- 
+
     return 0;
 }
 int SegmentVol::resetStatus(list<string> appareil)
@@ -370,12 +427,12 @@ int SegmentVol::resetStatus(list<string> appareil)
 		ordinateur->resetStatus();
 		instrument->resetStatus();
 		batterie->resetStatus();
-		reboot->resetStatus();
+		ordinateur->getReboot()->resetStatus();
 		temperature->resetTemperature();
     }
     else
     for (it = appareil.begin(); it != appareil.end(); it++) {
-        
+
         if (*it == TypeAppareil::ORDIBORD) {
 			ordinateur->resetStatus();
         }
@@ -387,7 +444,8 @@ int SegmentVol::resetStatus(list<string> appareil)
         }
         if (*it == TypeAppareil::CUBE) {
 			temperature->resetTemperature();
-        } 
+        }
     }
+	return 0;
 
 }
